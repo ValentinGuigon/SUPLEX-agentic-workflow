@@ -539,6 +539,7 @@ def first_supervision_prompt(project_name: str) -> str:
         Determine whether an unfinished bounded pass already exists before defining new work.
         If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next.
         If you cannot read the repository files in this session, do not guess hidden repo state. Use `docs/09_supervision_brief.md`, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead.
+        If supervision is happening in a browser chat without repo access, pass this packet into the chat: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, the latest execution report in `handoffs/history/` if one exists, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`.
         Ask the user what they want to do next.
         Decide whether an architecture-planning pass is needed before any implementation work proceeds.
         Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.

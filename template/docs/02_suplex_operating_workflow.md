@@ -136,9 +136,17 @@ Use no audit when:
 - In that case, the supervision packet must be sufficient for bounded supervision.
 - A verbatim copy of this template repo's own supervision brief is not a valid packet for another repo; the packet must be refreshed to reflect the target repo's current state.
 - The minimum required packet is:
+  - `AGENTS.md`
   - `docs/09_supervision_brief.md`
-  - the active handoff
-  - the latest execution report and/or latest checkpoint
+  - `handoffs/active/current_handoff.md`
+  - the latest execution report and/or `docs/08_status_checkpoint.md`
+- The recommended browser-supervision packet is:
+  - `AGENTS.md`
+  - `docs/09_supervision_brief.md`
+  - `handoffs/active/current_handoff.md`
+  - the latest execution report in `handoffs/history/` if one exists
+  - `docs/08_status_checkpoint.md`
+  - `docs/10_supervision_layer_spec.md`
 - When live repo inspection is unavailable, the supervisor should avoid guessing hidden repo state and should govern only from the validated packet it has.
 
 ## 6. Supervisor-to-executor relay
