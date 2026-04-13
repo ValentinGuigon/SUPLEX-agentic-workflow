@@ -548,62 +548,124 @@ def build_init_state(
     return "\n".join(lines) + "\n"
 
 
-def first_supervision_prompt(project_name: str, analysis: dict[str, object]) -> str:
+def mode_specific_first_step(analysis: dict[str, object]) -> str:
     mode = analysis["project_mode"]
     if mode == "greenfield":
-        mode_guidance = dedent(
+        return dedent(
             """
-            The repo was initialized in `greenfield` mode, meaning only metadata-like repo content was present before SUPLEX init.
             Ask the user whether they want to provide more detail about the project before planning begins.
             Treat architecture-planning or structure-confirmation as the default first bounded supervisory pass unless the user already provided enough detail to make that unnecessary.
             """
         ).strip()
-    else:
-        mode_guidance = dedent(
+    return dedent(
+        """
+        Ask the user whether they want to provide more detail about the project before repo-state reconstruction begins.
+        Treat repo-state audit or local reconstruction as the default first bounded supervisory pass so the next task can be defined from current repo evidence rather than assumptions.
+        """
+    ).strip()
+
+
+def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object]) -> str:
+    mode = analysis["project_mode"]
+    mode_guidance = mode_specific_first_step(analysis)
+    if mode == "greenfield":
+        startup_guidance = dedent(
             """
-            The repo was initialized in `overlay` mode, meaning preexisting project content was present before SUPLEX init.
-            Ask the user whether they want to provide more detail about the project before repo-state reconstruction begins.
-            Treat repo-state audit or local reconstruction as the default first bounded supervisory pass so the next task can be defined from current repo evidence rather than assumptions.
+            Read `handoffs/active/current_handoff.md` first and confirm that initialization left the repo in the expected no-active-handoff state.
             """
         ).strip()
+        sequencing_guidance = (
+            "Use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation."
+        )
+    else:
+        startup_guidance = dedent(
+            """
+            Read `handoffs/active/current_handoff.md` first and confirm that initialization left the repo in the expected no-active-handoff state.
+            Treat preexisting repo state and any unfinished project work as context to reconstruct, not as an already-active bounded SUPLEX pass.
+            """
+        ).strip()
+        sequencing_guidance = (
+            "Use `docs/13_bounded_task_backlog.md` as a default reference only after you have reconstructed enough repo state to decide the next bounded task safely."
+        )
 
     return dedent(
         f"""
         You are supervising the freshly initialized `{project_name}` repository.
-        Read `handoffs/active/current_handoff.md` first.
+        The repo was initialized in `{mode}` mode.
+        {startup_guidance}
         Then read `README.md`, `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, `docs/09_supervision_brief.md`, `docs/10_supervision_layer_spec.md`, `docs/13_bounded_task_backlog.md`, and `handoffs/initialization.md`.
-        Determine whether an unfinished bounded pass already exists before defining new work.
-        If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next.
-        If you cannot read the repository files in this session, do not guess hidden repo state. Use `docs/09_supervision_brief.md`, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead.
-        If supervision is happening in a browser chat without repo access, pass this packet into the chat: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, the latest execution report in `handoffs/history/` if one exists, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`.
+        Inspect the repo and `README.md` before deciding what happens next.
         Ask the user what they want to do next.
         {mode_guidance}
-        If no active handoff exists, use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
+        {sequencing_guidance}
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
     ).strip()
 
 
+def first_supervision_prompt_browser(project_name: str, analysis: dict[str, object]) -> str:
+    mode = analysis["project_mode"]
+    mode_guidance = mode_specific_first_step(analysis)
+    if mode == "greenfield":
+        startup_guidance = dedent(
+            """
+            Read `handoffs/active/current_handoff.md` first and treat it as a no-active-handoff confirmation, not as an unfinished bounded pass.
+            """
+        ).strip()
+        sequencing_guidance = (
+            "Use `docs/13_bounded_task_backlog.md` only if it is present in the provided packet or quoted to you by the user."
+        )
+    else:
+        startup_guidance = dedent(
+            """
+            Read `handoffs/active/current_handoff.md` first and treat it as a no-active-handoff confirmation, not as an unfinished bounded pass.
+            Treat preexisting repo state described in the packet as context to reconstruct, not as an already-active bounded SUPLEX pass.
+            """
+        ).strip()
+        sequencing_guidance = (
+            "Use `docs/13_bounded_task_backlog.md` only if it is present in the provided packet or quoted to you by the user, and only after you have reconstructed enough repo state to decide the next bounded task safely."
+        )
+
+    return dedent(
+        f"""
+        You are supervising the freshly initialized `{project_name}` repository without direct repo access.
+        The repo was initialized in `{mode}` mode.
+        Use only the provided supervision packet as working state: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`.
+        {startup_guidance}
+        Read the rest of the provided packet before defining new work.
+        Do not guess hidden repo state beyond the provided packet.
+        Ask the user what they want to do next.
+        {mode_guidance}
+        {sequencing_guidance}
+        Choose the minimum reconstruction level justified by the packet and propose exactly one next bounded task only.
+        """
+    ).strip()
+
+
 def build_ready_message(target_dir: Path, project_name: str, analysis: dict[str, object]) -> str:
-    supervisor_prompt = first_supervision_prompt(project_name, analysis)
+    supervisor_prompt_ide = first_supervision_prompt_ide(project_name, analysis)
+    supervisor_prompt_browser = first_supervision_prompt_browser(project_name, analysis)
     separator = "=" * 72
     return "\n".join(
         [
             separator,
             f"SUPLEX ready in {target_dir}",
             separator,
-            "If you will run supervision in the terminal or IDE, pass only the prompt below.",
-            "If you will run supervision in a browser chat without repo access, pass these documents into the chat:",
+            "IDE or terminal supervision: pass only the IDE prompt below.",
+            "Browser-chat supervision without repo access: pass the browser prompt below together with these files:",
             "- `AGENTS.md`",
             "- `docs/09_supervision_brief.md`",
             "- `handoffs/active/current_handoff.md`",
-            "- the latest execution report in `handoffs/history/` if one exists",
             "- `docs/08_status_checkpoint.md`",
             "- `docs/10_supervision_layer_spec.md`",
             separator,
-            "Supervisor prompt",
+            "Supervisor Prompt For IDE Or Terminal",
             separator,
-            supervisor_prompt,
+            supervisor_prompt_ide,
+            separator,
+            "Supervisor Prompt For Browser Chat",
+            separator,
+            supervisor_prompt_browser,
             separator,
         ]
     )
