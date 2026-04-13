@@ -1,0 +1,21 @@
+schema_version: "1.0"
+readme_path: "./README.md"
+readme_present: true
+project_mode: "greenfield"
+workflow_profile: "standard"
+public_surface: "absent"
+compiled_validation: false
+governance_files:
+  - "AGENTS.md"
+  - "CLAUDE.md"
+inference_basis:
+  repo_scan: true
+  readme_present: true
+  existing_code_structure_detected: false
+  existing_publication_structure_detected: false
+  existing_agent_governance_detected: false
+  notes:
+    - "Greenfield validation target seeded from its own README.md."
+    - "SUPLEX control layer copied without adding computation or publication scaffolding."
+created_at: "2026-04-13T11:00:00-04:00"
+last_updated: "2026-04-13T11:00:00-04:00"

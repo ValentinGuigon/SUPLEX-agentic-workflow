@@ -1,0 +1,22 @@
+schema_version: "1.0"
+readme_path: "./README.md"
+readme_present: false
+project_mode: "greenfield"
+workflow_profile: "standard"
+public_surface: "absent"
+compiled_validation: false
+governance_files:
+  - "AGENTS.md"
+  - "CLAUDE.md"
+inference_basis:
+  repo_scan: true
+  readme_present: false
+  existing_code_structure_detected: false
+  existing_publication_structure_detected: false
+  existing_agent_governance_detected: false
+  notes:
+    - "Template scaffold created with agentic-layer files only."
+    - "README.md is a mandatory seed input for initialization and is not fabricated by default."
+    - "Initialization must halt until README.md exists or the user provides a project description to draft one."
+created_at: "2026-04-13T09:29:47.8693586-04:00"
+last_updated: "2026-04-13T09:29:47.8693586-04:00"
