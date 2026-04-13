@@ -30,13 +30,15 @@ The active execution contract still belongs in `handoffs/active/current_handoff.
 - task family: `specify`
 - why this is next:
   - initialization ends with supervision rather than direct execution
-  - the next safe step is to confirm whether the target repo's architecture is already clear or whether a planning pass is required before implementation
+  - if `project_mode` is `greenfield`, the next safe step is usually architecture-planning or structure-confirmation before implementation
+  - if `project_mode` is `overlay`, the next safe step is usually repo-state audit or local reconstruction before implementation
 - likely deliverables:
   - one dated handoff for the first bounded supervisory pass
-  - one explicit decision on whether architecture planning is required
+  - one explicit decision on whether the first bounded pass should be architecture-planning, repo-state audit, or local reconstruction
   - one proposed next bounded task only
 - likely files in scope:
   - `README.md`
+  - `.suplex/init_state.yaml`
   - `docs/00_project_scope.md`
   - `docs/08_status_checkpoint.md`
   - `docs/09_supervision_brief.md`
@@ -63,4 +65,4 @@ The active execution contract still belongs in `handoffs/active/current_handoff.
 
 Unless a newer active handoff, blocker, or validation result creates a stronger dependency, the default next bounded pass should be:
 
-`Run the first repo-specific architecture-planning or structure-confirmation pass.`
+`Read project_mode from .suplex/init_state.yaml, then run the first repo-specific architecture-planning pass for greenfield repos or the first repo-state audit/reconstruction pass for overlay repos.`

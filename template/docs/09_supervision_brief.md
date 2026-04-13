@@ -81,8 +81,9 @@ This file is the portable supervision packet for cases where the supervisor cann
 - If you can read the repository files in the current session, inspect the repo and `README.md` before deciding what happens next.
 - If you cannot read the repository files in the current session, do not guess hidden repo state; use this brief, the latest checkpoint, and the active handoff as your working state instead.
 - Ask the user what they want to do next.
-- Decide whether architecture planning is required before implementation starts.
-- Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.
+- Read `project_mode` from `.suplex/init_state.yaml`.
+- If the mode is `greenfield`, ask whether the user wants to provide more project detail and treat architecture-planning or structure-confirmation as the default first bounded pass unless current information already makes that unnecessary.
+- If the mode is `overlay`, ask whether the user wants to provide more project detail and treat repo-state audit or local reconstruction as the default first bounded pass so the next task is defined from current repo evidence rather than assumptions.
 - Propose exactly one next bounded task.
 
 ## 12. Update rule

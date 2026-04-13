@@ -6,9 +6,9 @@ Use it when you want to add a standard supervision and handoff structure for age
 
 ## What is SUPLEX
 
-SUPLEX is a supervised pipeline with layered execution. It consists in a lightweight agentic control layer and is purposed for AI-assisted bounded repository work. It provides governance files, canonical control-memory docs, and handoff structure so an agent can operate inside a repo with explicit scope, provenance, and closure rules.
+SUPLEX is a supervised pipeline with layered execution. It consists of a lightweight agentic control layer and is meant for AI-assisted bounded repository work. It provides governance files, canonical control-memory docs, and handoff structure so an agent can operate inside a repo with explicit scope, provenance, and closure rules.
 
-SUPLEX separates the roles of goal-setting and decision-making (yours) from supervising and implementation (the models’).
+SUPLEX separates the roles of goal-setting and decision-making (yours) from supervising and implementation (the models).
 
 ## What It Does
 
@@ -32,11 +32,11 @@ The installed runtime includes:
 
 ## Scope
 
-SUPLEX init creates the supervision-execution layers, but it does not create or infer your project architecture. It does not add code, data or source files.
+SUPLEX init creates the supervision-execution layers, but it does not create or infer your project architecture. It does not add code, data, or source files.
 
-Successful `suplex init` always installs the same full control layer. After initialization, provide the first instruction to the supervisor to start working on your project.
+Successful `suplex init` always installs the same full control layer. After initialization, `handoffs/active/current_handoff.md` starts as a no-active-handoff placeholder, so the first active layer is supervision. The first supervision pass should read that file first, inspect the repo if it has repo access, ask what you want to do next, and define exactly one bounded task.
 
-If the repo was empty (SUPLEX as a 'greenfield'), you might need to interact with a Supervisor ("You are the supervisor") and an Architect ("You are the architect) to define your architectural needs. If the repo was already populated with code, data or source files (SUPLEX as an 'overlay'), you can start interacting with a Supervisor directly by defining your next goal.
+If the repo was empty (SUPLEX as a greenfield), that first supervision pass will often need an architecture-planning or structure-confirmation step before implementation begins. If the repo was already populated with code, data, or source files (SUPLEX as an overlay), that first supervision pass should reconstruct enough of the current repo state to define the next bounded task safely. Architecting is an expected supervision escalation mode when structure decisions need to be made, not a permanent parallel role.
 
 ## Before You Run It
 
@@ -86,6 +86,29 @@ At minimum, you should see:
 - `handoffs/`
 
 The bootstrap then prints the ready message and the next supervision prompt.
+
+## After Install
+
+It is very likely that the first supervision pass suggests writing or revising documentation. Because files can be created or updated at each bounded task, it is useful to keep a clean baseline.
+
+If the target repo is not already under version control, especially in a greenfield setup, it is good practice to initialize Git and commit the post-init state before running the first prompt:
+
+```sh
+git init
+git add .
+git commit -m "SUPLEX init"
+```
+
+## How To Use The Workflow
+
+The repo is managed under a strict bounded task family discipline throughout construction:
+
+- Each task enters through a handoff document in `handoffs/` with a defined scope, blocker list, acceptance criteria, and validation plan.
+- Each bounded task returns an execution report describing what was read, what was done, what was not done, validation result, blockers, and the likely next bounded task.
+- The workflow maintains canonical control-memory docs including the checkpoint, validation ledger, discrepancy log, and handoff history.
+- Where provenance matters, project docs may tag claims with evidence level: `[E]` directly evidenced, `[I]` strong inference, `[U]` unresolved.
+- No implementation proceeds without an active handoff document and evidence that the prior stage was validated.
+- If canonical docs and code artifacts disagreed, the discrepancy is logged before proceeding. `docs/` is the canonical project memory; `handoffs/` define the execution boundary.
 
 ## Repository Layout
 

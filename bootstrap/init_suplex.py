@@ -351,6 +351,12 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
     if mode == "greenfield":
         latest_state_line = "- The repo was initialized in `greenfield` mode from its own `README.md`. [E]"
         scope_line = "- Scope boundary: full control-layer initialization and supervision only; no computation or publication scaffolding by default"
+        next_decision_lines = dedent(
+            """
+            - Ask the user whether they want to provide more detail about the project before planning begins. [E]
+            - Treat architecture-planning or structure-confirmation as the default first bounded supervisory pass unless the user already provided enough detail to make that unnecessary. [E]
+            """
+        ).strip()
     else:
         preserved = analysis["code_dirs"] + analysis["data_dirs"] + analysis["public_dirs"]
         preserved_line = ""
@@ -358,6 +364,12 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
             preserved_line = f"- `{', '.join(preserved)}` remained in place during initialization. [E]"
         latest_state_line = "- The repo was initialized in `overlay` mode from its own `README.md`. [E]"
         scope_line = "- Scope boundary: initialize and supervise the full control layer without restructuring the current project architecture"
+        next_decision_lines = dedent(
+            """
+            - Ask the user whether they want to provide more detail about the project before repo-state reconstruction begins. [E]
+            - Treat repo-state audit or local reconstruction as the default first bounded supervisory pass so the next task can be defined from current repo evidence rather than assumptions. [E]
+            """
+        ).strip()
 
     extra_state = ""
     if mode != "greenfield" and analysis["code_dirs"] + analysis["data_dirs"] + analysis["public_dirs"]:
@@ -425,8 +437,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
         - If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next. [E]
         - If you cannot read the repository files in this session, do not guess hidden repo state; use this brief, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead. [E]
         - Ask the user what they want to do next. [E]
-        - Decide whether architecture planning is required before implementation work starts. [E]
-        - Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed. [E]
+        {next_decision_lines}
         - Propose exactly one next bounded task for {project_name}. [E]
 
         ## 12. Update rule
@@ -497,6 +508,14 @@ def build_init_state(
         "Target-state docs were rewritten before supervision bootstrap.",
         "The first active layer after init is supervision, not execution.",
     ]
+    if analysis["project_mode"] == "greenfield":
+        notes.append(
+            "Because only metadata-like repo content was present at init, the first supervisory decision should normally ask for more project detail and then decide whether architecture planning is needed."
+        )
+    else:
+        notes.append(
+            "Because preexisting project content was present at init, the first supervisory decision should normally ask for any missing project detail and then reconstruct current repo state before defining the next bounded task."
+        )
     lines = [
         'schema_version: "1.0"',
         'readme_path: "./README.md"',
@@ -529,7 +548,25 @@ def build_init_state(
     return "\n".join(lines) + "\n"
 
 
-def first_supervision_prompt(project_name: str) -> str:
+def first_supervision_prompt(project_name: str, analysis: dict[str, object]) -> str:
+    mode = analysis["project_mode"]
+    if mode == "greenfield":
+        mode_guidance = dedent(
+            """
+            The repo was initialized in `greenfield` mode, meaning only metadata-like repo content was present before SUPLEX init.
+            Ask the user whether they want to provide more detail about the project before planning begins.
+            Treat architecture-planning or structure-confirmation as the default first bounded supervisory pass unless the user already provided enough detail to make that unnecessary.
+            """
+        ).strip()
+    else:
+        mode_guidance = dedent(
+            """
+            The repo was initialized in `overlay` mode, meaning preexisting project content was present before SUPLEX init.
+            Ask the user whether they want to provide more detail about the project before repo-state reconstruction begins.
+            Treat repo-state audit or local reconstruction as the default first bounded supervisory pass so the next task can be defined from current repo evidence rather than assumptions.
+            """
+        ).strip()
+
     return dedent(
         f"""
         You are supervising the freshly initialized `{project_name}` repository.
@@ -540,16 +577,15 @@ def first_supervision_prompt(project_name: str) -> str:
         If you cannot read the repository files in this session, do not guess hidden repo state. Use `docs/09_supervision_brief.md`, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead.
         If supervision is happening in a browser chat without repo access, pass this packet into the chat: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, the latest execution report in `handoffs/history/` if one exists, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`.
         Ask the user what they want to do next.
-        Decide whether an architecture-planning pass is needed before any implementation work proceeds.
-        Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.
+        {mode_guidance}
         If no active handoff exists, use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
     ).strip()
 
 
-def build_ready_message(target_dir: Path, project_name: str) -> str:
-    supervisor_prompt = first_supervision_prompt(project_name)
+def build_ready_message(target_dir: Path, project_name: str, analysis: dict[str, object]) -> str:
+    supervisor_prompt = first_supervision_prompt(project_name, analysis)
     separator = "=" * 72
     return "\n".join(
         [
@@ -600,7 +636,7 @@ def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str) -> 
     write_text(target_dir / "docs" / "discrepancy_log.md", build_discrepancy_log())
     write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref))
 
-    print(build_ready_message(target_dir, project_name))
+    print(build_ready_message(target_dir, project_name, analysis))
     return 0
 
 

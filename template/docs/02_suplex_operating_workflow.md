@@ -59,10 +59,11 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The first active layer after `suplex init` is supervision, not execution.
 - The supervisor reads `handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
+- Immediately after initialization, `handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
 - If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
 - If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
-- The supervisor decides whether an architecture-planning pass is needed before any implementation work begins.
-- The supervisor determines whether an existing architecture is already present in the repo or described in `README.md`.
+- If `.suplex/init_state.yaml` says `project_mode: "greenfield"`, the supervisor should ask whether the user wants to provide more project detail and should treat architecture-planning or structure-confirmation as the default first bounded pass unless current information already makes that unnecessary.
+- If `.suplex/init_state.yaml` says `project_mode: "overlay"`, the supervisor should ask whether the user wants to provide more project detail and should treat repo-state audit or local reconstruction as the default first bounded pass so the next task is defined from current repo evidence rather than assumptions.
 - If no active handoff exists, the supervisor uses `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
@@ -218,12 +219,13 @@ Immediately after `suplex init`:
 6. if no active pass exists, read `README.md`; if you can inspect the repo in the current session, inspect it before deciding what happens next
 7. if you cannot inspect the repo in the current session, do not guess hidden state and use the portable supervision packet instead
 8. ask the user what they want to do next
-9. decide whether architecture planning is required before implementation proceeds
-10. determine whether an existing architecture is already present in the repo or `README.md`
-11. determine the minimum required reconstruction level for the first decision
-12. if no active pass exists, use `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation
-13. propose or draft exactly one next bounded task
-14. issue the first execution prompt only after supervision has defined scope
+9. read `project_mode` from `.suplex/init_state.yaml`
+10. if the mode is `greenfield`, ask whether the user wants to provide more project detail and default toward architecture-planning or structure-confirmation before implementation
+11. if the mode is `overlay`, ask whether the user wants to provide more project detail and default toward repo-state audit or local reconstruction before implementation
+12. determine the minimum required reconstruction level for the first decision
+13. if no active pass exists, use `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation
+14. propose or draft exactly one next bounded task
+15. issue the first execution prompt only after supervision has defined scope
 
 The first active agent after init is the supervision layer, not the execution layer.
 
