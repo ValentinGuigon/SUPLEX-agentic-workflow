@@ -1,47 +1,40 @@
-# SUPLEX Template
+# SUPLEX-agentic-workflow
 
-SUPLEX is a lightweight agentic control layer for bounded repository work. It provides governance files, canonical control-memory docs, and handoff structure so an agent can operate inside a repo with explicit scope, provenance, and closure rules.
+`SUPLEX-agentic-workflow` is the distributable project repository for the SUPLEX control layer. The repo root is packaging space. The payload copied into target repositories lives under `template/`, and the bootstrap layer under `bootstrap/` applies that payload to the current working directory.
 
-This repository is a reusable template for that control layer only. It is not a computation scaffold, publication scaffold, modeling scaffold, or project starter kit. It does not create `src/`, `scripts/`, `data/`, `notebooks/`, `site/`, `public/`, or workflow directories by default.
+## Layout
 
-## What this template contains
+- `bootstrap/`: thin install wrappers plus the Python initializer
+- `template/`: the target-repo payload
 
-- stable governance files for agent behavior
-- canonical control-memory docs under `docs/`
-- runtime operating workflow and portable supervision-state docs under `docs/`
-- bounded task-family entry points under `handoffs/`
-- internal initialization state under `.suplex/`
+## Payload
 
-## What this template does not do
+`template/` contains the SUPLEX kernel only:
 
-- initialize a target project by itself
-- infer domain architecture from this template alone
-- prescribe application, analysis, modeling, or publication structure
-- replace the target repo's own project documentation
+- `AGENTS.md`
+- `CLAUDE.md`
+- `.suplex/init_state.yaml`
+- `docs/`
+- `handoffs/`
+- `local_lessons.md`
+- `governance_update_proposals.md`
 
-## README precondition for target repos
+No computation, modeling, data, notebook, pipeline, publication, deployment, or workflow scaffolding is introduced by default.
 
-This template repo has its own human-facing `README.md` so the template can stand alone as a repository.
+## Run
 
-That file is not the seed specification for a future target repo.
+Run the bootstrap from inside the target repository. The target repository must already have its own `README.md`; this repo's `README.md` is packaging documentation only.
 
-When SUPLEX is applied to another repository, the target repository must already have its own `README.md`, or enough project description must be provided to draft one first. Initialization should halt if that seed input is missing.
+PowerShell:
 
-## High-level initialization model
+```powershell
+irm https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.ps1 | iex
+```
 
-1. Start in the target repo, not in this template repo.
-2. Confirm that the target repo has a usable `README.md` describing the project.
-3. Copy or apply the SUPLEX control-layer files into that target repo.
-4. Rewrite copied repo-state docs so they describe the target repo rather than this template repo.
-5. Use the target repo's `README.md` as the first seed input for bounded initialization and repo-state reconstruction.
-6. Bootstrap supervision first, then derive the first bounded execution task from that target-repo context without scaffolding computation or publication layers by default.
+POSIX shell:
 
-## Runtime layer
+```sh
+curl -fsSL https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.sh | sh
+```
 
-- `docs/02_suplex_operating_workflow.md` defines how SUPLEX runs after initialization.
-- `docs/09_supervision_brief.md` is the portable supervision packet for cases where the supervisor does not have repo access.
-- SUPLEX distinguishes `full audit`, `local reconstruction`, and `no audit`; full audit is not mandatory at every pass.
-
-## Current status
-
-This template now includes both the governance kernel and the runtime workflow layer, and is intended to be moved or extracted into its own standalone repository once downstream application validation is completed.
+For local validation from this checkout, point the bootstrap at the project root; the initializer will source the payload from `template/`.
