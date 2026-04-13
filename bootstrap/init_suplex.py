@@ -532,7 +532,6 @@ def build_init_state(
 def first_supervision_prompt(project_name: str) -> str:
     return dedent(
         f"""
-        First supervision prompt:
         You are supervising the freshly initialized `{project_name}` repository.
         Read `handoffs/active/current_handoff.md` first.
         Then read `README.md`, `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, `docs/09_supervision_brief.md`, `docs/10_supervision_layer_spec.md`, `docs/13_bounded_task_backlog.md`, and `handoffs/initialization.md`.
@@ -547,6 +546,31 @@ def first_supervision_prompt(project_name: str) -> str:
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
     ).strip()
+
+
+def build_ready_message(target_dir: Path, project_name: str) -> str:
+    supervisor_prompt = first_supervision_prompt(project_name)
+    separator = "=" * 72
+    return "\n".join(
+        [
+            separator,
+            f"SUPLEX ready in {target_dir}",
+            separator,
+            "If you will run supervision in the terminal or IDE, pass only the prompt below.",
+            "If you will run supervision in a browser chat without repo access, pass these documents into the chat:",
+            "- `AGENTS.md`",
+            "- `docs/09_supervision_brief.md`",
+            "- `handoffs/active/current_handoff.md`",
+            "- the latest execution report in `handoffs/history/` if one exists",
+            "- `docs/08_status_checkpoint.md`",
+            "- `docs/10_supervision_layer_spec.md`",
+            separator,
+            "Supervisor prompt",
+            separator,
+            supervisor_prompt,
+            separator,
+        ]
+    )
 
 
 def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str) -> int:
@@ -576,8 +600,7 @@ def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str) -> 
     write_text(target_dir / "docs" / "discrepancy_log.md", build_discrepancy_log())
     write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref))
 
-    print(f"SUPLEX ready in {target_dir}")
-    print(first_supervision_prompt(project_name))
+    print(build_ready_message(target_dir, project_name))
     return 0
 
 
