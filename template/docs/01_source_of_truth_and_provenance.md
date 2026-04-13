@@ -19,6 +19,7 @@ Use this file to track what currently counts as source material, what is inferre
 
 - `AGENTS.md` and `CLAUDE.md` define stable governance for bounded agentic execution. [E]
 - `docs/00_project_scope.md` records the scoped purpose of the SUPLEX layer. [E]
+- `docs/10_supervision_layer_spec.md`, `docs/11_execution_layer_spec.md`, and `docs/13_bounded_task_backlog.md` are canonical derived control artifacts for supervision rules, execution rules, and default next-task sequencing. [E]
 - `docs/08_status_checkpoint.md`, `docs/validation_ledger.md`, and `docs/discrepancy_log.md` are derived control-memory artifacts rather than project-domain sources of truth. [E]
 - `handoffs/` artifacts define bounded execution packets and are historical records once closed. [E]
 

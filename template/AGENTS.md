@@ -32,7 +32,9 @@ Do not rewrite this file during routine work.
 - Treat the target repo's `README.md` as the first required seed input for initialization.
 - Treat `docs/` as canonical control memory after initialization.
 - Treat `docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
-- Treat stage handoffs in `handoffs/` as the execution boundary for bounded tasks.
+- Treat `handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.
+- Treat dated handoffs and execution reports in `handoffs/history/` as the canonical bounded-pass record.
+- Treat `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
 - No new implementation phase should begin without a handoff document.
 - If canonical docs and repo artifacts disagree, flag the discrepancy before proceeding.
 
@@ -70,8 +72,11 @@ If workflow behavior, artifact expectations, canonical status, or repo structure
 
 Typical targets:
 
+- `docs/10_supervision_layer_spec.md`
+- `docs/11_execution_layer_spec.md`
 - `docs/01_source_of_truth_and_provenance.md`
 - `docs/08_status_checkpoint.md`
+- `docs/13_bounded_task_backlog.md`
 - `docs/validation_ledger.md`
 - `docs/discrepancy_log.md`
 

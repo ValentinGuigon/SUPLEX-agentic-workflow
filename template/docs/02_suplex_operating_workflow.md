@@ -58,11 +58,12 @@ The workflow is for control-layer operation only. It does not authorize computat
 ### Supervision bootstrap
 
 - The first active layer after `suplex init` is supervision, not execution.
-- The supervisor reads `README.md`, reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
+- The supervisor reads `handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
 - If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
 - If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
 - The supervisor decides whether an architecture-planning pass is needed before any implementation work begins.
 - The supervisor determines whether an existing architecture is already present in the repo or described in `README.md`.
+- If no active handoff exists, the supervisor uses `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
@@ -146,6 +147,7 @@ Use no audit when:
 - The executor returns a written report.
 - The supervisor restates the important points from that report, interprets their meaning, and defines the next bounded step.
 - The executor should not silently promote itself into supervision.
+- The active handoff artifact, not chat alone, is the authoritative execution contract.
 
 ### Execution report contract
 
@@ -159,6 +161,13 @@ Every execution-layer pass must return a written report containing at least:
 - Validation result
 - Current blockers
 - Recommended next bounded task
+
+### Active-handoff lifecycle
+
+- `handoffs/active/current_handoff.md` is the standard execution entry point.
+- The active handoff may mirror a dated handoff in `handoffs/history/` rather than containing the full contract inline.
+- Every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`.
+- After a bounded pass is reviewed and accepted, `handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
 
 ## 7. Architectural escalation rule
 
@@ -197,14 +206,16 @@ Immediately after `suplex init`:
 2. confirm the copied repo-state docs have been rewritten to the target repo's current state
 3. confirm `.suplex/init_state.yaml` reflects the initialized target repo rather than the template repo
 4. bootstrap supervision using the canonical control docs and init state
-5. read `README.md`; if you can inspect the repo in the current session, inspect it before deciding what happens next
-6. if you cannot inspect the repo in the current session, do not guess hidden state and use the portable supervision packet instead
-7. ask the user what they want to do next
-8. decide whether architecture planning is required before implementation proceeds
-9. determine whether an existing architecture is already present in the repo or `README.md`
-10. determine the minimum required reconstruction level for the first decision
-11. propose or draft exactly one next bounded task
-12. issue the first execution prompt only after supervision has defined scope
+5. read `handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists
+6. if no active pass exists, read `README.md`; if you can inspect the repo in the current session, inspect it before deciding what happens next
+7. if you cannot inspect the repo in the current session, do not guess hidden state and use the portable supervision packet instead
+8. ask the user what they want to do next
+9. decide whether architecture planning is required before implementation proceeds
+10. determine whether an existing architecture is already present in the repo or `README.md`
+11. determine the minimum required reconstruction level for the first decision
+12. if no active pass exists, use `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation
+13. propose or draft exactly one next bounded task
+14. issue the first execution prompt only after supervision has defined scope
 
 The first active agent after init is the supervision layer, not the execution layer.
 

@@ -534,12 +534,15 @@ def first_supervision_prompt(project_name: str) -> str:
         f"""
         First supervision prompt:
         You are supervising the freshly initialized `{project_name}` repository.
-        Read `README.md`, `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, `docs/09_supervision_brief.md`, and `handoffs/initialization.md`.
+        Read `handoffs/active/current_handoff.md` first.
+        Then read `README.md`, `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, `docs/09_supervision_brief.md`, `docs/10_supervision_layer_spec.md`, `docs/13_bounded_task_backlog.md`, and `handoffs/initialization.md`.
+        Determine whether an unfinished bounded pass already exists before defining new work.
         If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next.
         If you cannot read the repository files in this session, do not guess hidden repo state. Use `docs/09_supervision_brief.md`, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead.
         Ask the user what they want to do next.
         Decide whether an architecture-planning pass is needed before any implementation work proceeds.
         Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.
+        If no active handoff exists, use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
     ).strip()

@@ -1,5 +1,54 @@
 # 08 Status Checkpoint
 
+## Strict Handoff Runtime Pass - 2026-04-13
+
+### Phase State
+
+- [E] This bounded `specify` / `implement narrowly` / `validate` / `checkpoint` pass strengthened the template's supervision and execution contracts.
+- [E] The template now includes a canonical active-handoff lifecycle, a structured execution-report template, and a backlog-driven next-task selection rule.
+- [E] The pass remained limited to control-layer workflow behavior and did not broaden into project-domain scaffolding.
+
+### What Was Done
+
+- [E] Added `docs/10_supervision_layer_spec.md` to define strict active-handoff precedence, bounded task issuance, review standards, and handoff lifecycle rules.
+- [E] Added `docs/11_execution_layer_spec.md` to require startup restatement, scoped execution, evidence discipline, validation, and structured reporting.
+- [E] Added `docs/13_bounded_task_backlog.md` as the canonical next-task sequencing artifact after active-handoff resolution.
+- [E] Replaced the flat handoff layout with `handoffs/active/`, `handoffs/history/`, and `handoffs/templates/`.
+- [E] Added `handoffs/active/current_handoff.md` as an explicit no-active-handoff placeholder.
+- [E] Added strengthened handoff and execution-report templates under `handoffs/templates/`.
+- [E] Updated governance, workflow, brief, initialization, packaging, and bootstrap docs so they describe the stricter runtime contract truthfully.
+
+### What Was NOT Done
+
+- [E] No computation, modeling, data, notebook, pipeline, publication, deployment, or project-domain implementation scaffolding was added.
+- [E] No folder-local nested `AGENTS.md` files were introduced.
+- [E] No writing-specific intervention-routing layer was added to the generic template.
+
+### Why It Was NOT Done
+
+- [E] The bounded objective was to strengthen the generic SUPLEX control-layer runtime without making the exported template domain-specific or harder to carry into browser-chat supervision.
+- [E] Nested folder-level governance and writing-specific routing were intentionally kept out of the base template to avoid bloating the portable core.
+
+### Validation Decision
+
+- [E] The template now contains explicit supervision and execution specs for the stricter bounded-pass model.
+- [E] The template now contains the canonical active-handoff pointer, dated-history location, and reusable templates required by that model.
+- [E] The runtime docs now define backlog-driven next-pass selection only after active-handoff resolution.
+- [E] The bootstrap documentation and emitted first supervision prompt now align with the stricter runtime.
+
+### Exact Next Bounded Task
+
+- [E] `validate_strict_handoff_runtime_in_a_real_target_repo`
+- [E] Scope of that next task: apply the updated template to a real target repo, run one bounded pass through handoff, execution report, validation or checkpoint, and confirm the active-handoff lifecycle works cleanly in practice.
+
+### Context-Clear Assessment
+
+- [E] This bounded control-layer tightening pass is closed.
+- [E] Relevant governance, runtime, handoff, and status docs are updated.
+- [E] One downstream live-use validation task remains, but it is a separate bounded task family.
+
+**Context can be cleared after this bounded pass.** [E]
+
 ## Always-Full Init Semantics Pass - 2026-04-13
 
 ### Phase State

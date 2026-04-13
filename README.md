@@ -19,6 +19,14 @@
 - `local_lessons.md`
 - `governance_update_proposals.md`
 
+The shipped runtime now includes:
+
+- strict supervision and execution specs in `docs/10_supervision_layer_spec.md` and `docs/11_execution_layer_spec.md`
+- a canonical backlog in `docs/13_bounded_task_backlog.md`
+- an active handoff pointer in `handoffs/active/current_handoff.md`
+- dated handoff and execution-report history in `handoffs/history/`
+- reusable handoff and execution-report templates in `handoffs/templates/`
+
 No computation, modeling, data, notebook, pipeline, publication, deployment, or project-architecture scaffolding is introduced by default. Successful `suplex init` always installs this same full control layer; architecture planning is decided later by supervision after reading the target repo's `README.md` and checking with the user.
 
 ## Run

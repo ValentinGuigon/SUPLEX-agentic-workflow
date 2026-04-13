@@ -26,6 +26,7 @@ This file is the portable supervision packet for cases where the supervisor cann
 - The first active layer after initialization is supervision.
 - Successful init always installs the same full SUPLEX agentic control layer regardless of target-repo shape.
 - Each pass does not require a full audit by default.
+- Active-handoff resolution happens before backlog-driven next-task selection.
 - Reconstruction level must be chosen explicitly as one of:
   - full audit
   - local reconstruction
@@ -41,9 +42,12 @@ This file is the portable supervision packet for cases where the supervisor cann
 ## 6. Active source-of-truth rule
 
 - `docs/` is canonical control memory.
-- `handoffs/` defines bounded execution packets.
+- `handoffs/active/current_handoff.md` is the first execution-boundary artifact to resolve.
+- Dated handoffs and execution reports live in `handoffs/history/`.
+- `docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved.
 - Stable governance remains in `AGENTS.md` and `CLAUDE.md`.
 - Handoffs constrain execution but do not override stable governance.
+- Repeated operational lessons flow through `local_lessons.md`, while stable-governance changes flow through `governance_update_proposals.md`.
 
 ## 7. Active handoff summary
 
@@ -72,6 +76,8 @@ This file is the portable supervision packet for cases where the supervisor cann
 
 ## 11. Exact next supervisory decision
 
+- Read `handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists.
+- If there is no active pass, use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
 - If you can read the repository files in the current session, inspect the repo and `README.md` before deciding what happens next.
 - If you cannot read the repository files in the current session, do not guess hidden repo state; use this brief, the latest checkpoint, and the active handoff as your working state instead.
 - Ask the user what they want to do next.

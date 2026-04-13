@@ -5,6 +5,7 @@ Sources to read first:
 - `AGENTS.md`
 - `CLAUDE.md`
 - `.suplex/init_state.yaml`
+- `handoffs/active/current_handoff.md`
 - relevant canonical docs already present in `docs/`, if any
 
 Bounded objective:
@@ -38,9 +39,12 @@ Required outputs:
 - updated `docs/00_project_scope.md` if initialization learns more about the project
 - updated `docs/01_source_of_truth_and_provenance.md`
 - updated `docs/09_supervision_brief.md` if a portable supervision packet is needed for immediate handoff; it must not retain stale template-repo state
+- updated `docs/10_supervision_layer_spec.md` and `docs/11_execution_layer_spec.md` only if initialization semantics change in a way that affects runtime behavior
 - updated `docs/08_status_checkpoint.md`
+- updated `docs/13_bounded_task_backlog.md` only if the initialization result changes the default next-task sequencing rule
 - updated `docs/validation_ledger.md`
 - updated `docs/discrepancy_log.md` if any mismatch or blocker is found
+- initialized `handoffs/active/current_handoff.md` in an explicit no-active-handoff state unless initialization is handing off directly into a dated bounded pass
 
 Required repo-state rewrite before supervision bootstrap:
 - `docs/00_project_scope.md` must be rewritten from the target repo's `README.md` and init findings so project identity, scope, and current task family are target-specific.
@@ -54,7 +58,8 @@ Reporting requirements:
 - list unresolved questions
 - name the exact next bounded task
 - state that the first active layer after init is supervision, not execution
-- state that supervision must read `README.md`, inspect the repo if it can read repo files in the current session, otherwise use the portable supervision packet without guessing hidden state, ask the user what they want to do next, decide whether architecture planning is required, and propose exactly one next bounded task
+- state that supervision must read `handoffs/active/current_handoff.md` first, then `README.md`, inspect the repo if it can read repo files in the current session, otherwise use the portable supervision packet without guessing hidden state, ask the user what they want to do next, decide whether architecture planning is required, and propose exactly one next bounded task
+- state that if no active handoff exists, supervision should use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation
 - state explicitly that copied repo-state docs were rewritten or why initialization halted before they could be made truthful
 - state explicitly which repo-state docs were rewritten during init
 - state explicitly that the bootstrap staged template assets only temporarily and did not clone the template repo into the target repo
