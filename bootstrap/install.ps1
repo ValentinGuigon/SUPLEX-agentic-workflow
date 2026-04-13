@@ -8,6 +8,24 @@ $ErrorActionPreference = "Stop"
 
 $targetDir = (Get-Location).Path
 $tempRoot = $null
+$attemptedInterpreters = @("py -3", "python")
+
+function Test-Python3Command {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Command,
+
+        [string[]]$Arguments = @()
+    )
+
+    if (-not (Get-Command $Command -ErrorAction SilentlyContinue)) {
+        return $false
+    }
+
+    $probeArgs = $Arguments + @("-c", "import sys; raise SystemExit(0 if sys.version_info[0] == 3 else 1)")
+    & $Command @probeArgs 1>$null 2>$null
+    return ($LASTEXITCODE -eq 0)
+}
 
 try {
     if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
@@ -25,7 +43,17 @@ try {
         $sourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
     }
 
-    & py -3 (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $RepoUrl --ref $Ref
+    if (Test-Python3Command -Command "py" -Arguments @("-3")) {
+        $pythonCommand = "py"
+        $pythonArgs = @("-3")
+    } elseif (Test-Python3Command -Command "python") {
+        $pythonCommand = "python"
+        $pythonArgs = @()
+    } else {
+        throw "SUPLEX bootstrap failed: Python 3 is required. Attempted interpreters: $($attemptedInterpreters -join ', '). Install Python 3 and ensure either 'py -3' or 'python' runs Python 3, then rerun the bootstrap."
+    }
+
+    & $pythonCommand @pythonArgs (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $RepoUrl --ref $Ref
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }

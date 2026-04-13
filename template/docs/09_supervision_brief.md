@@ -2,7 +2,7 @@
 
 ## 1. Purpose of the supervision brief
 
-This file is the portable supervision packet for cases where the supervisor does not have direct repository access. It captures the minimum current-state information needed to govern the next bounded decision.
+This file is the portable supervision packet for cases where the supervisor cannot read repository files in the current session. It captures the minimum current-state information needed to govern the next bounded decision.
 
 ## 2. How this file should be used
 
@@ -24,11 +24,13 @@ This file is the portable supervision packet for cases where the supervisor does
 
 - SUPLEX runs as a supervised bounded-pass system.
 - The first active layer after initialization is supervision.
+- Successful init always installs the same full SUPLEX agentic control layer regardless of target-repo shape.
 - Each pass does not require a full audit by default.
 - Reconstruction level must be chosen explicitly as one of:
   - full audit
   - local reconstruction
   - no audit
+- Supervision decides whether architecture planning is needed before implementation begins.
 - Execution is bounded by handoffs and closes through validation and checkpointing.
 
 ## 5. Current bounded task family
@@ -70,7 +72,12 @@ This file is the portable supervision packet for cases where the supervisor does
 
 ## 11. Exact next supervisory decision
 
-- Decide whether to validate the runtime-enabled template in extracted standalone form or during first application to a target repository.
+- If you can read the repository files in the current session, inspect the repo and `README.md` before deciding what happens next.
+- If you cannot read the repository files in the current session, do not guess hidden repo state; use this brief, the latest checkpoint, and the active handoff as your working state instead.
+- Ask the user what they want to do next.
+- Decide whether architecture planning is required before implementation starts.
+- Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.
+- Propose exactly one next bounded task.
 
 ## 12. Update rule
 

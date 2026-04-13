@@ -122,16 +122,8 @@ def analyze_target(target_dir: Path) -> dict[str, object]:
     compiled_validation = any((target_dir / marker).exists() for marker in BUILD_FILE_MARKERS)
     project_mode = "overlay" if non_metadata else "greenfield"
 
-    if project_mode == "greenfield":
-        workflow_profile = "lite"
-    elif (code_dirs or data_dirs) and public_dirs:
-        workflow_profile = "fullstack"
-    else:
-        workflow_profile = "standard"
-
     return {
         "project_mode": project_mode,
-        "workflow_profile": workflow_profile,
         "public_surface": "present" if public_dirs else "absent",
         "compiled_validation": compiled_validation,
         "existing_code_structure_detected": bool(code_dirs or data_dirs),
@@ -203,12 +195,14 @@ def build_scope_doc(project_name: str, purpose: str, analysis: dict[str, object]
     mode = analysis["project_mode"]
     if mode == "greenfield":
         scope_line = "- establish canonical control-memory docs for this target repo [E]"
-        context_line = "Target repo initialized in `greenfield` mode with the SUPLEX control layer. [E]"
+        context_line = (
+            "Target repo initialized in `greenfield` mode with the full SUPLEX agentic control layer. [E]"
+        )
         out_of_scope = "- modeling, data, notebook, pipeline, publication, or deployment scaffolding [E]"
     else:
         scope_line = "- add canonical control-memory docs without restructuring the existing project [E]"
         context_line = (
-            "Target repo initialized in `overlay` mode with preexisting project structure preserved. [E]"
+            "Target repo initialized in `overlay` mode with the full SUPLEX agentic control layer and preexisting project structure preserved. [E]"
         )
         out_of_scope = "- renaming, moving, or deleting existing project directories [E]"
 
@@ -224,8 +218,10 @@ def build_scope_doc(project_name: str, purpose: str, analysis: dict[str, object]
 
         - establish repo-local governance for bounded agentic work [E]
         {scope_line}
+        - install the same full SUPLEX agentic control layer regardless of detected repo shape [E]
         - prepare the repo for supervision bootstrap before bounded execution [E]
         - avoid computation or publication scaffolding during initialization [E]
+        - defer architecture-planning and workflow-structure decisions to supervision after repo review and user check-in [E]
 
         ## Explicitly out of scope
 
@@ -309,7 +305,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
         ### Phase State
 
         - [E] This target repo completed bounded SUPLEX initialization in `{mode}` mode.
-        - [E] The control layer was added without introducing computation or publication scaffolding.
+        - [E] The same full SUPLEX agentic control layer was added without introducing computation or publication scaffolding.
         - [E] The first active layer after init is supervision, not execution.
 
         ### What Was Done
@@ -318,6 +314,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
         {action_line}
         - [E] Rewrote `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` so they describe {project_name} rather than `suplex-template`.
         - [E] Wrote `.suplex/init_state.yaml` for the initialized target repo.
+        - [E] Deferred architecture-planning and next-step selection to the supervision layer.
 
         ### What Was NOT Done
 
@@ -327,6 +324,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
         ### Why It Was NOT Done
 
         - [E] Initialization is limited to preparing the control layer and truthful supervisory state.
+        - [E] Project architecture and workflow-depth decisions must be made by supervision after reading `README.md` and checking with the user.
 
         ### Validation Decision
 
@@ -335,7 +333,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
 
         ### Exact Next Bounded Task
 
-        - [E] `bootstrap_supervision_and_define_first_bounded_task`
+        - [E] `bootstrap_supervision_reconstruct_repo_state_and_propose_single_next_bounded_task`
 
         ### Context-Clear Assessment
 
@@ -352,14 +350,14 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
     mode = analysis["project_mode"]
     if mode == "greenfield":
         latest_state_line = "- The repo was initialized in `greenfield` mode from its own `README.md`. [E]"
-        scope_line = "- Scope boundary: control-layer initialization and supervision only; no computation or publication scaffolding by default"
+        scope_line = "- Scope boundary: full control-layer initialization and supervision only; no computation or publication scaffolding by default"
     else:
         preserved = analysis["code_dirs"] + analysis["data_dirs"] + analysis["public_dirs"]
         preserved_line = ""
         if preserved:
             preserved_line = f"- `{', '.join(preserved)}` remained in place during initialization. [E]"
         latest_state_line = "- The repo was initialized in `overlay` mode from its own `README.md`. [E]"
-        scope_line = "- Scope boundary: initialize and supervise the control layer without restructuring the current project architecture"
+        scope_line = "- Scope boundary: initialize and supervise the full control layer without restructuring the current project architecture"
 
     extra_state = ""
     if mode != "greenfield" and analysis["code_dirs"] + analysis["data_dirs"] + analysis["public_dirs"]:
@@ -371,7 +369,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
 
         ## 1. Purpose of the supervision brief
 
-        This file is the portable supervision packet for {project_name} when the supervisor does not have direct repository access.
+        This file is the portable supervision packet for {project_name} when the supervisor cannot read the repository files in the current session.
 
         ## 2. How this file should be used
 
@@ -389,6 +387,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
 
         - The first active layer after initialization is supervision.
         - Reconstruction level is chosen explicitly.
+        - Supervision must decide whether an architecture-planning pass is needed before implementation work begins.
         - Execution remains bounded by handoffs.
 
         ## 5. Current bounded task family
@@ -410,6 +409,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
 
         {latest_state_line}
         {extra_state}- `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, and this brief now describe the target repo rather than the template. [E]
+        - The same full SUPLEX agentic control layer was installed regardless of target-repo shape. [E]
         - No computation or publication scaffolding was introduced. [E]
 
         ## 9. Latest execution report summary
@@ -422,7 +422,12 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
 
         ## 11. Exact next supervisory decision
 
-        - Bootstrap supervision and define the first bounded task for {project_name}. [E]
+        - If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next. [E]
+        - If you cannot read the repository files in this session, do not guess hidden repo state; use this brief, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead. [E]
+        - Ask the user what they want to do next. [E]
+        - Decide whether architecture planning is required before implementation work starts. [E]
+        - Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed. [E]
+        - Propose exactly one next bounded task for {project_name}. [E]
 
         ## 12. Update rule
 
@@ -497,7 +502,6 @@ def build_init_state(
         'readme_path: "./README.md"',
         'readme_present: true',
         f'project_mode: "{analysis["project_mode"]}"',
-        f'workflow_profile: "{analysis["workflow_profile"]}"',
         f'public_surface: "{analysis["public_surface"]}"',
         f'compiled_validation: {"true" if analysis["compiled_validation"] else "false"}',
         "governance_files:",
@@ -531,7 +535,12 @@ def first_supervision_prompt(project_name: str) -> str:
         First supervision prompt:
         You are supervising the freshly initialized `{project_name}` repository.
         Read `README.md`, `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, `docs/09_supervision_brief.md`, and `handoffs/initialization.md`.
-        Choose the minimum reconstruction level needed, confirm that initialization state is truthful, and define the first bounded handoff before any execution-layer work begins.
+        If you can read the repository files in this session, inspect the repo and `README.md` before deciding what happens next.
+        If you cannot read the repository files in this session, do not guess hidden repo state. Use `docs/09_supervision_brief.md`, `docs/08_status_checkpoint.md`, and `handoffs/initialization.md` as your working state instead.
+        Ask the user what they want to do next.
+        Decide whether an architecture-planning pass is needed before any implementation work proceeds.
+        Decide whether the architecture is already clear from the repo and `README.md`, or whether an architecture-planning pass is still needed.
+        Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
     ).strip()
 

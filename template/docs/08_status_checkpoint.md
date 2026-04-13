@@ -1,5 +1,101 @@
 # 08 Status Checkpoint
 
+## Always-Full Init Semantics Pass - 2026-04-13
+
+### Phase State
+
+- [E] This bounded `specify` / `implement narrowly` / `validate` / `checkpoint` pass simplified SUPLEX initialization semantics so successful init no longer branches payload installation on `lite`, `standard`, or `fullstack`.
+- [E] The pass remained limited to bootstrap semantics, truthful doc alignment, controlled validation, and checkpointing.
+- [E] The first active layer after init remains supervision, which now explicitly owns architecture/planning recovery.
+
+### What Was Done
+
+- [E] Updated `bootstrap/init_suplex.py` so every successful init installs the same full SUPLEX agentic control layer regardless of whether the target repo is greenfield or overlay.
+- [E] Removed `workflow_profile` from generated `.suplex/init_state.yaml` and preserved repo-shape observations only as descriptive metadata such as `project_mode`, `public_surface`, and structure-detection flags.
+- [E] Rewrote the emitted first supervision prompt so it now instructs supervision to read `README.md`, reconstruct current repo state when repo access exists, fall back to the portable supervision packet when it does not, check with the user what should happen next, decide whether architecture planning is needed, determine whether architecture already exists, and propose exactly one next bounded task.
+- [E] Updated `README.md`, `template/.suplex/init_state.yaml`, `template/docs/02_suplex_operating_workflow.md`, `template/docs/09_supervision_brief.md`, and `template/handoffs/initialization.md` so they truthfully describe the new always-full-init semantics.
+- [E] Revalidated fresh-repo, overlay-repo, missing-README, and init-state scenarios using controlled targets under `dev_validation/tmp_validation/always_full_init/`.
+
+### What Was NOT Done
+
+- [E] No computation, modeling, data, notebook, pipeline, publication, deployment, or project-domain implementation scaffolding was added.
+- [E] No existing overlay project directories were renamed, moved, deleted, or repurposed.
+- [E] No broad CLI, package-manager, or supervision-runtime redesign outside the init-semantics correction was introduced.
+
+### Why It Was NOT Done
+
+- [E] The bounded objective was limited to removing payload-selection semantics from init while preserving the thin bootstrap model.
+- [E] Project architecture must be decided later by supervision after reading `README.md` and checking with the user, not by init.
+
+### Validation Decision
+
+- [E] Controlled Test A passed: a fresh repo with `README.md` received the full SUPLEX control layer and the emitted prompt asked what should happen next and whether architecture planning is needed.
+- [E] Controlled Test B passed: an overlay repo with `README.md` received the same SUPLEX control layer, preserved existing `src/`, `data/`, and `public` directories, and emitted the same architecture-deferring supervision prompt.
+- [E] Controlled Test C passed: a repo without `README.md` halted with exit code `2` and remained untouched.
+- [E] Controlled Test D passed: generated `.suplex/init_state.yaml` no longer contains `workflow_profile`, and no code path now branches payload installation on that label.
+- [E] No payload-selection branching remains tied to `lite`, `standard`, or `fullstack`.
+
+### Exact Next Bounded Task
+
+- [E] `exercise_the_updated_post_init_supervision_prompt_in_a_real_target_repo_session`
+- [E] Scope of that next task: run the new post-init supervision prompt in a non-temporary target repo, confirm the supervisor asks the user what should happen next, and verify it chooses architecture planning only when the recovered repo state warrants it.
+
+### Context-Clear Assessment
+
+- [E] This bounded init-semantics correction and controlled validation task family is closed.
+- [E] Relevant bootstrap code, docs, validation records, and discrepancy tracking are updated.
+- [E] One follow-on live-use supervision exercise remains, but it is a separate bounded task family.
+
+**Context can be cleared after this bounded pass.** [E]
+
+## Bootstrap Interpreter Detection Repair Pass - 2026-04-13
+
+### Phase State
+
+- [E] This bounded `implement narrowly` / `validate` / `checkpoint` pass repaired bootstrap interpreter detection only.
+- [E] The pass remained limited to wrapper interpreter discovery and invocation plus minimal packaging-doc clarification.
+- [E] SUPLEX initialization semantics after interpreter selection were intentionally left unchanged.
+
+### What Was Done
+
+- [E] Updated `bootstrap/install.sh` to probe `python3` first and `python` second by actually executing a Python 3 version check before invoking the initializer.
+- [E] Updated `bootstrap/install.ps1` to probe `py -3` first and `python` second by actually executing a Python 3 version check before invoking the initializer.
+- [E] Added explicit failure messages in both wrappers stating that Python 3 is required, listing the attempted interpreter names, and telling the user to install or expose a usable Python 3 interpreter.
+- [E] Updated the root `README.md` so the documented interpreter order now matches the wrappers and so Windows usage guidance favors the PowerShell bootstrap.
+- [E] Revalidated the PowerShell wrapper with controlled local source-root tests and rechecked the POSIX wrapper logic without changing `bootstrap/init_suplex.py`.
+
+### What Was NOT Done
+
+- [E] No broader bootstrap redesign, package-manager layer, or CLI surface was introduced.
+- [E] `bootstrap/init_suplex.py` was not changed.
+- [E] No target payload files or initialization semantics beyond interpreter discovery and invocation were changed.
+
+### Why It Was NOT Done
+
+- [E] The active task was explicitly limited to the brittle interpreter-selection defect observed during remote-wrapper use.
+- [E] Changing initializer semantics would have broadened the pass beyond the accepted scope and risked regressions unrelated to interpreter discovery.
+
+### Validation Decision
+
+- [E] POSIX wrapper now prefers `python3` and falls back to `python` only when the selected command can actually run Python 3.
+- [E] PowerShell wrapper now prefers `py -3` and falls back to `python` only when the selected command can actually run Python 3.
+- [E] Missing-interpreter behavior now fails with an explicit, actionable message in both wrappers.
+- [E] PowerShell local source-root bootstrap behavior after interpreter selection remained unchanged in controlled execution.
+- [E] Direct POSIX shell execution could not be completed in this sandbox because every available Git POSIX shell binary failed before script execution with `couldn't create signal pipe, Win32 error 5`.
+
+### Exact Next Bounded Task
+
+- [E] `validate_remote_wrapper_behavior_in_a_real_common_environment`
+- [E] Scope of that next task: run the documented remote POSIX and PowerShell bootstrap commands in fresh target repos on common host setups to confirm the repaired interpreter detection behaves the same outside the local controlled harness.
+
+### Context-Clear Assessment
+
+- [E] This bounded interpreter-detection repair and local validation task family is closed.
+- [E] Relevant README, validation, discrepancy, and checkpoint records are updated.
+- [E] One follow-on real-world remote validation task remains, but it is a separate bounded task family.
+
+**Context can be cleared after this bounded pass.** [E]
+
 ## Packaging Layout Refactor Pass - 2026-04-13
 
 ### Phase State

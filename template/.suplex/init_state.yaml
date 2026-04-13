@@ -2,7 +2,6 @@ schema_version: "1.0"
 readme_path: "./README.md"
 readme_present: false
 project_mode: "greenfield"
-workflow_profile: "standard"
 public_surface: "absent"
 compiled_validation: false
 governance_files:
@@ -18,5 +17,7 @@ inference_basis:
     - "Template scaffold created with agentic-layer files only."
     - "README.md is a mandatory seed input for initialization and is not fabricated by default."
     - "Initialization must halt until README.md exists or the user provides a project description to draft one."
+    - "Successful initialization always installs the same full SUPLEX agentic control layer."
+    - "Project architecture and workflow depth are decided later by supervision after README review and user check-in."
 created_at: "2026-04-13T09:29:47.8693586-04:00"
 last_updated: "2026-04-13T09:29:47.8693586-04:00"

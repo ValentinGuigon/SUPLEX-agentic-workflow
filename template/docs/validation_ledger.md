@@ -1,5 +1,31 @@
 # Validation Ledger
 
+## 2026-04-13 - Always-Full Init Semantics Pass
+
+| Check | Result | Notes |
+|---|---|---|
+| Successful init always installs the same full SUPLEX control layer in greenfield repos | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/A_greenfield` received `.suplex/`, `docs/`, `handoffs/`, `AGENTS.md`, and `CLAUDE.md` |
+| Successful init always installs the same full SUPLEX control layer in overlay repos | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/B_overlay` received the same SUPLEX control-layer payload; comparison excluding preexisting `src/`, `data/`, and `public` content showed no payload difference |
+| Overlay init preserves existing repo structure | PASS | Seeded `src/`, `data/`, and `public` directories plus their files remained present and unchanged after init |
+| Missing `README.md` still halts initialization | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/C_missing_readme` exited with code `2` and remained empty |
+| Emitted supervision prompt asks what should happen next | PASS | Successful runs printed `Check with the user what should happen next.` |
+| Emitted supervision prompt asks whether architecture planning is needed | PASS | Successful runs printed `Decide whether an architecture-planning pass is needed before any implementation work proceeds.` |
+| Emitted supervision prompt defers architecture determination to supervision | PASS | Successful runs printed `Determine whether an existing architecture is already present in the repo or described in README.md.` |
+| Generated `.suplex/init_state.yaml` no longer carries payload-selection branching via `workflow_profile` | PASS | Generated init-state files for both successful targets contain no `workflow_profile` key |
+| No remaining payload-selection references to `lite`, `standard`, or `fullstack` in the updated init path docs/code | PASS | File inspection across `bootstrap/init_suplex.py`, `README.md`, `template/.suplex/init_state.yaml`, `template/docs/02_suplex_operating_workflow.md`, `template/docs/09_supervision_brief.md`, and `template/handoffs/initialization.md` found no remaining semantic references |
+
+## 2026-04-13 - Bootstrap Interpreter Detection Repair Pass
+
+| Check | Result | Notes |
+|---|---|---|
+| `bootstrap/install.sh` prefers `python3` over `python` | PASS | File inspection confirms the wrapper now probes `python3` first and selects `python` only if the first probe fails |
+| `bootstrap/install.sh` fallback to `python` works when `python3` is unavailable | NOT RUN | Direct POSIX shell execution was blocked in this sandbox because Git `sh.exe`, `bash.exe`, and `dash.exe` each failed before script execution with `couldn't create signal pipe, Win32 error 5` |
+| `bootstrap/install.ps1` prefers `py -3` over `python` | PASS | Wrapper now probes `py -3` first and only falls back to `python` if that probe is unusable |
+| `bootstrap/install.ps1` fallback to `python` works when `py -3` is unavailable | PASS | Controlled local harness with a path-isolated fake `python.cmd` successfully ran the initializer after forcing the `py -3` probe to fail |
+| Missing-interpreter path is explicit and actionable | PASS | PowerShell controlled execution emits the new Python 3 remediation message, and file inspection confirms the same explicit message structure in `bootstrap/install.sh` |
+| Wrapper change does not alter init semantics after interpreter selection | PASS | Controlled local source-root runs for `bootstrap/install.ps1` still write the normal SUPLEX control-layer files and target-state artifacts without touching `bootstrap/init_suplex.py` |
+| Live remote archive fetch path revalidated in this pass | NOT RUN | This bounded pass targeted interpreter discovery only and used controlled local source-root validation rather than network fetch |
+
 ## 2026-04-13 - Packaging Layout Refactor Pass
 
 | Check | Result | Notes |

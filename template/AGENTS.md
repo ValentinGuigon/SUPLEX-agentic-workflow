@@ -2,7 +2,7 @@
 
 ## Project identity
 
-- Project: `suplex-template`
+- Project: `{project_name}`
 - Primary objective: reusable SUPLEX control-layer scaffold for bounded agentic work
 - Use `docs/` as canonical control memory and `handoffs/` as bounded task-family entry points.
 

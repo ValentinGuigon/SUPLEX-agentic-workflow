@@ -48,15 +48,21 @@ The workflow is for control-layer operation only. It does not authorize computat
 - In the `SUPLEX-agentic-workflow` project repo, the copied payload lives under `template/`.
 - Those wrappers may fetch template assets temporarily, but they must not clone or retain the full `SUPLEX-agentic-workflow` repository inside the target repo.
 - The scaffolder confirms the target repo seed inputs and prepares the control layer.
+- Successful init always installs the same full SUPLEX agentic control layer regardless of whether the target repo is greenfield or overlay.
 - Copied control docs that contain repo-specific state must be rewritten to the target repo before supervision uses them as current state.
 - At minimum, initialization rewrites `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` from target-repo evidence before supervision bootstrap.
 - Initialization writes `.suplex/init_state.yaml` for the current working directory before claiming readiness.
+- Initialization must not decide the project architecture or whether a stronger workflow structure is needed beyond installing the full control layer.
 - Initialization ends when the repo is ready for supervision bootstrap.
 
 ### Supervision bootstrap
 
 - The first active layer after `suplex init` is supervision, not execution.
-- The supervisor reviews the seed state needed to decide the first bounded task.
+- The supervisor reads `README.md`, reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
+- If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
+- If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
+- The supervisor decides whether an architecture-planning pass is needed before any implementation work begins.
+- The supervisor determines whether an existing architecture is already present in the repo or described in `README.md`.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
@@ -125,14 +131,14 @@ Use no audit when:
 
 ## 5. Non-repo-access supervision rule
 
-- The supervisor may operate without direct repository access.
+- The supervisor may operate in sessions where it cannot read repository files directly.
 - In that case, the supervision packet must be sufficient for bounded supervision.
 - A verbatim copy of this template repo's own supervision brief is not a valid packet for another repo; the packet must be refreshed to reflect the target repo's current state.
 - The minimum required packet is:
   - `docs/09_supervision_brief.md`
   - the active handoff
   - the latest execution report and/or latest checkpoint
-- When repo access is absent, the supervisor should avoid guessing hidden repo state and should govern only from the validated packet it has.
+- When live repo inspection is unavailable, the supervisor should avoid guessing hidden repo state and should govern only from the validated packet it has.
 
 ## 6. Supervisor-to-executor relay
 
@@ -191,9 +197,14 @@ Immediately after `suplex init`:
 2. confirm the copied repo-state docs have been rewritten to the target repo's current state
 3. confirm `.suplex/init_state.yaml` reflects the initialized target repo rather than the template repo
 4. bootstrap supervision using the canonical control docs and init state
-5. determine the minimum required reconstruction level for the first decision
-6. identify or draft the first active bounded handoff
-7. issue the first execution prompt only after supervision has defined scope
+5. read `README.md`; if you can inspect the repo in the current session, inspect it before deciding what happens next
+6. if you cannot inspect the repo in the current session, do not guess hidden state and use the portable supervision packet instead
+7. ask the user what they want to do next
+8. decide whether architecture planning is required before implementation proceeds
+9. determine whether an existing architecture is already present in the repo or `README.md`
+10. determine the minimum required reconstruction level for the first decision
+11. propose or draft exactly one next bounded task
+12. issue the first execution prompt only after supervision has defined scope
 
 The first active agent after init is the supervision layer, not the execution layer.
 

@@ -6,6 +6,7 @@ REF="${SUPLEX_REF:-main}"
 SOURCE_ROOT="${SUPLEX_SOURCE_ROOT:-}"
 TARGET_DIR="$(pwd)"
 TEMP_ROOT=""
+ATTEMPTED_INTERPRETERS="python3, python"
 
 cleanup() {
   if [ -n "${TEMP_ROOT}" ] && [ -d "${TEMP_ROOT}" ]; then
@@ -14,6 +15,14 @@ cleanup() {
 }
 
 trap cleanup EXIT INT TERM
+
+is_usable_python3() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    return 1
+  fi
+
+  "$1" -c 'import sys; raise SystemExit(0 if sys.version_info[0] == 3 else 1)' >/dev/null 2>&1
+}
 
 if [ -z "${SOURCE_ROOT}" ]; then
   TEMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/suplex-bootstrap.XXXXXX")"
@@ -31,12 +40,12 @@ if [ -z "${SOURCE_ROOT}" ]; then
   SOURCE_ROOT="$(find "${TEMP_ROOT}" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
 fi
 
-if command -v python3 >/dev/null 2>&1; then
+if is_usable_python3 python3; then
   PYTHON_BIN="python3"
-elif command -v python >/dev/null 2>&1; then
+elif is_usable_python3 python; then
   PYTHON_BIN="python"
 else
-  echo "SUPLEX bootstrap failed: python3 or python is required." >&2
+  echo "SUPLEX bootstrap failed: Python 3 is required. Attempted interpreters: ${ATTEMPTED_INTERPRETERS}. Install Python 3 and ensure either 'python3' or 'python' runs Python 3, then rerun the bootstrap." >&2
   exit 1
 fi
 
