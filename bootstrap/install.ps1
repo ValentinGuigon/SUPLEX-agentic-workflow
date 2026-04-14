@@ -1,8 +1,8 @@
 param(
-    [string]$RepoUrl = "https://github.com/ValentinGuigon/SUPLEX-agentic-workflow",
-    [string]$Ref = "main",
-    [string]$SourceRoot = "",
-    [string]$WorkflowMode = ""
+    [string]$SuplexRepoUrl = "https://github.com/ValentinGuigon/SUPLEX-agentic-workflow",
+    [string]$SuplexRef = "main",
+    [string]$SuplexSourceRoot = "",
+    [string]$SuplexWorkflowMode = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,18 +29,18 @@ function Test-Python3Command {
 }
 
 try {
-    if ([string]::IsNullOrWhiteSpace($WorkflowMode)) {
-        $WorkflowMode = if ([string]::IsNullOrWhiteSpace($env:SUPLEX_WORKFLOW_MODE)) { "standard" } else { $env:SUPLEX_WORKFLOW_MODE }
+    if ([string]::IsNullOrWhiteSpace($SuplexWorkflowMode)) {
+        $SuplexWorkflowMode = if ([string]::IsNullOrWhiteSpace($env:SUPLEX_WORKFLOW_MODE)) { "standard" } else { $env:SUPLEX_WORKFLOW_MODE }
     }
 
-    if ($WorkflowMode -notin @("standard", "sans-sucre")) {
+    if ($SuplexWorkflowMode -notin @("standard", "sans-sucre")) {
         throw "SUPLEX bootstrap failed: Workflow mode must be 'standard' or 'sans-sucre'."
     }
 
-    if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
+    if ([string]::IsNullOrWhiteSpace($SuplexSourceRoot)) {
         $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("suplex-bootstrap-" + [System.Guid]::NewGuid().ToString("N"))
         New-Item -ItemType Directory -Path $tempRoot | Out-Null
-        $archiveUrl = (($RepoUrl.TrimEnd("/")) -replace "\.git$", "") + "/archive/refs/heads/$Ref.zip"
+        $archiveUrl = (($SuplexRepoUrl.TrimEnd("/")) -replace "\.git$", "") + "/archive/refs/heads/$SuplexRef.zip"
         $archivePath = Join-Path $tempRoot "suplex-template.zip"
         Invoke-WebRequest -UseBasicParsing -Uri $archiveUrl -OutFile $archivePath
         Expand-Archive -LiteralPath $archivePath -DestinationPath $tempRoot -Force
@@ -49,7 +49,7 @@ try {
             throw "Unable to determine staged SUPLEX archive contents."
         }
     } else {
-        $sourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
+        $sourceRoot = (Resolve-Path -LiteralPath $SuplexSourceRoot).Path
     }
 
     if (Test-Python3Command -Command "py" -Arguments @("-3")) {
@@ -62,7 +62,7 @@ try {
         throw "SUPLEX bootstrap failed: Python 3 is required. Attempted interpreters: $($attemptedInterpreters -join ', '). Install Python 3 and ensure either 'py -3' or 'python' runs Python 3, then rerun the bootstrap."
     }
 
-    & $pythonCommand @pythonArgs (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $RepoUrl --ref $Ref --workflow-mode $WorkflowMode
+    & $pythonCommand @pythonArgs (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $SuplexRepoUrl --ref $SuplexRef --workflow-mode $SuplexWorkflowMode
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }
