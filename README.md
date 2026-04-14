@@ -15,6 +15,10 @@ SUPLEX is a supervised pipeline with layered execution. It consists of a lightwe
 
 SUPLEX separates the roles of goal-setting and decision-making (yours) from supervising and implementation (the models).
 
+## Demo
+
+See [demo/README.md](demo/README.md) for a screenshot-based walkthrough of the standard SUPLEX workflow.
+
 ## Who It Is For
 
 SUPLEX is for work that benefits from tight control, explicit bounded passes, and regular user oversight.
@@ -178,6 +182,10 @@ In practice, SUPLEX works best when the user treats supervision as the decision 
 - let supervision restate blockers, ambiguities, and the bounded task
 - let execution do only that bounded pass
 - return to supervision to interpret the result before starting the next pass
+
+## Demo
+
+A screenshot-based walkthrough of the standard operating loop is available in [demo/README.md](demo/README.md).
 
 ## Repository Layout
 
