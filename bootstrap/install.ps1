@@ -1,7 +1,9 @@
 param(
     [string]$RepoUrl = "https://github.com/ValentinGuigon/SUPLEX-agentic-workflow",
     [string]$Ref = "main",
-    [string]$SourceRoot = ""
+    [string]$SourceRoot = "",
+    [ValidateSet("standard", "sans-sucre")]
+    [string]$WorkflowMode = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,6 +30,10 @@ function Test-Python3Command {
 }
 
 try {
+    if ([string]::IsNullOrWhiteSpace($WorkflowMode)) {
+        $WorkflowMode = if ([string]::IsNullOrWhiteSpace($env:SUPLEX_WORKFLOW_MODE)) { "standard" } else { $env:SUPLEX_WORKFLOW_MODE }
+    }
+
     if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
         $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("suplex-bootstrap-" + [System.Guid]::NewGuid().ToString("N"))
         New-Item -ItemType Directory -Path $tempRoot | Out-Null
@@ -53,7 +59,7 @@ try {
         throw "SUPLEX bootstrap failed: Python 3 is required. Attempted interpreters: $($attemptedInterpreters -join ', '). Install Python 3 and ensure either 'py -3' or 'python' runs Python 3, then rerun the bootstrap."
     }
 
-    & $pythonCommand @pythonArgs (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $RepoUrl --ref $Ref
+    & $pythonCommand @pythonArgs (Join-Path $sourceRoot "bootstrap\\init_suplex.py") --target-dir $targetDir --source-root $sourceRoot --repo-url $RepoUrl --ref $Ref --workflow-mode $WorkflowMode
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }

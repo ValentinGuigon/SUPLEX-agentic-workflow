@@ -33,7 +33,8 @@ The active execution contract still belongs in `handoffs/active/current_handoff.
   - if `project_mode` is `greenfield`, the next safe step is usually architecture-planning or structure-confirmation before implementation
   - if `project_mode` is `overlay`, the next safe step is usually repo-state audit or local reconstruction before implementation
 - likely deliverables:
-  - one dated handoff for the first bounded supervisory pass
+  - in `standard` mode, one dated handoff for the first bounded supervisory pass
+  - in `sans-sucre` mode, one active handoff plus one active execution-report placeholder update for the first bounded supervisory pass
   - one explicit decision on whether the first bounded pass should be architecture-planning, repo-state audit, or local reconstruction
   - one proposed next bounded task only
 - likely files in scope:
@@ -52,8 +53,9 @@ The active execution contract still belongs in `handoffs/active/current_handoff.
 - why this follows:
   - the stricter runtime should be exercised on one real bounded pass before being treated as proven
 - likely deliverables:
-  - one dated handoff
-  - one dated execution report
+  - in `standard` mode, one dated handoff
+  - in `standard` mode, one dated execution report
+  - in `sans-sucre` mode, one active handoff and one active execution report
   - one validation-ledger entry if actual validation evidence is produced
 
 #### 3. Refine backlog sequencing after the first real bounded pass

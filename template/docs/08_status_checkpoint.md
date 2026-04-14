@@ -155,7 +155,7 @@
 
 ### What Was Done
 
-- [E] Moved the target-repo payload from repo root into `template/`: `AGENTS.md`, `CLAUDE.md`, `.suplex/`, `docs/`, `handoffs/`, `local_lessons.md`, and `governance_update_proposals.md`.
+- [E] Moved the target-repo payload from repo root into `template/`: `AGENTS.md`, `CLAUDE.md`, `.suplex/`, `docs/`, and `handoffs/`, with lesson / governance-memory artifacts now living under `docs/`.
 - [E] Updated `bootstrap/init_suplex.py` so it resolves and copies kernel assets from `template/`.
 - [E] Rewrote the root `README.md` so it describes the `SUPLEX-agentic-workflow` packaging repo and distinguishes that packaging README from a target repo seed `README.md`.
 - [E] Relocated `tmp_validation/` to `dev_validation/tmp_validation/` so those local artifacts no longer sit in the published root payload shape.

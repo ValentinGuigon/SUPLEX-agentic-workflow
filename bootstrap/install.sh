@@ -4,6 +4,7 @@ set -eu
 REPO_URL="${SUPLEX_REPO_URL:-https://github.com/ValentinGuigon/SUPLEX-agentic-workflow}"
 REF="${SUPLEX_REF:-main}"
 SOURCE_ROOT="${SUPLEX_SOURCE_ROOT:-}"
+WORKFLOW_MODE="${SUPLEX_WORKFLOW_MODE:-standard}"
 TARGET_DIR="$(pwd)"
 TEMP_ROOT=""
 ATTEMPTED_INTERPRETERS="python3, python"
@@ -49,4 +50,4 @@ else
   exit 1
 fi
 
-"${PYTHON_BIN}" "${SOURCE_ROOT}/bootstrap/init_suplex.py" --target-dir "${TARGET_DIR}" --source-root "${SOURCE_ROOT}" --repo-url "${REPO_URL}" --ref "${REF}"
+"${PYTHON_BIN}" "${SOURCE_ROOT}/bootstrap/init_suplex.py" --target-dir "${TARGET_DIR}" --source-root "${SOURCE_ROOT}" --repo-url "${REPO_URL}" --ref "${REF}" --workflow-mode "${WORKFLOW_MODE}"

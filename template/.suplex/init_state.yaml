@@ -2,6 +2,7 @@ schema_version: "1.0"
 readme_path: "./README.md"
 readme_present: false
 project_mode: "greenfield"
+workflow_mode: "standard"
 public_surface: "absent"
 compiled_validation: false
 governance_files:

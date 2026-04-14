@@ -4,11 +4,33 @@
 
 Use it when you want to add a standard supervision and handoff structure for agentic work without changing the underlying architecture of the target project.
 
+SUPLEX can be initialized in two infrastructure modes:
+
+- `standard`: full bounded-pass history with dated handoffs and dated execution reports in `handoffs/history/`
+- `sans-sucre`: lighter live-pass infrastructure with `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md`, and no dated history directory
+
 ## What is SUPLEX
 
 SUPLEX is a supervised pipeline with layered execution. It consists of a lightweight agentic control layer and is meant for AI-assisted bounded repository work. It provides governance files, canonical control-memory docs, and handoff structure so an agent can operate inside a repo with explicit scope, provenance, and closure rules.
 
 SUPLEX separates the roles of goal-setting and decision-making (yours) from supervising and implementation (the models).
+
+## Who It Is For
+
+SUPLEX is for work that benefits from tight control, explicit bounded passes, and regular user oversight.
+
+It is a better fit for:
+
+- research workflows
+- complex or ambiguous projects where requirements need to be clarified as work proceeds
+- repositories where provenance, scope control, and validation matter more than raw speed
+- work where the user wants to stay in the loop before and after each bounded pass
+
+It is a worse fit for:
+
+- loose exploratory coding with minimal process
+- broad parallel task farming
+- situations where the user wants the agent to improvise across many unrelated tasks without repeated supervision
 
 ## What It Does
 
@@ -19,16 +41,17 @@ Running the bootstrap from inside a target repository adds the SUPLEX control la
 - `.suplex/init_state.yaml`
 - `docs/`
 - `handoffs/`
-- `local_lessons.md`
-- `governance_update_proposals.md`
+- `docs/local_lessons.md`
+- `docs/governance_update_proposals.md`
 
 The installed runtime includes:
 
 - supervision and execution specs in `docs/10_supervision_layer_spec.md` and `docs/11_execution_layer_spec.md`
 - a canonical backlog in `docs/13_bounded_task_backlog.md`
 - an active handoff pointer in `handoffs/active/current_handoff.md`
-- handoff and execution-report history in `handoffs/history/`
-- reusable handoff and execution-report templates in `handoffs/templates/`
+- in `standard` mode, handoff and execution-report history in `handoffs/history/`
+- in `sans-sucre` mode, a live execution report in `handoffs/active/current_execution_report.md`
+- reusable handoff templates in `handoffs/templates/`, plus the execution-report template in `standard` mode
 
 ## Scope
 
@@ -37,6 +60,8 @@ SUPLEX init creates the supervision-execution layers, but it does not create or 
 Successful `suplex init` always installs the same full control layer. After initialization, `handoffs/active/current_handoff.md` starts as a no-active-handoff placeholder, so the first active layer is supervision. The first supervision pass should read that file first, inspect the repo if it has repo access, ask what you want to do next, and define exactly one bounded task.
 
 If the repo was empty (SUPLEX as a greenfield), that first supervision pass will often need an architecture-planning or structure-confirmation step before implementation begins. If the repo was already populated with code, data, or source files (SUPLEX as an overlay), that first supervision pass should reconstruct enough of the current repo state to define the next bounded task safely. Architecting is an expected supervision escalation mode when structure decisions need to be made, not a permanent parallel role.
+
+`standard` and `sans-sucre` differ in infrastructure weight, not in supervisory discipline. Both modes keep the supervisor / executor split, bounded-task logic, checkpointing, validation, and discrepancy handling. `sans-sucre` mainly removes dated handoff and report history so the repo carries less pass-by-pass archival overhead.
 
 ## Skills And Agents
 
@@ -81,10 +106,23 @@ PowerShell on Windows:
 irm https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.ps1 | iex
 ```
 
+PowerShell on Windows, `sans-sucre` mode:
+
+```powershell
+$env:SUPLEX_WORKFLOW_MODE='sans-sucre'
+irm https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.ps1 | iex
+```
+
 POSIX shell on macOS, Linux, or a real POSIX shell:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.sh | sh
+```
+
+POSIX shell, `sans-sucre` mode:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/ValentinGuigon/SUPLEX-agentic-workflow/main/bootstrap/install.sh | SUPLEX_WORKFLOW_MODE=sans-sucre sh
 ```
 
 The bootstrap looks for Python 3 automatically:
@@ -123,12 +161,23 @@ git commit -m "SUPLEX init"
 
 The repo is managed under a strict bounded task family discipline throughout construction:
 
+- Interact with the supervision layer before each handoff so the next bounded pass is scoped correctly.
+- Interact with the supervision layer again after each execution report so the result can be reviewed, validated, and either closed or turned into the next bounded pass.
 - Each task enters through a handoff document in `handoffs/` with a defined scope, blocker list, acceptance criteria, and validation plan.
 - Each bounded task returns an execution report describing what was read, what was done, what was not done, validation result, blockers, and the likely next bounded task.
-- The workflow maintains canonical control-memory docs including the checkpoint, validation ledger, discrepancy log, and handoff history.
+- In `standard` mode, the workflow maintains dated handoff and execution-report history.
+- In `sans-sucre` mode, the workflow keeps only the live active handoff and live active execution report.
+- The workflow maintains canonical control-memory docs including the checkpoint, validation ledger, and discrepancy log.
 - Where provenance matters, project docs may tag claims with evidence level: `[E]` directly evidenced, `[I]` strong inference, `[U]` unresolved.
 - No implementation proceeds without an active handoff document and evidence that the prior stage was validated.
 - If canonical docs and code artifacts disagreed, the discrepancy is logged before proceeding. `docs/` is the canonical project memory; `handoffs/` define the execution boundary.
+
+In practice, SUPLEX works best when the user treats supervision as the decision layer:
+
+- tell supervision what you want next - interact with it like you would normally to query the repo, define objectives, ask questions, make suggestions
+- let supervision restate blockers, ambiguities, and the bounded task
+- let execution do only that bounded pass
+- return to supervision to interpret the result before starting the next pass
 
 ## Repository Layout
 

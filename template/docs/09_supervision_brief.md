@@ -43,11 +43,11 @@ This file is the portable supervision packet for cases where the supervisor cann
 
 - `docs/` is canonical control memory.
 - `handoffs/active/current_handoff.md` is the first execution-boundary artifact to resolve.
-- Dated handoffs and execution reports live in `handoffs/history/`.
+- `standard` mode uses dated handoffs and execution reports in `handoffs/history/`; `sans-sucre` mode uses `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md`.
 - `docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved.
 - Stable governance remains in `AGENTS.md` and `CLAUDE.md`.
 - Handoffs constrain execution but do not override stable governance.
-- Repeated operational lessons flow through `local_lessons.md`, while stable-governance changes flow through `governance_update_proposals.md`.
+- Repeated operational lessons flow through `docs/local_lessons.md`, while stable-governance changes flow through `docs/governance_update_proposals.md`.
 
 ## 7. Active handoff summary
 

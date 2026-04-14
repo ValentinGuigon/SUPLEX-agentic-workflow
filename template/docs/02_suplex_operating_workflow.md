@@ -59,7 +59,9 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The first active layer after `suplex init` is supervision, not execution.
 - The supervisor reads `handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
+- The installed workflow infrastructure mode is recorded in `.suplex/init_state.yaml` as `workflow_mode`.
 - Immediately after initialization, `handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
+- In `sans-sucre` mode, `handoffs/active/current_execution_report.md` should also exist as the live report placeholder for the next bounded pass.
 - If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
 - If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
 - If `.suplex/init_state.yaml` says `project_mode: "greenfield"`, the supervisor should ask whether the user wants to provide more project detail and should treat architecture-planning or structure-confirmation as the default first bounded pass unless current information already makes that unnecessary.
@@ -78,6 +80,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The executor returns a written report to the supervisor.
 - The report must be sufficient for supervisory interpretation even if the supervisor does not have repo access.
+- In `standard` mode, the report is normally stored as a dated artifact in `handoffs/history/`.
+- In `sans-sucre` mode, the report is normally stored in `handoffs/active/current_execution_report.md`.
 
 ### Supervisor interpretation
 
@@ -144,11 +148,13 @@ Use no audit when:
   - `docs/09_supervision_brief.md`
   - `handoffs/active/current_handoff.md`
   - the latest execution report and/or `docs/08_status_checkpoint.md`
+- In `sans-sucre` mode, the latest execution report is `handoffs/active/current_execution_report.md`.
 - The recommended browser-supervision packet is:
   - `AGENTS.md`
   - `docs/09_supervision_brief.md`
   - `handoffs/active/current_handoff.md`
-  - the latest execution report in `handoffs/history/` if one exists
+  - in `standard` mode, the latest execution report in `handoffs/history/` if one exists
+  - in `sans-sucre` mode, `handoffs/active/current_execution_report.md`
   - `docs/08_status_checkpoint.md`
   - `docs/10_supervision_layer_spec.md`
 - When live repo inspection is unavailable, the supervisor should avoid guessing hidden repo state and should govern only from the validated packet it has.
@@ -177,9 +183,11 @@ Every execution-layer pass must return a written report containing at least:
 ### Active-handoff lifecycle
 
 - `handoffs/active/current_handoff.md` is the standard execution entry point.
-- The active handoff may mirror a dated handoff in `handoffs/history/` rather than containing the full contract inline.
-- Every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`.
+- In `standard` mode, the active handoff may mirror a dated handoff in `handoffs/history/` rather than containing the full contract inline.
+- In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`.
+- In `sans-sucre` mode, the active handoff and active execution report are the primary live pass artifacts and no dated history record is required.
 - After a bounded pass is reviewed and accepted, `handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
+- In `sans-sucre` mode, `handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.
 
 ## 7. Architectural escalation rule
 

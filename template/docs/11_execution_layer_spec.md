@@ -71,7 +71,8 @@ These rules should not be imposed mechanically on every narrow implementation pa
 
 Each bounded pass should leave behind:
 - the in-scope repo changes
-- one execution report in `handoffs/history/`
+- in `standard` mode, one execution report in `handoffs/history/`
+- in `sans-sucre` mode, one live execution report in `handoffs/active/current_execution_report.md`
 - validation notes or artifacts sufficient to support supervisory review
 - doc updates required by the handoff when workflow behavior, status, or mismatches changed
 
@@ -165,6 +166,6 @@ Prefer direct evidence over narrative assurance.
 
 The execution layer contributes to project memory but does not define system law.
 
-Repeated operational lessons should go to `local_lessons.md` only when explicitly instructed or when the handoff requires it.
+Repeated operational lessons should go to `docs/local_lessons.md` only when explicitly instructed or when the handoff requires it.
 
 Stable governance changes should be proposed, not silently embedded.

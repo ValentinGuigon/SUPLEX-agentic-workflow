@@ -8,8 +8,9 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 ## Layout
 
 - `handoffs/active/current_handoff.md`: the standard execution entry point
-- `handoffs/history/`: dated handoffs and dated execution reports
-- `handoffs/templates/`: reusable handoff and execution-report templates
+- `handoffs/history/`: dated handoffs and dated execution reports in `standard` mode
+- `handoffs/active/current_execution_report.md`: live execution report artifact in `sans-sucre` mode
+- `handoffs/templates/`: reusable handoff templates, plus the execution-report template in `standard` mode
 
 ## When a handoff is required
 
@@ -41,10 +42,11 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 
 - keep completed handoffs as historical records unless a user explicitly asks for cleanup
 - treat a closed handoff as evidence of what a bounded pass was authorized to do
-- every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`
+- in `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`
 - when a pass proceeds under user-authorized best judgment on a material ambiguity, record that decision path and the adopted assumption in the handoff itself
 
 ## Active-handoff closure rule
 
 - after a bounded pass is reviewed and accepted, remove the completed contract from `handoffs/active/current_handoff.md`
 - replace it with an explicit no-active-handoff placeholder so startup does not mistake a completed pass for unfinished work
+- in `sans-sucre` mode, also clear or replace `handoffs/active/current_execution_report.md`

@@ -34,7 +34,8 @@ Do not rewrite this file during routine work.
 - Treat `docs/` as canonical control memory after initialization.
 - Treat `docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
 - Treat `handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.
-- Treat dated handoffs and execution reports in `handoffs/history/` as the canonical bounded-pass record.
+- In `standard` mode, treat dated handoffs and execution reports in `handoffs/history/` as the canonical bounded-pass record.
+- In `sans-sucre` mode, treat `handoffs/active/current_handoff.md` and `handoffs/active/current_execution_report.md` as the live bounded-pass record.
 - Treat `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
 - No new implementation phase should begin without a handoff document.
 - If canonical docs and repo artifacts disagree, flag the discrepancy before proceeding.
@@ -84,8 +85,8 @@ Typical targets:
 ## Mutable-learning rule
 
 Do not rewrite the stable governance file during routine work.
-If a repeated lesson emerges from execution, write it to `local_lessons.md`.
-If stable governance should change, write a proposal to `governance_update_proposals.md`.
+If a repeated lesson emerges from execution, write it to `docs/local_lessons.md`.
+If stable governance should change, write a proposal to `docs/governance_update_proposals.md`.
 
 ## Context-clear rule
 

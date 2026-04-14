@@ -33,24 +33,27 @@ Before issuing a new bounded pass, the supervision layer should read:
 - `docs/13_bounded_task_backlog.md`
 - `docs/validation_ledger.md`
 - `docs/discrepancy_log.md` when active mismatches exist
-- the most recent relevant dated handoff and execution report
+- in `standard` mode, the most recent relevant dated handoff and execution report
+- in `sans-sucre` mode, `handoffs/active/current_execution_report.md` if an active pass is in flight or just completed
 - any task-specific docs required by the active or proposed pass
 
 If `handoffs/active/current_handoff.md` points to an unfinished pass, supervision should treat that handoff as the primary task-instruction artifact rather than infer a fresh task from repo context alone.
 
-If the active handoff appears complete, supervision should read the matching latest execution report before deciding whether to review, checkpoint, close, or issue the next pass.
+If the active handoff appears complete, supervision should read the matching latest execution report before deciding whether to review, checkpoint, close, or issue the next pass. In `standard` mode this is usually a dated report in `handoffs/history/`; in `sans-sucre` mode this is `handoffs/active/current_execution_report.md`.
 
 When no active handoff exists, supervision should use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation.
 
 ## Required Outputs
 
 For each bounded pass, the supervision layer must produce:
-- one dated handoff packet in `handoffs/history/`
+- in `standard` mode, one dated handoff packet in `handoffs/history/`
 - one active handoff pointer at `handoffs/active/current_handoff.md`
 - one explicit task family
 - one explicit bounded deliverable
 - acceptance criteria with pass/fail semantics
 - a plain statement of what remains out of scope
+
+In `sans-sucre` mode, the handoff may live only in `handoffs/active/current_handoff.md` and the paired live report may live only in `handoffs/active/current_execution_report.md`.
 
 After reviewing the pass, the supervision layer must:
 - decide whether the task family is closed
@@ -144,11 +147,11 @@ The supervision layer should stop and return to planning when:
 
 ## Learning Escalation Rule
 
-When supervision identifies a repeated operational lesson that does not yet warrant stable governance change, it should require that the lesson be recorded in `local_lessons.md`.
+When supervision identifies a repeated operational lesson that does not yet warrant stable governance change, it should require that the lesson be recorded in `docs/local_lessons.md`.
 
-When supervision determines that a repeated lesson implies a change to stable governance, it should require a proposal in `governance_update_proposals.md` rather than silently changing repo law.
+When supervision determines that a repeated lesson implies a change to stable governance, it should require a proposal in `docs/governance_update_proposals.md` rather than silently changing repo law.
 
-Execution may record a repeated lesson in `local_lessons.md` only when the handoff explicitly requires it or supervision directs it to do so.
+Execution may record a repeated lesson in `docs/local_lessons.md` only when the handoff explicitly requires it or supervision directs it to do so.
 
 ## Handoff Discipline
 
@@ -170,9 +173,10 @@ The supervision layer should:
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
 
 After a bounded pass is reviewed and accepted as complete, supervision should:
-- leave the dated handoff and execution report in `handoffs/history/`
+- in `standard` mode, leave the dated handoff and execution report in `handoffs/history/`
 - remove the completed task contract from `handoffs/active/current_handoff.md`
 - replace `handoffs/active/current_handoff.md` with an explicit no-active-handoff placeholder
+- in `sans-sucre` mode, also clear or replace `handoffs/active/current_execution_report.md` so stale report content does not carry forward
 
 Each handoff should:
 - make clear that it is one bounded task only

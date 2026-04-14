@@ -18,6 +18,16 @@
 | Execution startup restatement includes any user-authorized best-judgment assumption from the handoff | PASS | `template/docs/11_execution_layer_spec.md` now requires executors to restate any recorded best-judgment assumption before substantial work |
 | Execution reports include any material assumption used under user-authorized best judgment | PASS | `template/docs/11_execution_layer_spec.md` now includes this as an explicit execution-report item |
 
+## 2026-04-14 - Workflow Mode Split Pass
+
+| Check | Result | Notes |
+|---|---|---|
+| Bootstrap initializer accepts explicit `standard` and `sans-sucre` workflow modes | PASS | `bootstrap/init_suplex.py` now accepts `--workflow-mode` and records `workflow_mode` in generated `.suplex/init_state.yaml` |
+| Thin bootstrap wrappers can select `sans-sucre` during installation | PASS | `bootstrap/install.ps1` and `bootstrap/install.sh` now pass workflow mode through to the initializer |
+| `sans-sucre` layout keeps separate active handoff and active execution-report artifacts without dated history | PASS | `bootstrap/init_suplex.py` now removes `handoffs/history/`, removes the dated execution-report template, and writes `handoffs/active/current_execution_report.md` in `sans-sucre` mode |
+| Canonical docs describe both workflow modes and moved lesson / governance-memory paths | PASS | `README.md`, `template/AGENTS.md`, `template/docs/02_suplex_operating_workflow.md`, `template/docs/09_supervision_brief.md`, `template/docs/10_supervision_layer_spec.md`, `template/docs/11_execution_layer_spec.md`, `template/docs/13_bounded_task_backlog.md`, and handoff docs now reflect the split |
+| Lesson and governance-memory artifacts now live under `docs/` | PASS | Added `template/docs/local_lessons.md` and `template/docs/governance_update_proposals.md` and removed the root-level copies |
+
 ## 2026-04-13 - Always-Full Init Semantics Pass
 
 | Check | Result | Notes |

@@ -70,6 +70,12 @@ def parse_args() -> argparse.Namespace:
         "--archive-url",
         help="Explicit archive URL to fetch instead of deriving one from --repo-url and --ref.",
     )
+    parser.add_argument(
+        "--workflow-mode",
+        choices=("standard", "sans-sucre"),
+        default="standard",
+        help="SUPLEX runtime infrastructure mode to install in the target repository.",
+    )
     return parser.parse_args()
 
 
@@ -182,6 +188,72 @@ def copy_kernel(template_root: Path, target_dir: Path) -> None:
         shutil.copytree(source_dir, destination_dir, dirs_exist_ok=True)
 
 
+def standard_current_handoff_placeholder() -> str:
+    return dedent(
+        """
+        # No Active Handoff
+
+        There is currently no active bounded pass.
+
+        Supervision should:
+        1. read this file first
+        2. confirm that no unfinished bounded pass exists
+        3. consult `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation
+        4. issue exactly one new dated handoff before execution work begins
+        """
+    )
+
+
+def sans_sucre_current_handoff_placeholder() -> str:
+    return dedent(
+        """
+        # No Active Handoff
+
+        There is currently no active bounded pass.
+
+        In `sans-sucre` mode, supervision should:
+        1. read this file first
+        2. confirm that no unfinished bounded pass exists
+        3. consult `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation
+        4. issue exactly one new active handoff in this file before execution work begins
+        5. use `handoffs/active/current_execution_report.md` as the matching live execution-report artifact for the pass
+        """
+    )
+
+
+def sans_sucre_current_execution_report_placeholder() -> str:
+    return dedent(
+        """
+        # No Active Execution Report
+
+        There is currently no active execution report.
+
+        In `sans-sucre` mode, execution should write the live report for the current bounded pass here.
+        Clear or replace this file when the active pass is closed so stale report content does not carry into the next pass.
+        """
+    )
+
+
+def configure_workflow_layout(target_dir: Path, workflow_mode: str) -> None:
+    active_dir = target_dir / "handoffs" / "active"
+    history_dir = target_dir / "handoffs" / "history"
+    report_template = target_dir / "handoffs" / "templates" / "01_execution_report_template.md"
+    active_report = active_dir / "current_execution_report.md"
+
+    if workflow_mode == "sans-sucre":
+        if history_dir.exists():
+            shutil.rmtree(history_dir)
+        if report_template.exists():
+            report_template.unlink()
+        write_text(active_dir / "current_handoff.md", sans_sucre_current_handoff_placeholder())
+        write_text(active_report, sans_sucre_current_execution_report_placeholder())
+        return
+
+    if active_report.exists():
+        active_report.unlink()
+    write_text(active_dir / "current_handoff.md", standard_current_handoff_placeholder())
+
+
 def quote_yaml(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
@@ -191,7 +263,7 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
 
 
-def build_scope_doc(project_name: str, purpose: str, analysis: dict[str, object]) -> str:
+def build_scope_doc(project_name: str, purpose: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     if mode == "greenfield":
         scope_line = "- establish canonical control-memory docs for this target repo [E]"
@@ -232,6 +304,10 @@ def build_scope_doc(project_name: str, purpose: str, analysis: dict[str, object]
         ## Current execution tool or agent context
 
         {context_line}
+
+        ## Installed workflow mode
+
+        - `{workflow_mode}` workflow infrastructure was installed during initialization. [E]
 
         ## Current task family
 
@@ -283,7 +359,7 @@ def build_provenance_doc(project_name: str) -> str:
     )
 
 
-def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, object]) -> str:
+def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     if mode == "greenfield":
         action_line = "- [E] Added `AGENTS.md`, `CLAUDE.md`, `.suplex/`, `docs/`, and `handoffs/`."
@@ -305,6 +381,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
         ### Phase State
 
         - [E] This target repo completed bounded SUPLEX initialization in `{mode}` mode.
+        - [E] The installed workflow infrastructure mode is `{workflow_mode}`.
         - [E] The same full SUPLEX agentic control layer was added without introducing computation or publication scaffolding.
         - [E] The first active layer after init is supervision, not execution.
 
@@ -346,8 +423,18 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
     )
 
 
-def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str, object]) -> str:
+def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
+    workflow_summary_line = (
+        "- Workflow infrastructure: `standard` mode with dated handoff / execution-report history. [E]"
+        if workflow_mode == "standard"
+        else "- Workflow infrastructure: `sans-sucre` mode with active handoff and active execution-report artifacts only; no dated history directory. [E]"
+    )
+    active_report_rule = (
+        "- Dated handoffs and execution reports should be read from `handoffs/history/` when present. [E]"
+        if workflow_mode == "standard"
+        else "- The live execution report should be read from `handoffs/active/current_execution_report.md`; no `handoffs/history/` record is required in this mode. [E]"
+    )
     if mode == "greenfield":
         latest_state_line = "- The repo was initialized in `greenfield` mode from its own `README.md`. [E]"
         scope_line = "- Scope boundary: full control-layer initialization and supervision only; no computation or publication scaffolding by default"
@@ -398,6 +485,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
         ## 4. SUPLEX workflow summary
 
         - The first active layer after initialization is supervision.
+        {workflow_summary_line}
         - Reconstruction level is chosen explicitly.
         - Supervision must decide whether an architecture-planning pass is needed before implementation work begins.
         - Execution remains bounded by handoffs.
@@ -411,6 +499,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
 
         - `docs/` is canonical control memory.
         - `handoffs/` defines bounded task packets.
+        {active_report_rule}
         - Stable governance remains in `AGENTS.md` and `CLAUDE.md`.
 
         ## 7. Active handoff summary
@@ -447,7 +536,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
     )
 
 
-def build_validation_ledger(today: str, analysis: dict[str, object]) -> str:
+def build_validation_ledger(today: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     overlay_note = (
         "Existing project structure remained in place while the control layer was added."
@@ -464,6 +553,7 @@ def build_validation_ledger(today: str, analysis: dict[str, object]) -> str:
         |---|---|---|
         | `README.md` precondition satisfied before initialization | PASS | Initialization ran only after confirming the target repo had its own `README.md` |
         | SUPLEX kernel copied without cloning the template repo into the target repo | PASS | Only `AGENTS.md`, `CLAUDE.md`, `.suplex/`, `docs/`, and `handoffs/` were added |
+        | Requested workflow mode installed | PASS | Initialization configured `{workflow_mode}` workflow infrastructure in the target repo |
         | Repo-state docs rewritten before supervision bootstrap | PASS | `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` were rewritten for the target repo |
         | `.suplex/init_state.yaml` written for the current working directory | PASS | Init state now records the target repo mode and initialization metadata |
         | Existing repo structure preserved | PASS | {overlay_note} |
@@ -502,6 +592,7 @@ def build_init_state(
     analysis: dict[str, object],
     repo_url: str,
     ref: str,
+    workflow_mode: str,
 ) -> str:
     notes = [
         "SUPLEX was initialized into the current working directory without cloning the template repo.",
@@ -521,6 +612,7 @@ def build_init_state(
         'readme_path: "./README.md"',
         'readme_present: true',
         f'project_mode: "{analysis["project_mode"]}"',
+        f'workflow_mode: "{workflow_mode}"',
         f'public_surface: "{analysis["public_surface"]}"',
         f'compiled_validation: {"true" if analysis["compiled_validation"] else "false"}',
         "governance_files:",
@@ -567,9 +659,14 @@ def mode_specific_first_step(analysis: dict[str, object]) -> str:
     ).strip()
 
 
-def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object]) -> str:
+def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     mode_guidance = mode_specific_first_step(analysis)
+    workflow_guidance = (
+        "Use dated handoffs and dated execution reports in `handoffs/history/` as the bounded-pass record."
+        if workflow_mode == "standard"
+        else "Use `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md` as the live pass artifacts; do not expect a dated history directory."
+    )
     if mode == "greenfield":
         startup_guidance = dedent(
             """
@@ -599,6 +696,7 @@ def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object])
         Inspect the repo and `README.md` before deciding what happens next.
         Ask the user what they want to do next.
         {mode_guidance}
+        {workflow_guidance}
         Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
@@ -606,9 +704,19 @@ def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object])
     ).strip()
 
 
-def first_supervision_prompt_browser(project_name: str, analysis: dict[str, object]) -> str:
+def first_supervision_prompt_browser(project_name: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     mode_guidance = mode_specific_first_step(analysis)
+    packet_description = (
+        "Use only the provided supervision packet as working state: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`."
+        if workflow_mode == "standard"
+        else "Use only the provided supervision packet as working state: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, `handoffs/active/current_execution_report.md`, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`."
+    )
+    workflow_guidance = (
+        "Use dated handoffs and dated execution reports in `handoffs/history/` if they are present in the packet."
+        if workflow_mode == "standard"
+        else "Use `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md` as the live bounded-pass packet; do not expect a dated history directory."
+    )
     if mode == "greenfield":
         startup_guidance = dedent(
             """
@@ -633,12 +741,13 @@ def first_supervision_prompt_browser(project_name: str, analysis: dict[str, obje
         f"""
         You are supervising the freshly initialized `{project_name}` repository without direct repo access.
         The repo was initialized in `{mode}` mode.
-        Use only the provided supervision packet as working state: `AGENTS.md`, `docs/09_supervision_brief.md`, `handoffs/active/current_handoff.md`, `docs/08_status_checkpoint.md`, and `docs/10_supervision_layer_spec.md`.
+        {packet_description}
         {startup_guidance}
         Read the rest of the provided packet before defining new work.
         Do not guess hidden repo state beyond the provided packet.
         Ask the user what they want to do next.
         {mode_guidance}
+        {workflow_guidance}
         Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level justified by the packet and propose exactly one next bounded task only.
@@ -646,22 +755,29 @@ def first_supervision_prompt_browser(project_name: str, analysis: dict[str, obje
     ).strip()
 
 
-def build_ready_message(target_dir: Path, project_name: str, analysis: dict[str, object]) -> str:
-    supervisor_prompt_ide = first_supervision_prompt_ide(project_name, analysis)
-    supervisor_prompt_browser = first_supervision_prompt_browser(project_name, analysis)
+def build_ready_message(target_dir: Path, project_name: str, analysis: dict[str, object], workflow_mode: str) -> str:
+    supervisor_prompt_ide = first_supervision_prompt_ide(project_name, analysis, workflow_mode)
+    supervisor_prompt_browser = first_supervision_prompt_browser(project_name, analysis, workflow_mode)
     separator = "=" * 72
+    packet_lines = [
+        "- `AGENTS.md`",
+        "- `docs/09_supervision_brief.md`",
+        "- `handoffs/active/current_handoff.md`",
+        "- `docs/08_status_checkpoint.md`",
+        "- `docs/10_supervision_layer_spec.md`",
+    ]
+    if workflow_mode == "sans-sucre":
+        packet_lines.insert(3, "- `handoffs/active/current_execution_report.md`")
     return "\n".join(
         [
             separator,
             f"SUPLEX ready in {target_dir}",
             separator,
+            f"Workflow mode: {workflow_mode}",
+            separator,
             "IDE or terminal supervision: pass only the IDE prompt below.",
             "Browser-chat supervision without repo access: pass the browser prompt below together with these files:",
-            "- `AGENTS.md`",
-            "- `docs/09_supervision_brief.md`",
-            "- `handoffs/active/current_handoff.md`",
-            "- `docs/08_status_checkpoint.md`",
-            "- `docs/10_supervision_layer_spec.md`",
+            *packet_lines,
             separator,
             "Supervisor Prompt For IDE Or Terminal",
             separator,
@@ -675,7 +791,7 @@ def build_ready_message(target_dir: Path, project_name: str, analysis: dict[str,
     )
 
 
-def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str) -> int:
+def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str, workflow_mode: str) -> int:
     readme_path = target_dir / "README.md"
     if not readme_path.exists():
         return fail(
@@ -690,19 +806,20 @@ def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str) -> 
 
     template_root = resolve_template_root(source_root)
     copy_kernel(template_root, target_dir)
+    configure_workflow_layout(target_dir, workflow_mode)
 
     today = os.environ.get("SUPLEX_INIT_DATE", "2026-04-13")
     today_iso = os.environ.get("SUPLEX_INIT_TIMESTAMP", f"{today}T00:00:00Z")
 
-    write_text(target_dir / "docs" / "00_project_scope.md", build_scope_doc(project_name, purpose, analysis))
+    write_text(target_dir / "docs" / "00_project_scope.md", build_scope_doc(project_name, purpose, analysis, workflow_mode))
     write_text(target_dir / "docs" / "01_source_of_truth_and_provenance.md", build_provenance_doc(project_name))
-    write_text(target_dir / "docs" / "08_status_checkpoint.md", build_checkpoint_doc(project_name, today, analysis))
-    write_text(target_dir / "docs" / "09_supervision_brief.md", build_supervision_brief(project_name, purpose, analysis))
-    write_text(target_dir / "docs" / "validation_ledger.md", build_validation_ledger(today, analysis))
+    write_text(target_dir / "docs" / "08_status_checkpoint.md", build_checkpoint_doc(project_name, today, analysis, workflow_mode))
+    write_text(target_dir / "docs" / "09_supervision_brief.md", build_supervision_brief(project_name, purpose, analysis, workflow_mode))
+    write_text(target_dir / "docs" / "validation_ledger.md", build_validation_ledger(today, analysis, workflow_mode))
     write_text(target_dir / "docs" / "discrepancy_log.md", build_discrepancy_log())
-    write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref))
+    write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref, workflow_mode))
 
-    print(build_ready_message(target_dir, project_name, analysis))
+    print(build_ready_message(target_dir, project_name, analysis, workflow_mode))
     return 0
 
 
@@ -720,7 +837,7 @@ def main() -> int:
         missing = [str(path) for path in required_paths if not path.exists()]
         if missing:
             return fail("Bootstrap source is missing required kernel assets:\n" + "\n".join(missing))
-        return initialize(target_dir, source_root, args.repo_url, args.ref)
+        return initialize(target_dir, source_root, args.repo_url, args.ref, args.workflow_mode)
     except Exception as exc:  # noqa: BLE001
         return fail(f"SUPLEX bootstrap failed: {exc}")
     finally:

@@ -1,5 +1,7 @@
 # Execution Report Template
 
+Use this template in `standard` mode when execution reports are stored as dated artifacts in `handoffs/history/`.
+
 ## Report Metadata
 - task_id:
 - executed_by:
