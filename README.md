@@ -38,6 +38,26 @@ Successful `suplex init` always installs the same full control layer. After init
 
 If the repo was empty (SUPLEX as a greenfield), that first supervision pass will often need an architecture-planning or structure-confirmation step before implementation begins. If the repo was already populated with code, data, or source files (SUPLEX as an overlay), that first supervision pass should reconstruct enough of the current repo state to define the next bounded task safely. Architecting is an expected supervision escalation mode when structure decisions need to be made, not a permanent parallel role.
 
+## Skills And Agents
+
+SUPLEX is intended to sit above project-specific skills and agents as a control layer, not replace them.
+
+If a target repository already contains skills, agents, or similar execution helpers, SUPLEX should usually preserve them as project-domain assets. Successful initialization adds only the SUPLEX control layer and does not restructure existing `src/`, `data/`, `notebooks/`, `site/`, `public/`, or similar project directories.
+
+However, compatibility is not automatically seamless when the target repo already has its own governance layer. Initialization copies `AGENTS.md` and `CLAUDE.md`, merges `docs/` and `handoffs/`, and rewrites the target-state control docs that SUPLEX treats as canonical. In practice, this means there are likely collisions if the repo already uses root-level `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/` for a different control system.
+
+The integration model is:
+
+- SUPLEX provides supervision, bounded-task definition, handoff discipline, validation, and checkpointing.
+- project-specific skills provide reusable execution capabilities
+- project-specific agents perform bounded execution work under SUPLEX supervision
+
+So:
+
+- adding SUPLEX to a repo that already has skills or agents is usually structurally compatible if those assets do not depend on conflicting root governance files
+- adding skills or agents to a SUPLEX-managed repo is usually compatible if they are treated as project-domain components governed by the active handoff and stable SUPLEX rules
+- layering SUPLEX on top of another repo-wide governance system with competing ownership of `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/` should be treated as an explicit integration task as it will create collisions - SUPLEX overwriting the existing governance documents.
+
 ## Before You Run It
 
 Run the bootstrap from inside the repository where you want SUPLEX installed.
