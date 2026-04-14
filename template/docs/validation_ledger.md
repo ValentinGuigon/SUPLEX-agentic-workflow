@@ -1,5 +1,23 @@
 # Validation Ledger
 
+## 2026-04-14 - Supervisor Material Ambiguity Decision Rule Pass
+
+| Check | Result | Notes |
+|---|---|---|
+| Stable governance requires surfacing material blockers or ambiguities before proceeding under judgment | PASS | `template/AGENTS.md` now requires the supervisor to restate material blockers or ambiguities and ask whether the user wants to resolve them directly or authorize best judgment |
+| Runtime workflow requires the supervisor to ask for a decision path on material ambiguity | PASS | `template/docs/02_suplex_operating_workflow.md` now defines the user-choice branch and requires reporting the adopted assumption during close or checkpoint |
+| Supervision-layer spec records the adopted assumption when best judgment is authorized | PASS | `template/docs/10_supervision_layer_spec.md` now requires the assumption to be captured in the handoff, report, checkpoint, or discrepancy trail |
+| Bootstrap-generated first-supervision prompts carry the new rule into fresh installs | PASS | File inspection of `bootstrap/init_suplex.py` confirms the IDE and browser startup prompts now instruct supervisors not to silently make user-owned material judgment calls |
+
+## 2026-04-14 - Handoff Template Material Ambiguity Record Pass
+
+| Check | Result | Notes |
+|---|---|---|
+| Handoff template includes a dedicated field for material ambiguity decision paths | PASS | `template/handoffs/templates/00_handoff_template.md` now includes `User Decision Path On Material Ambiguities` with the blocker, impact, user choice, and adopted assumption fields |
+| Handoff guidance requires storing user-authorized best-judgment decisions in the handoff record | PASS | `template/handoffs/README.md` now states that the decision path and adopted assumption should be recorded in the handoff itself |
+| Execution startup restatement includes any user-authorized best-judgment assumption from the handoff | PASS | `template/docs/11_execution_layer_spec.md` now requires executors to restate any recorded best-judgment assumption before substantial work |
+| Execution reports include any material assumption used under user-authorized best judgment | PASS | `template/docs/11_execution_layer_spec.md` now includes this as an explicit execution-report item |
+
 ## 2026-04-13 - Always-Full Init Semantics Pass
 
 | Check | Result | Notes |

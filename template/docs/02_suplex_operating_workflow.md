@@ -64,6 +64,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
 - If `.suplex/init_state.yaml` says `project_mode: "greenfield"`, the supervisor should ask whether the user wants to provide more project detail and should treat architecture-planning or structure-confirmation as the default first bounded pass unless current information already makes that unnecessary.
 - If `.suplex/init_state.yaml` says `project_mode: "overlay"`, the supervisor should ask whether the user wants to provide more project detail and should treat repo-state audit or local reconstruction as the default first bounded pass so the next task is defined from current repo evidence rather than assumptions.
+- If the supervisor identifies a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, it should restate that issue concretely, explain why it matters, and ask whether the user wants to resolve it directly in conversation or authorize best judgment.
+- If the user authorizes best judgment, the supervisor should state the assumption or decision it adopts and report that assumption again when closing or checkpointing the pass.
 - If no active handoff exists, the supervisor uses `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
@@ -81,6 +83,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The supervisor restates the important reported facts.
 - The supervisor interprets validation state, discrepancies, unresolved items, and scope impact.
+- If the pass was executed under user-authorized best judgment on a material ambiguity, the supervisor restates the adopted assumption before deciding the next step.
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
 
 ### Validation / checkpoint

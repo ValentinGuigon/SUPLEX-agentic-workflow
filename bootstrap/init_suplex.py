@@ -555,12 +555,14 @@ def mode_specific_first_step(analysis: dict[str, object]) -> str:
             """
             Ask the user whether they want to provide more detail about the project before planning begins.
             Treat architecture-planning or structure-confirmation as the default first bounded supervisory pass unless the user already provided enough detail to make that unnecessary.
+            If you identify a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, restate it and ask whether the user wants to resolve it directly or authorize best judgment.
             """
         ).strip()
     return dedent(
         """
         Ask the user whether they want to provide more detail about the project before repo-state reconstruction begins.
         Treat repo-state audit or local reconstruction as the default first bounded supervisory pass so the next task can be defined from current repo evidence rather than assumptions.
+        If you identify a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, restate it and ask whether the user wants to resolve it directly or authorize best judgment.
         """
     ).strip()
 
@@ -597,6 +599,7 @@ def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object])
         Inspect the repo and `README.md` before deciding what happens next.
         Ask the user what they want to do next.
         {mode_guidance}
+        Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
         """
@@ -636,6 +639,7 @@ def first_supervision_prompt_browser(project_name: str, analysis: dict[str, obje
         Do not guess hidden repo state beyond the provided packet.
         Ask the user what they want to do next.
         {mode_guidance}
+        Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level justified by the packet and propose exactly one next bounded task only.
         """

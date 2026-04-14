@@ -45,6 +45,16 @@ List the files that should normally change if the pass is completed cleanly.
 
 List known ambiguities at handoff issuance time, or write `none at handoff issuance time`.
 
+## User Decision Path On Material Ambiguities
+
+For any material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, record:
+- material blocker or ambiguity
+- why it matters
+- user decision path: `resolve directly` or `authorize best judgment`
+- adopted assumption if best judgment was authorized
+
+If none apply, write `none at handoff issuance time`.
+
 ## Files In Scope
 
 List the only files or folders the execution layer may modify.

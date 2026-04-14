@@ -22,6 +22,7 @@ Do not rewrite this file during routine work.
 - Do not rename, move, or delete files unless explicitly instructed.
 - Do not infer canonicality from filenames alone.
 - If docs, assumptions, and proposed artifacts disagree, stop and return to planning.
+- If a material blocker or ambiguity would likely affect scope, architecture, correctness, cost, or irreversible change, restate it to the user before proceeding and ask whether they want to resolve it directly or authorize supervisor / agent best judgment.
 - Treat the target repo's `README.md` as the mandatory seed specification input for initialization.
 - This template repo's own `README.md` is packaging documentation for the template itself, not a substitute seed specification for a future target repo.
 - If the target repo's `README.md` is missing, halt initialization and ask the user either to add it or to provide a project description so one can be drafted first.

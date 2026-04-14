@@ -21,6 +21,8 @@ The supervision layer must:
 - review the execution report against the active contract
 - update project-status, backlog, or discrepancy docs when workflow assumptions materially change
 
+When the supervision layer identifies a material blocker or ambiguity that is likely to affect scope, architecture, correctness, cost, or irreversible change, it must restate that issue to the user before issuing the pass. It must then ask whether the user wants to resolve it directly or authorize the supervisor / execution layer to proceed with best judgment. If best judgment is authorized, supervision must record the adopted assumption in the handoff, report, checkpoint, or discrepancy trail that closes the pass.
+
 ## Required Inputs
 
 Before issuing a new bounded pass, the supervision layer should read:
@@ -70,6 +72,10 @@ Before issuing a pass, the supervision layer should answer:
 8. What is the most likely wrong interpretation of the task?
 9. What guardrail prevents that interpretation?
 
+If the answer to question 1 reveals a material blocker or ambiguity, supervision should also answer:
+10. Does the user want to resolve this directly, or authorize best judgment?
+11. If best judgment is authorized, what explicit assumption will be adopted and later reported back?
+
 ## Evidence Discipline
 
 For source-grounded, document-grounded, or validation-heavy passes, the supervision layer should define explicit evidence rules in the handoff rather than leaving them implicit.
@@ -109,6 +115,7 @@ The supervision layer should not:
 - ask for broad open-ended work
 - issue multiple unrelated deliverables in one pass
 - delegate strategy to the execution layer
+- silently make a user-owned material judgment call without first surfacing it and asking for a decision path
 - treat chat history as canonical memory
 - declare a system-ready state from one successful draft or one partial run
 - silently change governance expectations without updating docs
@@ -181,6 +188,7 @@ Each handoff should:
 - include a guardrail sentence that prevents that interpretation
 - define stop conditions
 - define where results must be recorded
+- record any user-authorized best-judgment assumption when the pass is proceeding under a material ambiguity
 
 Reading repo instructions and canonical docs without checking the active handoff is startup discipline only. It does not establish the bounded task by itself.
 

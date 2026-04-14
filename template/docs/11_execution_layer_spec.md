@@ -44,6 +44,7 @@ Before substantial work, the execution layer must make explicit:
 4. files out of scope
 5. validation that will be performed
 6. any blocker or ambiguity already visible from the contract
+7. any user-authorized best-judgment assumption recorded in the handoff
 
 Reading the handoff, listing scope, and stating alignment do not complete the pass by themselves.
 
@@ -119,8 +120,9 @@ Every execution report should include:
 6. acceptance-criteria verdict
 7. what was not done and why
 8. discrepancies found
-9. recommended next task family
-10. context-clear assessment
+ 9. any material assumption used under user-authorized best judgment
+ 10. recommended next task family
+ 11. context-clear assessment
 
 If any acceptance item failed, the report should say so explicitly.
 
