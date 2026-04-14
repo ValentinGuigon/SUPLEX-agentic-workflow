@@ -2,7 +2,6 @@ param(
     [string]$RepoUrl = "https://github.com/ValentinGuigon/SUPLEX-agentic-workflow",
     [string]$Ref = "main",
     [string]$SourceRoot = "",
-    [ValidateSet("standard", "sans-sucre")]
     [string]$WorkflowMode = ""
 )
 
@@ -32,6 +31,10 @@ function Test-Python3Command {
 try {
     if ([string]::IsNullOrWhiteSpace($WorkflowMode)) {
         $WorkflowMode = if ([string]::IsNullOrWhiteSpace($env:SUPLEX_WORKFLOW_MODE)) { "standard" } else { $env:SUPLEX_WORKFLOW_MODE }
+    }
+
+    if ($WorkflowMode -notin @("standard", "sans-sucre")) {
+        throw "SUPLEX bootstrap failed: Workflow mode must be 'standard' or 'sans-sucre'."
     }
 
     if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
