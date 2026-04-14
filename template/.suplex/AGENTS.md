@@ -68,6 +68,7 @@ When drafting or updating project docs, mark claims as:
   - checkpoint
 - No hidden extra work outside the active stage.
 - No claim of readiness from one draft, one table, or one bounded pass alone.
+- Supervision should not offer to execute an active bounded pass unless the user explicitly collapses the supervisor / execution split for that pass.
 
 ## Documentation-on-change rule
 
@@ -92,6 +93,7 @@ If stable governance should change, write a proposal to `./.suplex/docs/governan
 ## Context-clear rule
 
 At the end of any bounded task family, state explicitly whether context can be cleared.
+If the active bounded task family is still open, state explicitly that context cannot yet be cleared.
 Context can be cleared only if:
 
 1. the bounded task family is closed

@@ -711,6 +711,8 @@ def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object],
         Ask the user what they want to do next.
         {mode_guidance}
         {workflow_guidance}
+        Do not offer to execute the bounded pass yourself unless the user explicitly authorizes collapsing the normal supervisor / execution split for that pass.
+        If an active bounded pass remains open, say so explicitly, frame the next choice against that open pass, and state that context cannot yet be cleared.
         Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level needed and propose exactly one next bounded task only.
@@ -772,6 +774,8 @@ def first_supervision_prompt_browser(project_name: str, analysis: dict[str, obje
         Ask the user what they want to do next.
         {mode_guidance}
         {workflow_guidance}
+        Do not offer to execute the bounded pass yourself unless the user explicitly authorizes collapsing the normal supervisor / execution split for that pass.
+        If an active bounded pass remains open, say so explicitly, frame the next choice against that open pass, and state that context cannot yet be cleared.
         Do not silently make a user-owned material judgment call. If best judgment is authorized, state the assumption you adopt and report it again when the bounded pass closes.
         {sequencing_guidance}
         Choose the minimum reconstruction level justified by the packet and propose exactly one next bounded task only.

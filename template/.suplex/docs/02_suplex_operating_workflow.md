@@ -76,6 +76,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The supervisor issues a bounded execution prompt tied to an active handoff.
 - The executor performs only that bounded task.
+- While that handoff is still open, the bounded task family remains in execution or awaiting review; it is not a fresh planning state.
 
 ### Execution report
 
@@ -90,6 +91,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor interprets validation state, discrepancies, unresolved items, and scope impact.
 - If the pass was executed under user-authorized best judgment on a material ambiguity, the supervisor restates the adopted assumption before deciding the next step.
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
+- If the active handoff is still open, the supervisor should say so explicitly and frame the next user choice against that open pass rather than offering to perform the execution-layer work by default.
+- If the task family is still open, the supervisor should also say explicitly that context cannot yet be cleared.
 
 ### Validation / checkpoint
 
@@ -100,6 +103,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - If more bounded work is needed, the supervisor defines the next handoff or activates the next bounded pass.
 - If closure conditions are met, the supervisor explicitly states that the task family is closed and whether context can be cleared.
+- If closure conditions are not yet met, the supervisor explicitly states that the task family remains open and that context cannot yet be cleared.
 
 ## 4. Reconstruction policy
 

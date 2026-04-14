@@ -40,6 +40,8 @@ Before issuing a new bounded pass, the supervision layer should read:
 
 If `./.suplex/handoffs/active/current_handoff.md` points to an unfinished pass, supervision should treat that handoff as the primary task-instruction artifact rather than infer a fresh task from repo context alone.
 
+If `./.suplex/handoffs/active/current_handoff.md` points to an unfinished pass and no matching execution report yet closes it, supervision should treat the repo as waiting for execution-layer work or for execution-layer return, not as waiting for supervision to implement the pass itself.
+
 If the active handoff appears complete, supervision should read the matching latest execution report before deciding whether to review, checkpoint, close, or issue the next pass. In `standard` mode this is usually a dated report in `./.suplex/handoffs/history/`; in `sans-sucre` mode this is `./.suplex/handoffs/active/current_execution_report.md`.
 
 When no active handoff exists, supervision should use `./.suplex/docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation.
@@ -62,6 +64,8 @@ After reviewing the pass, the supervision layer must:
 - update `./.suplex/docs/13_bounded_task_backlog.md` when pass ordering or completion status changed
 - append to `./.suplex/docs/validation_ledger.md` when a pass produced actual validation evidence worth preserving
 - log unresolved mismatches in `./.suplex/docs/discrepancy_log.md` when needed
+- state explicitly whether context can be cleared
+- if the task family remains open, state explicitly that context cannot yet be cleared
 
 ## Decision Protocol
 
@@ -119,6 +123,7 @@ The supervision layer should not:
 - ask for broad open-ended work
 - issue multiple unrelated deliverables in one pass
 - delegate strategy to the execution layer
+- offer to perform the active execution pass itself unless the user explicitly authorizes collapsing the normal supervisor / execution split for that pass
 - silently make a user-owned material judgment call without first surfacing it and asking for a decision path
 - treat chat history as canonical memory
 - declare a system-ready state from one successful draft or one partial run
@@ -172,6 +177,13 @@ The supervision layer should:
 - store reusable templates in `./.suplex/handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
+
+When an active handoff is open, supervision should make the current pass state explicit in chat:
+- if execution has not yet run, say that the bounded task family remains open and is awaiting execution-layer work
+- if execution has run but review is incomplete, say that the bounded task family remains open and is awaiting supervisory review or checkpointing
+- do not ask a generic "what do you want to do next?" in a way that blurs the still-open pass with a fresh task-selection step
+- instead, frame the user choice against the open pass, for example by asking whether to launch execution, review the returned report, checkpoint, close the family if acceptance is met, or deliberately revise the handoff
+- state explicitly whether context can be cleared; for any still-open pass, say that context cannot yet be cleared
 
 After a bounded pass is reviewed and accepted as complete, supervision should:
 - in `standard` mode, leave the dated handoff and execution report in `./.suplex/handoffs/history/`
