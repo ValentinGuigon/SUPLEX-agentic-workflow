@@ -50,7 +50,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The scaffolder confirms the target repo seed inputs and prepares the control layer.
 - Successful init always installs the same full SUPLEX agentic control layer regardless of whether the target repo is greenfield or overlay.
 - Copied control docs that contain repo-specific state must be rewritten to the target repo before supervision uses them as current state.
-- At minimum, initialization rewrites `docs/00_project_scope.md`, `docs/01_source_of_truth_and_provenance.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` from target-repo evidence before supervision bootstrap.
+- At minimum, initialization rewrites `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/01_source_of_truth_and_provenance.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` from target-repo evidence before supervision bootstrap.
 - Initialization writes `.suplex/init_state.yaml` for the current working directory before claiming readiness.
 - Initialization must not decide the project architecture or whether a stronger workflow structure is needed beyond installing the full control layer.
 - Initialization ends when the repo is ready for supervision bootstrap.
@@ -58,17 +58,18 @@ The workflow is for control-layer operation only. It does not authorize computat
 ### Supervision bootstrap
 
 - The first active layer after `suplex init` is supervision, not execution.
-- The supervisor reads `handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
+- The supervisor reads `./.suplex/handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
 - The installed workflow infrastructure mode is recorded in `.suplex/init_state.yaml` as `workflow_mode`.
-- Immediately after initialization, `handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
-- In `sans-sucre` mode, `handoffs/active/current_execution_report.md` should also exist as the live report placeholder for the next bounded pass.
+- Immediately after initialization, `./.suplex/handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
+- In `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` should also exist as the live report placeholder for the next bounded pass.
+- If root `AGENTS.md` or `CLAUDE.md` already exist, the supervisor should inspect them early in the first pass, explain any coexistence risk relative to SUPLEX governance, and decide with the user whether a governance-alignment pass is needed before other work proceeds.
 - If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
 - If the supervisor cannot read repository files in the current session, it does not guess unseen repo state and uses the portable supervision packet instead.
 - If `.suplex/init_state.yaml` says `project_mode: "greenfield"`, the supervisor should ask whether the user wants to provide more project detail and should treat architecture-planning or structure-confirmation as the default first bounded pass unless current information already makes that unnecessary.
 - If `.suplex/init_state.yaml` says `project_mode: "overlay"`, the supervisor should ask whether the user wants to provide more project detail and should treat repo-state audit or local reconstruction as the default first bounded pass so the next task is defined from current repo evidence rather than assumptions.
 - If the supervisor identifies a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, it should restate that issue concretely, explain why it matters, and ask whether the user wants to resolve it directly in conversation or authorize best judgment.
 - If the user authorizes best judgment, the supervisor should state the assumption or decision it adopts and report that assumption again when closing or checkpointing the pass.
-- If no active handoff exists, the supervisor uses `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
+- If no active handoff exists, the supervisor uses `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
@@ -80,8 +81,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 
 - The executor returns a written report to the supervisor.
 - The report must be sufficient for supervisory interpretation even if the supervisor does not have repo access.
-- In `standard` mode, the report is normally stored as a dated artifact in `handoffs/history/`.
-- In `sans-sucre` mode, the report is normally stored in `handoffs/active/current_execution_report.md`.
+- In `standard` mode, the report is normally stored as a dated artifact in `./.suplex/handoffs/history/`.
+- In `sans-sucre` mode, the report is normally stored in `./.suplex/handoffs/active/current_execution_report.md`.
 
 ### Supervisor interpretation
 
@@ -144,19 +145,21 @@ Use no audit when:
 - In that case, the supervision packet must be sufficient for bounded supervision.
 - A verbatim copy of this template repo's own supervision brief is not a valid packet for another repo; the packet must be refreshed to reflect the target repo's current state.
 - The minimum required packet is:
-  - `AGENTS.md`
-  - `docs/09_supervision_brief.md`
-  - `handoffs/active/current_handoff.md`
-  - the latest execution report and/or `docs/08_status_checkpoint.md`
-- In `sans-sucre` mode, the latest execution report is `handoffs/active/current_execution_report.md`.
+  - `SUPLEX.md`
+  - `./.suplex/AGENTS.md`
+  - `./.suplex/docs/09_supervision_brief.md`
+  - `./.suplex/handoffs/active/current_handoff.md`
+  - the latest execution report and/or `./.suplex/docs/08_status_checkpoint.md`
+- In `sans-sucre` mode, the latest execution report is `./.suplex/handoffs/active/current_execution_report.md`.
 - The recommended browser-supervision packet is:
-  - `AGENTS.md`
-  - `docs/09_supervision_brief.md`
-  - `handoffs/active/current_handoff.md`
-  - in `standard` mode, the latest execution report in `handoffs/history/` if one exists
-  - in `sans-sucre` mode, `handoffs/active/current_execution_report.md`
-  - `docs/08_status_checkpoint.md`
-  - `docs/10_supervision_layer_spec.md`
+  - `SUPLEX.md`
+  - `./.suplex/AGENTS.md`
+  - `./.suplex/docs/09_supervision_brief.md`
+  - `./.suplex/handoffs/active/current_handoff.md`
+  - in `standard` mode, the latest execution report in `./.suplex/handoffs/history/` if one exists
+  - in `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md`
+  - `./.suplex/docs/08_status_checkpoint.md`
+  - `./.suplex/docs/10_supervision_layer_spec.md`
 - When live repo inspection is unavailable, the supervisor should avoid guessing hidden repo state and should govern only from the validated packet it has.
 
 ## 6. Supervisor-to-executor relay
@@ -182,12 +185,12 @@ Every execution-layer pass must return a written report containing at least:
 
 ### Active-handoff lifecycle
 
-- `handoffs/active/current_handoff.md` is the standard execution entry point.
-- In `standard` mode, the active handoff may mirror a dated handoff in `handoffs/history/` rather than containing the full contract inline.
-- In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`.
+- `./.suplex/handoffs/active/current_handoff.md` is the standard execution entry point.
+- In `standard` mode, the active handoff may mirror a dated handoff in `./.suplex/handoffs/history/` rather than containing the full contract inline.
+- In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `./.suplex/handoffs/history/`.
 - In `sans-sucre` mode, the active handoff and active execution report are the primary live pass artifacts and no dated history record is required.
-- After a bounded pass is reviewed and accepted, `handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
-- In `sans-sucre` mode, `handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.
+- After a bounded pass is reviewed and accepted, `./.suplex/handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
+- In `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.
 
 ## 7. Architectural escalation rule
 
@@ -226,7 +229,7 @@ Immediately after `suplex init`:
 2. confirm the copied repo-state docs have been rewritten to the target repo's current state
 3. confirm `.suplex/init_state.yaml` reflects the initialized target repo rather than the template repo
 4. bootstrap supervision using the canonical control docs and init state
-5. read `handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists
+5. read `./.suplex/handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists
 6. if no active pass exists, read `README.md`; if you can inspect the repo in the current session, inspect it before deciding what happens next
 7. if you cannot inspect the repo in the current session, do not guess hidden state and use the portable supervision packet instead
 8. ask the user what they want to do next
@@ -234,7 +237,7 @@ Immediately after `suplex init`:
 10. if the mode is `greenfield`, ask whether the user wants to provide more project detail and default toward architecture-planning or structure-confirmation before implementation
 11. if the mode is `overlay`, ask whether the user wants to provide more project detail and default toward repo-state audit or local reconstruction before implementation
 12. determine the minimum required reconstruction level for the first decision
-13. if no active pass exists, use `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation
+13. if no active pass exists, use `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation
 14. propose or draft exactly one next bounded task
 15. issue the first execution prompt only after supervision has defined scope
 

@@ -11,7 +11,7 @@ This file is the portable supervision packet for cases where the supervisor cann
 - Refresh it whenever supervision-relevant state changes materially.
 - When this template is applied to a target repo, rewrite the repo-state sections below so they reflect that target repo's current state before using this file as a portable packet.
 - During initialization, that rewrite must happen after control-layer copy and before supervision bootstrap.
-- At minimum, the paired target-state rewrite set is `docs/00_project_scope.md`, `docs/08_status_checkpoint.md`, and this file.
+- At minimum, the paired target-state rewrite set is `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and this file.
 - A verbatim copy of the template repo's own brief is not a valid supervision packet for another repo.
 
 ## 3. Project identity
@@ -41,18 +41,18 @@ This file is the portable supervision packet for cases where the supervisor cann
 
 ## 6. Active source-of-truth rule
 
-- `docs/` is canonical control memory.
-- `handoffs/active/current_handoff.md` is the first execution-boundary artifact to resolve.
-- `standard` mode uses dated handoffs and execution reports in `handoffs/history/`; `sans-sucre` mode uses `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md`.
-- `docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved.
-- Stable governance remains in `AGENTS.md` and `CLAUDE.md`.
+- `./.suplex/docs/` is canonical SUPLEX control memory.
+- `./.suplex/handoffs/active/current_handoff.md` is the first execution-boundary artifact to resolve.
+- `standard` mode uses dated handoffs and execution reports in `./.suplex/handoffs/history/`; `sans-sucre` mode uses `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md`.
+- `./.suplex/docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved.
+- Stable governance remains in `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md`.
 - Handoffs constrain execution but do not override stable governance.
-- Repeated operational lessons flow through `docs/local_lessons.md`, while stable-governance changes flow through `docs/governance_update_proposals.md`.
+- Repeated operational lessons flow through `./.suplex/docs/local_lessons.md`, while stable-governance changes flow through `./.suplex/docs/governance_update_proposals.md`.
 
 ## 7. Active handoff summary
 
-- The current runtime-layer pass added `docs/02_suplex_operating_workflow.md` as the runtime workflow document.
-- The current runtime-layer pass added `docs/09_supervision_brief.md` as the portable supervision-state artifact.
+- The current runtime-layer pass added `./.suplex/docs/02_suplex_operating_workflow.md` as the runtime workflow document.
+- The current runtime-layer pass added `./.suplex/docs/09_supervision_brief.md` as the portable supervision-state artifact.
 - Governance and handoff files were aligned only where required by the runtime layer.
 - The bounded pass did not broaden into computation scaffolding, publication scaffolding, or project-specific initialization logic.
 
@@ -76,8 +76,8 @@ This file is the portable supervision packet for cases where the supervisor cann
 
 ## 11. Exact next supervisory decision
 
-- Read `handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists.
-- If there is no active pass, use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
+- Read `./.suplex/handoffs/active/current_handoff.md` first and determine whether an unfinished bounded pass already exists.
+- If there is no active pass, use `./.suplex/docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker or discrepancy justifies a deviation.
 - If you can read the repository files in the current session, inspect the repo and `README.md` before deciding what happens next.
 - If you cannot read the repository files in the current session, do not guess hidden repo state; use this brief, the latest checkpoint, and the active handoff as your working state instead.
 - Ask the user what they want to do next.
@@ -90,4 +90,4 @@ This file is the portable supervision packet for cases where the supervisor cann
 
 - Refresh this file whenever the active handoff, latest validated state, latest execution report summary, blockers, or exact next supervisory decision changes materially.
 - The supervisor or the executor acting under an explicit documentation step may update it.
-- `docs/08_status_checkpoint.md` remains the fuller validated checkpoint record; this file is the portable supervisory state packet derived from that checkpoint and the active handoff.
+- `./.suplex/docs/08_status_checkpoint.md` remains the fuller validated checkpoint record; this file is the portable supervisory state packet derived from that checkpoint and the active handoff.

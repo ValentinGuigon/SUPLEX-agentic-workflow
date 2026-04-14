@@ -12,16 +12,17 @@ Use this file to track what currently counts as source material, what is inferre
 
 - The target repo's `README.md` is the mandatory seed specification input for initialization. [E]
 - This template repo's own `README.md` is packaging documentation for the standalone template repository. It is not the target-repo seed specification. [E]
-- After initialization, repo-local canonical control memory lives in `docs/`. [E]
+- After initialization, repo-local canonical SUPLEX control memory lives in `./.suplex/docs/`. [E]
 - If the target repo's `README.md` is missing, initialization must halt and request either the file itself or enough project description to draft it first. [E]
 
 ## Tier 2 derived control artifacts
 
-- `AGENTS.md` and `CLAUDE.md` define stable governance for bounded agentic execution. [E]
-- `docs/00_project_scope.md` records the scoped purpose of the SUPLEX layer. [E]
-- `docs/10_supervision_layer_spec.md`, `docs/11_execution_layer_spec.md`, and `docs/13_bounded_task_backlog.md` are canonical derived control artifacts for supervision rules, execution rules, and default next-task sequencing. [E]
-- `docs/08_status_checkpoint.md`, `docs/validation_ledger.md`, and `docs/discrepancy_log.md` are derived control-memory artifacts rather than project-domain sources of truth. [E]
-- `handoffs/` artifacts define bounded execution packets and are historical records once closed. [E]
+- `SUPLEX.md` is the root entrypoint to the installed SUPLEX control layer. [E]
+- `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md` define stable governance for bounded agentic execution. [E]
+- `./.suplex/docs/00_project_scope.md` records the scoped purpose of the SUPLEX layer. [E]
+- `./.suplex/docs/10_supervision_layer_spec.md`, `./.suplex/docs/11_execution_layer_spec.md`, and `./.suplex/docs/13_bounded_task_backlog.md` are canonical derived control artifacts for supervision rules, execution rules, and default next-task sequencing. [E]
+- `./.suplex/docs/08_status_checkpoint.md`, `./.suplex/docs/validation_ledger.md`, and `./.suplex/docs/discrepancy_log.md` are derived control-memory artifacts rather than project-domain sources of truth. [E]
+- `./.suplex/handoffs/` artifacts define bounded execution packets and are historical records once closed. [E]
 
 ## Tier 3 controlled support artifacts if any
 
@@ -31,7 +32,7 @@ Use this file to track what currently counts as source material, what is inferre
 ## Source hierarchy rules
 
 - The target repo's `README.md` is the required first source for initialization. [E]
-- If later canonical docs in `docs/` refine or supersede earlier assumptions, the explicit canonical doc layer takes precedence. [I]
+- If later canonical docs in `./.suplex/docs/` refine or supersede earlier assumptions, the explicit canonical doc layer takes precedence. [I]
 - Handoffs constrain execution scope but do not override stable governance. [E]
 - Internal state files inform agent behavior but do not replace canonical prose docs. [E]
 
@@ -52,8 +53,8 @@ Use this file to track what currently counts as source material, what is inferre
 
 ## Downstream artifact dependency rules
 
-- `docs/00_project_scope.md` should derive from `README.md` and any approved canonical project inputs. [E]
-- `docs/08_status_checkpoint.md` should derive from actual bounded-pass work performed in the repo. [E]
-- `docs/validation_ledger.md` should derive from concrete bounded-pass acceptance checks. [E]
-- `docs/discrepancy_log.md` should derive from operational mismatches actually observed. [E]
+- `./.suplex/docs/00_project_scope.md` should derive from `README.md` and any approved canonical project inputs. [E]
+- `./.suplex/docs/08_status_checkpoint.md` should derive from actual bounded-pass work performed in the repo. [E]
+- `./.suplex/docs/validation_ledger.md` should derive from concrete bounded-pass acceptance checks. [E]
+- `./.suplex/docs/discrepancy_log.md` should derive from operational mismatches actually observed. [E]
 - SUPLEX does not define computation architecture unless a separate bounded handoff and canonical decision explicitly add that responsibility. [E]

@@ -24,12 +24,13 @@ The execution layer must:
 ## Required Inputs
 
 Before acting, the execution layer should read:
-- `AGENTS.md`
-- `handoffs/active/current_handoff.md`
-- `docs/11_execution_layer_spec.md`
+- `SUPLEX.md`
+- `./.suplex/AGENTS.md`
+- `./.suplex/handoffs/active/current_handoff.md`
+- `./.suplex/docs/11_execution_layer_spec.md`
 - only the additional files explicitly named by the active handoff or required by the bounded task
 
-If `handoffs/active/current_handoff.md` points to a dated handoff, that dated handoff is the active contract.
+If `./.suplex/handoffs/active/current_handoff.md` points to a dated handoff, that dated handoff is the active contract.
 
 If chat instructions conflict with the active handoff, stop and surface the mismatch rather than choosing implicitly.
 
@@ -71,12 +72,12 @@ These rules should not be imposed mechanically on every narrow implementation pa
 
 Each bounded pass should leave behind:
 - the in-scope repo changes
-- in `standard` mode, one execution report in `handoffs/history/`
-- in `sans-sucre` mode, one live execution report in `handoffs/active/current_execution_report.md`
+- in `standard` mode, one execution report in `./.suplex/handoffs/history/`
+- in `sans-sucre` mode, one live execution report in `./.suplex/handoffs/active/current_execution_report.md`
 - validation notes or artifacts sufficient to support supervisory review
 - doc updates required by the handoff when workflow behavior, status, or mismatches changed
 
-Only passes that actually produce validation evidence should expect an entry in `docs/validation_ledger.md`.
+Only passes that actually produce validation evidence should expect an entry in `./.suplex/docs/validation_ledger.md`.
 
 ## Mandatory Operating Rules
 
@@ -166,6 +167,6 @@ Prefer direct evidence over narrative assurance.
 
 The execution layer contributes to project memory but does not define system law.
 
-Repeated operational lessons should go to `docs/local_lessons.md` only when explicitly instructed or when the handoff requires it.
+Repeated operational lessons should go to `./.suplex/docs/local_lessons.md` only when explicitly instructed or when the handoff requires it.
 
 Stable governance changes should be proposed, not silently embedded.

@@ -121,7 +121,7 @@ State where the execution layer should write its report for this pass.
 
 ## Current Handoff Update
 
-State how `handoffs/active/current_handoff.md` should reference this handoff.
+State how `./.suplex/handoffs/active/current_handoff.md` should reference this handoff.
 
 ## End-Of-Pass Report
 

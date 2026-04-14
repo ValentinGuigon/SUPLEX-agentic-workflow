@@ -6,8 +6,9 @@ workflow_mode: "standard"
 public_surface: "absent"
 compiled_validation: false
 governance_files:
-  - "AGENTS.md"
-  - "CLAUDE.md"
+  - "SUPLEX.md"
+  - "./.suplex/AGENTS.md"
+  - "./.suplex/CLAUDE.md"
 inference_basis:
   repo_scan: true
   readme_present: false

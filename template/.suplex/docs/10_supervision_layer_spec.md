@@ -26,41 +26,42 @@ When the supervision layer identifies a material blocker or ambiguity that is li
 ## Required Inputs
 
 Before issuing a new bounded pass, the supervision layer should read:
-- `handoffs/active/current_handoff.md` first
-- `AGENTS.md`
-- `docs/08_status_checkpoint.md`
-- `docs/10_supervision_layer_spec.md`
-- `docs/13_bounded_task_backlog.md`
-- `docs/validation_ledger.md`
-- `docs/discrepancy_log.md` when active mismatches exist
+- `./.suplex/handoffs/active/current_handoff.md` first
+- `SUPLEX.md`
+- `./.suplex/AGENTS.md`
+- `./.suplex/docs/08_status_checkpoint.md`
+- `./.suplex/docs/10_supervision_layer_spec.md`
+- `./.suplex/docs/13_bounded_task_backlog.md`
+- `./.suplex/docs/validation_ledger.md`
+- `./.suplex/docs/discrepancy_log.md` when active mismatches exist
 - in `standard` mode, the most recent relevant dated handoff and execution report
-- in `sans-sucre` mode, `handoffs/active/current_execution_report.md` if an active pass is in flight or just completed
+- in `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` if an active pass is in flight or just completed
 - any task-specific docs required by the active or proposed pass
 
-If `handoffs/active/current_handoff.md` points to an unfinished pass, supervision should treat that handoff as the primary task-instruction artifact rather than infer a fresh task from repo context alone.
+If `./.suplex/handoffs/active/current_handoff.md` points to an unfinished pass, supervision should treat that handoff as the primary task-instruction artifact rather than infer a fresh task from repo context alone.
 
-If the active handoff appears complete, supervision should read the matching latest execution report before deciding whether to review, checkpoint, close, or issue the next pass. In `standard` mode this is usually a dated report in `handoffs/history/`; in `sans-sucre` mode this is `handoffs/active/current_execution_report.md`.
+If the active handoff appears complete, supervision should read the matching latest execution report before deciding whether to review, checkpoint, close, or issue the next pass. In `standard` mode this is usually a dated report in `./.suplex/handoffs/history/`; in `sans-sucre` mode this is `./.suplex/handoffs/active/current_execution_report.md`.
 
-When no active handoff exists, supervision should use `docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation.
+When no active handoff exists, supervision should use `./.suplex/docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation.
 
 ## Required Outputs
 
 For each bounded pass, the supervision layer must produce:
-- in `standard` mode, one dated handoff packet in `handoffs/history/`
-- one active handoff pointer at `handoffs/active/current_handoff.md`
+- in `standard` mode, one dated handoff packet in `./.suplex/handoffs/history/`
+- one active handoff pointer at `./.suplex/handoffs/active/current_handoff.md`
 - one explicit task family
 - one explicit bounded deliverable
 - acceptance criteria with pass/fail semantics
 - a plain statement of what remains out of scope
 
-In `sans-sucre` mode, the handoff may live only in `handoffs/active/current_handoff.md` and the paired live report may live only in `handoffs/active/current_execution_report.md`.
+In `sans-sucre` mode, the handoff may live only in `./.suplex/handoffs/active/current_handoff.md` and the paired live report may live only in `./.suplex/handoffs/active/current_execution_report.md`.
 
 After reviewing the pass, the supervision layer must:
 - decide whether the task family is closed
-- update `docs/08_status_checkpoint.md` when validated project state changed
-- update `docs/13_bounded_task_backlog.md` when pass ordering or completion status changed
-- append to `docs/validation_ledger.md` when a pass produced actual validation evidence worth preserving
-- log unresolved mismatches in `docs/discrepancy_log.md` when needed
+- update `./.suplex/docs/08_status_checkpoint.md` when validated project state changed
+- update `./.suplex/docs/13_bounded_task_backlog.md` when pass ordering or completion status changed
+- append to `./.suplex/docs/validation_ledger.md` when a pass produced actual validation evidence worth preserving
+- log unresolved mismatches in `./.suplex/docs/discrepancy_log.md` when needed
 
 ## Decision Protocol
 
@@ -147,36 +148,36 @@ The supervision layer should stop and return to planning when:
 
 ## Learning Escalation Rule
 
-When supervision identifies a repeated operational lesson that does not yet warrant stable governance change, it should require that the lesson be recorded in `docs/local_lessons.md`.
+When supervision identifies a repeated operational lesson that does not yet warrant stable governance change, it should require that the lesson be recorded in `./.suplex/docs/local_lessons.md`.
 
-When supervision determines that a repeated lesson implies a change to stable governance, it should require a proposal in `docs/governance_update_proposals.md` rather than silently changing repo law.
+When supervision determines that a repeated lesson implies a change to stable governance, it should require a proposal in `./.suplex/docs/governance_update_proposals.md` rather than silently changing repo law.
 
-Execution may record a repeated lesson in `docs/local_lessons.md` only when the handoff explicitly requires it or supervision directs it to do so.
+Execution may record a repeated lesson in `./.suplex/docs/local_lessons.md` only when the handoff explicitly requires it or supervision directs it to do so.
 
 ## Handoff Discipline
 
 The supervision layer communicates bounded work through handoff packets, not through ad hoc conversation alone.
 
-The standard execution entry point is `handoffs/active/current_handoff.md`.
+The standard execution entry point is `./.suplex/handoffs/active/current_handoff.md`.
 
 On startup, supervision should resolve task precedence in this order:
-1. `handoffs/active/current_handoff.md`
+1. `./.suplex/handoffs/active/current_handoff.md`
 2. the matching latest execution report if the active pass appears complete
 3. canonical status, discrepancy, and backlog docs only after the active pass is resolved
 
 The supervision layer should:
 - write the dated handoff for the pass
-- update `handoffs/active/current_handoff.md` so it mirrors or points to the active pass
+- update `./.suplex/handoffs/active/current_handoff.md` so it mirrors or points to the active pass
 - preserve prior dated handoffs and reports as history rather than overwriting them
-- store reusable templates in `handoffs/templates/`
+- store reusable templates in `./.suplex/handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
 
 After a bounded pass is reviewed and accepted as complete, supervision should:
-- in `standard` mode, leave the dated handoff and execution report in `handoffs/history/`
-- remove the completed task contract from `handoffs/active/current_handoff.md`
-- replace `handoffs/active/current_handoff.md` with an explicit no-active-handoff placeholder
-- in `sans-sucre` mode, also clear or replace `handoffs/active/current_execution_report.md` so stale report content does not carry forward
+- in `standard` mode, leave the dated handoff and execution report in `./.suplex/handoffs/history/`
+- remove the completed task contract from `./.suplex/handoffs/active/current_handoff.md`
+- replace `./.suplex/handoffs/active/current_handoff.md` with an explicit no-active-handoff placeholder
+- in `sans-sucre` mode, also clear or replace `./.suplex/handoffs/active/current_execution_report.md` so stale report content does not carry forward
 
 Each handoff should:
 - make clear that it is one bounded task only

@@ -12,15 +12,15 @@ It exists to:
 
 This is not a changelog and not a substitute for an active handoff.
 
-The active execution contract still belongs in `handoffs/active/current_handoff.md`.
+The active execution contract still belongs in `./.suplex/handoffs/active/current_handoff.md`.
 
 ## Usage Rules
 
 - Supervision should consult this backlog only after resolving whether an active handoff already exists.
-- A backlog item is not active until it is turned into a dated handoff and mirrored in `handoffs/active/current_handoff.md`.
+- A backlog item is not active until it is turned into a dated handoff and mirrored in `./.suplex/handoffs/active/current_handoff.md`.
 - Reorder this backlog only when repo state, validation results, or blocking dependencies materially change.
 - Keep items bounded enough that one item can become one handoff without broad reinterpretation.
-- When an item is completed, update this file and `docs/08_status_checkpoint.md`.
+- When an item is completed, update this file and `./.suplex/docs/08_status_checkpoint.md`.
 
 ## Current Priority Queue
 
@@ -40,11 +40,11 @@ The active execution contract still belongs in `handoffs/active/current_handoff.
 - likely files in scope:
   - `README.md`
   - `.suplex/init_state.yaml`
-  - `docs/00_project_scope.md`
-  - `docs/08_status_checkpoint.md`
-  - `docs/09_supervision_brief.md`
-  - `docs/13_bounded_task_backlog.md`
-  - `handoffs/active/current_handoff.md`
+  - `./.suplex/docs/00_project_scope.md`
+  - `./.suplex/docs/08_status_checkpoint.md`
+  - `./.suplex/docs/09_supervision_brief.md`
+  - `./.suplex/docs/13_bounded_task_backlog.md`
+  - `./.suplex/handoffs/active/current_handoff.md`
 
 ### Next
 

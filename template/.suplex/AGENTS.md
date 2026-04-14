@@ -4,7 +4,7 @@
 
 - Project: `{project_name}`
 - Primary objective: reusable SUPLEX control-layer scaffold for bounded agentic work
-- Use `docs/` as canonical control memory and `handoffs/` as bounded task-family entry points.
+- Use `./.suplex/docs/` as canonical SUPLEX control memory and `./.suplex/handoffs/` as bounded task-family entry points.
 
 ## Stable governance only
 
@@ -31,12 +31,13 @@ Do not rewrite this file during routine work.
 ## Source-of-truth rules
 
 - Treat the target repo's `README.md` as the first required seed input for initialization.
-- Treat `docs/` as canonical control memory after initialization.
-- Treat `docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
-- Treat `handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.
-- In `standard` mode, treat dated handoffs and execution reports in `handoffs/history/` as the canonical bounded-pass record.
-- In `sans-sucre` mode, treat `handoffs/active/current_handoff.md` and `handoffs/active/current_execution_report.md` as the live bounded-pass record.
-- Treat `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
+- Treat `SUPLEX.md` as the root entrypoint into the installed SUPLEX workflow.
+- Treat `./.suplex/docs/` as canonical SUPLEX control memory after initialization.
+- Treat `./.suplex/docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
+- Treat `./.suplex/handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.
+- In `standard` mode, treat dated handoffs and execution reports in `./.suplex/handoffs/history/` as the canonical bounded-pass record.
+- In `sans-sucre` mode, treat `./.suplex/handoffs/active/current_handoff.md` and `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass record.
+- Treat `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
 - No new implementation phase should begin without a handoff document.
 - If canonical docs and repo artifacts disagree, flag the discrepancy before proceeding.
 
@@ -74,19 +75,19 @@ If workflow behavior, artifact expectations, canonical status, or repo structure
 
 Typical targets:
 
-- `docs/10_supervision_layer_spec.md`
-- `docs/11_execution_layer_spec.md`
-- `docs/01_source_of_truth_and_provenance.md`
-- `docs/08_status_checkpoint.md`
-- `docs/13_bounded_task_backlog.md`
-- `docs/validation_ledger.md`
-- `docs/discrepancy_log.md`
+- `./.suplex/docs/10_supervision_layer_spec.md`
+- `./.suplex/docs/11_execution_layer_spec.md`
+- `./.suplex/docs/01_source_of_truth_and_provenance.md`
+- `./.suplex/docs/08_status_checkpoint.md`
+- `./.suplex/docs/13_bounded_task_backlog.md`
+- `./.suplex/docs/validation_ledger.md`
+- `./.suplex/docs/discrepancy_log.md`
 
 ## Mutable-learning rule
 
 Do not rewrite the stable governance file during routine work.
-If a repeated lesson emerges from execution, write it to `docs/local_lessons.md`.
-If stable governance should change, write a proposal to `docs/governance_update_proposals.md`.
+If a repeated lesson emerges from execution, write it to `./.suplex/docs/local_lessons.md`.
+If stable governance should change, write a proposal to `./.suplex/docs/governance_update_proposals.md`.
 
 ## Context-clear rule
 

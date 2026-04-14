@@ -2,7 +2,7 @@
 
 Use this file when execution suggests that the stable governance layer itself should change.
 
-Do not silently rewrite `AGENTS.md` or `CLAUDE.md` during normal work.
+Do not silently rewrite `./.suplex/AGENTS.md` or `./.suplex/CLAUDE.md` during normal work.
 Record the proposed change here first.
 
 Suggested structure:

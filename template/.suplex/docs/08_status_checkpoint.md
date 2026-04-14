@@ -1,5 +1,51 @@
 # 08 Status Checkpoint
 
+## Template Source Payload Namespace Alignment Pass - 2026-04-14
+
+### Phase State
+
+- [E] This bounded `implement narrowly` pass aligned the source template layout with the installed SUPLEX namespace layout.
+- [E] The pass remained limited to template payload placement, bootstrap source-path resolution, documentation truthfulness, and controlled validation.
+- [E] Installed target-repo behavior was preserved.
+
+### What Was Done
+
+- [E] Moved the source template payload under `template/.suplex/`, leaving only `template/SUPLEX.md` at the template root.
+- [E] Simplified `bootstrap/init_suplex.py` so it now sources only `template/SUPLEX.md` plus `template/.suplex/`.
+- [E] Updated source-layout references in the template init state and active / dated handoff artifacts.
+- [E] Updated the root `README.md` repository-layout description so it truthfully describes the new template source layout.
+- [E] Revalidated the install path with a controlled local overlay-style target repo.
+
+### What Was NOT Done
+
+- [E] No installed target-repo layout redesign was introduced.
+- [E] No bootstrap wrapper behavior in `bootstrap/install.ps1` or `bootstrap/install.sh` was changed.
+- [E] Historical checkpoint and validation-log entries were not comprehensively normalized during this pass.
+
+### Why It Was NOT Done
+
+- [E] The bounded objective was a source-template cleanup pass only.
+- [E] The bounded objective did not include a full historical-record normalization pass.
+
+### Validation Decision
+
+- [E] The source template now structurally mirrors the installed SUPLEX namespace layout more closely.
+- [E] A controlled local init still installs root `SUPLEX.md` plus the canonical payload under target `./.suplex/`.
+- [E] The emitted first supervision prompt still reflects governance coexistence handling and mode-specific artifact rules.
+
+### Exact Next Bounded Task
+
+- [E] No immediate follow-on bounded task is required by this pass alone.
+
+### Context-Clear Assessment
+
+- [E] This bounded template-source namespace-alignment pass is closed.
+- [E] Relevant bootstrap, documentation, and validation records are updated.
+- [E] No unresolved blocker was introduced by the pass.
+- [E] No active handoff should remain for this task family.
+
+**Context can be cleared after this bounded pass.** [E]
+
 ## Strict Handoff Runtime Pass - 2026-04-13
 
 ### Phase State
@@ -10,12 +56,12 @@
 
 ### What Was Done
 
-- [E] Added `docs/10_supervision_layer_spec.md` to define strict active-handoff precedence, bounded task issuance, review standards, and handoff lifecycle rules.
-- [E] Added `docs/11_execution_layer_spec.md` to require startup restatement, scoped execution, evidence discipline, validation, and structured reporting.
-- [E] Added `docs/13_bounded_task_backlog.md` as the canonical next-task sequencing artifact after active-handoff resolution.
-- [E] Replaced the flat handoff layout with `handoffs/active/`, `handoffs/history/`, and `handoffs/templates/`.
-- [E] Added `handoffs/active/current_handoff.md` as an explicit no-active-handoff placeholder.
-- [E] Added strengthened handoff and execution-report templates under `handoffs/templates/`.
+- [E] Added `./.suplex/docs/10_supervision_layer_spec.md` to define strict active-handoff precedence, bounded task issuance, review standards, and handoff lifecycle rules.
+- [E] Added `./.suplex/docs/11_execution_layer_spec.md` to require startup restatement, scoped execution, evidence discipline, validation, and structured reporting.
+- [E] Added `./.suplex/docs/13_bounded_task_backlog.md` as the canonical next-task sequencing artifact after active-handoff resolution.
+- [E] Replaced the flat handoff layout with `./.suplex/handoffs/active/`, `./.suplex/handoffs/history/`, and `./.suplex/handoffs/templates/`.
+- [E] Added `./.suplex/handoffs/active/current_handoff.md` as an explicit no-active-handoff placeholder.
+- [E] Added strengthened handoff and execution-report templates under `./.suplex/handoffs/templates/`.
 - [E] Updated governance, workflow, brief, initialization, packaging, and bootstrap docs so they describe the stricter runtime contract truthfully.
 
 ### What Was NOT Done
@@ -62,7 +108,7 @@
 - [E] Updated `bootstrap/init_suplex.py` so every successful init installs the same full SUPLEX agentic control layer regardless of whether the target repo is greenfield or overlay.
 - [E] Removed `workflow_profile` from generated `.suplex/init_state.yaml` and preserved repo-shape observations only as descriptive metadata such as `project_mode`, `public_surface`, and structure-detection flags.
 - [E] Rewrote the emitted first supervision prompt so it now instructs supervision to read `README.md`, reconstruct current repo state when repo access exists, fall back to the portable supervision packet when it does not, check with the user what should happen next, decide whether architecture planning is needed, determine whether architecture already exists, and propose exactly one next bounded task.
-- [E] Updated `README.md`, `template/.suplex/init_state.yaml`, `template/docs/02_suplex_operating_workflow.md`, `template/docs/09_supervision_brief.md`, and `template/handoffs/initialization.md` so they truthfully describe the new always-full-init semantics.
+- [E] Updated `README.md`, `template/.suplex/init_state.yaml`, `template/.suplex/docs/02_suplex_operating_workflow.md`, `template/.suplex/docs/09_supervision_brief.md`, and `template/.suplex/handoffs/initialization.md` so they truthfully describe the new always-full-init semantics.
 - [E] Revalidated fresh-repo, overlay-repo, missing-README, and init-state scenarios using controlled targets under `dev_validation/tmp_validation/always_full_init/`.
 
 ### What Was NOT Done
@@ -155,7 +201,7 @@
 
 ### What Was Done
 
-- [E] Moved the target-repo payload from repo root into `template/`: `AGENTS.md`, `CLAUDE.md`, `.suplex/`, `docs/`, and `handoffs/`, with lesson / governance-memory artifacts now living under `docs/`.
+- [E] Moved the target-repo payload from repo root into `template/`, and later aligned the canonical source payload under `template/.suplex/` with `template/SUPLEX.md` at the template root.
 - [E] Updated `bootstrap/init_suplex.py` so it resolves and copies kernel assets from `template/`.
 - [E] Rewrote the root `README.md` so it describes the `SUPLEX-agentic-workflow` packaging repo and distinguishes that packaging README from a target repo seed `README.md`.
 - [E] Relocated `tmp_validation/` to `dev_validation/tmp_validation/` so those local artifacts no longer sit in the published root payload shape.
@@ -204,7 +250,7 @@
 
 - [E] Added `bootstrap/init_suplex.py` as the core initializer that enforces the `README.md` precondition, infers `greenfield` versus `overlay`, derives a control profile, copies only kernel assets, rewrites target-state docs, writes `.suplex/init_state.yaml`, and prints the first supervision prompt.
 - [E] Added `bootstrap/install.ps1` and `bootstrap/install.sh` as thin wrappers intended to run from inside a target repo.
-- [E] Updated `README.md`, `docs/02_suplex_operating_workflow.md`, and `handoffs/initialization.md` so the documented initialization path matches the new bootstrap behavior.
+- [E] Updated `README.md`, `./.suplex/docs/02_suplex_operating_workflow.md`, and `./.suplex/handoffs/initialization.md` so the documented initialization path matches the new bootstrap behavior.
 - [E] Revalidated the bootstrap against controlled greenfield, overlay, and missing-README target repos.
 
 ### What Was NOT Done
@@ -249,12 +295,12 @@
 
 ### What Was Done
 
-- [E] Added `docs/02_suplex_operating_workflow.md` to define the post-init SUPLEX runtime protocol.
-- [E] Added `docs/09_supervision_brief.md` as the portable supervision packet.
-- [E] Updated `AGENTS.md` and `CLAUDE.md` to state that full audit is not mandatory at every pass and that supervision may operate without repo access from a portable packet.
-- [E] Updated `handoffs/_handoff_template.md` to require bounded objective, explicit non-scope, reconstruction mode, reporting requirements, and closure requirements.
-- [E] Updated `handoffs/README.md` to clarify that not every pass begins with a full repo audit and to state the relationship between handoffs and the supervision brief.
-- [E] Updated `handoffs/initialization.md` to clarify that init prepares the repo for supervision bootstrap rather than direct execution.
+- [E] Added `./.suplex/docs/02_suplex_operating_workflow.md` to define the post-init SUPLEX runtime protocol.
+- [E] Added `./.suplex/docs/09_supervision_brief.md` as the portable supervision packet.
+- [E] Updated `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md` to state that full audit is not mandatory at every pass and that supervision may operate without repo access from a portable packet.
+- [E] Updated `./.suplex/handoffs/templates/00_handoff_template.md` to require bounded objective, explicit non-scope, reconstruction mode, reporting requirements, and closure requirements.
+- [E] Updated `./.suplex/handoffs/README.md` to clarify that not every pass begins with a full repo audit and to state the relationship between handoffs and the supervision brief.
+- [E] Updated `./.suplex/handoffs/initialization.md` to clarify that init prepares the repo for supervision bootstrap rather than direct execution.
 - [E] Updated `README.md` to describe the runtime workflow layer and portable supervision brief.
 
 ### What Was NOT Done
@@ -304,11 +350,11 @@
 
 ### What Was Done
 
-- [E] Updated `handoffs/initialization.md` to require an explicit repo-state rewrite step before supervision bootstrap or portable-packet use.
-- [E] Updated `docs/02_suplex_operating_workflow.md` to name `docs/00_project_scope.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` as the minimum target-state rewrite set during init.
-- [E] Updated `docs/09_supervision_brief.md` to align its usage rule with that ordered rewrite requirement.
+- [E] Updated `./.suplex/handoffs/initialization.md` to require an explicit repo-state rewrite step before supervision bootstrap or portable-packet use.
+- [E] Updated `./.suplex/docs/02_suplex_operating_workflow.md` to name `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` as the minimum target-state rewrite set during init.
+- [E] Updated `./.suplex/docs/09_supervision_brief.md` to align its usage rule with that ordered rewrite requirement.
 - [E] Recreated controlled greenfield, overlay, and missing-README targets under `tmp_validation/reval_*`.
-- [E] Reapplied the control layer to the greenfield and overlay targets and rewrote `docs/00_project_scope.md`, `docs/08_status_checkpoint.md`, and `docs/09_supervision_brief.md` into target-specific state before supervision bootstrap.
+- [E] Reapplied the control layer to the greenfield and overlay targets and rewrote `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` into target-specific state before supervision bootstrap.
 - [E] Rechecked the missing-README halt scenario without applying the control layer.
 
 ### What Was NOT Done
@@ -325,7 +371,7 @@
 ### Validation Decision
 
 - [E] Test C now passes: after init, current-state docs in both controlled target repos reflect the target repo rather than the template repo.
-- [E] Test D now passes: `docs/09_supervision_brief.md` plus the active handoff and latest checkpoint form a truthful portable supervision packet without extra repo inspection.
+- [E] Test D now passes: `./.suplex/docs/09_supervision_brief.md` plus the active handoff and latest checkpoint form a truthful portable supervision packet without extra repo inspection.
 - [E] Spot checks for Test A, Test B, and Test E remain passing.
 - [E] No computation or publication scaffolding was introduced by the repair pass.
 

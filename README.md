@@ -2,12 +2,12 @@
 
 `SUPLEX-agentic-workflow` installs the SUPLEX control layer into an existing repository.
 
-Use it when you want to add a standard supervision and handoff structure for agentic work without changing the underlying architecture of the target project.
+Use it when you want to add a standard supervision and handoff structure for agentic work. SUPLEX doesn't change the underlying architecture of the target project and doesn't collide with common host-governance paths such as root `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/`.
 
 SUPLEX can be initialized in two infrastructure modes:
 
-- `standard`: full bounded-pass history with dated handoffs and dated execution reports in `handoffs/history/`
-- `sans-sucre`: lighter live-pass infrastructure with `handoffs/active/current_handoff.md` plus `handoffs/active/current_execution_report.md`, and no dated history directory
+- `standard`: full bounded-pass history with dated handoffs and dated execution reports in `./.suplex/handoffs/history/`
+- `sans-sucre`: lighter live-pass infrastructure with `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md`, and no dated history directory
 
 ## What is SUPLEX
 
@@ -40,32 +40,41 @@ It is a worse fit for:
 
 Running the bootstrap from inside a target repository adds the SUPLEX control layer:
 
-- `AGENTS.md`
-- `CLAUDE.md`
+- `SUPLEX.md`
 - `.suplex/init_state.yaml`
-- `docs/`
-- `handoffs/`
-- `docs/local_lessons.md`
-- `docs/governance_update_proposals.md`
+- `.suplex/AGENTS.md`
+- `.suplex/CLAUDE.md`
+- `.suplex/docs/`
+- `.suplex/handoffs/`
+- `.suplex/docs/local_lessons.md`
+- `.suplex/docs/governance_update_proposals.md`
+
+The write contract is intentionally narrow:
+
+- SUPLEX writes root `SUPLEX.md`
+- SUPLEX writes and updates files under `./.suplex/`
+- SUPLEX lefts untouched canonical governance (typically at root: `AGENTS.md`, `CLAUDE.md`, `docs/`)
 
 The installed runtime includes:
 
-- supervision and execution specs in `docs/10_supervision_layer_spec.md` and `docs/11_execution_layer_spec.md`
-- a canonical backlog in `docs/13_bounded_task_backlog.md`
-- an active handoff pointer in `handoffs/active/current_handoff.md`
-- in `standard` mode, handoff and execution-report history in `handoffs/history/`
-- in `sans-sucre` mode, a live execution report in `handoffs/active/current_execution_report.md`
-- reusable handoff templates in `handoffs/templates/`, plus the execution-report template in `standard` mode
+- supervision and execution specs in `.suplex/docs/10_supervision_layer_spec.md` and `.suplex/docs/11_execution_layer_spec.md`
+- a canonical backlog in `.suplex/docs/13_bounded_task_backlog.md`
+- an active handoff pointer in `.suplex/handoffs/active/current_handoff.md`
+- in `standard` mode, handoff and execution-report history in `.suplex/handoffs/history/`
+- in `sans-sucre` mode, a live execution report in `.suplex/handoffs/active/current_execution_report.md`
+- reusable handoff templates in `.suplex/handoffs/templates/`, plus the execution-report template in `standard` mode
 
 ## Scope
 
 SUPLEX init creates the supervision-execution layers, but it does not create or infer your project architecture. It does not add code, data, or source files.
 
-Successful `suplex init` always installs the same full control layer. After initialization, `handoffs/active/current_handoff.md` starts as a no-active-handoff placeholder, so the first active layer is supervision. The first supervision pass should read that file first, inspect the repo if it has repo access, ask what you want to do next, and define exactly one bounded task.
+For overlay installs, this means SUPLEX is designed to preserve the host repository's existing project structure while adding its own control layer. The installer treats root `SUPLEX.md` and `./.suplex/` as SUPLEX-owned paths, so those paths may be created or refreshed during installation; the non-collision guarantee applies to common host-governance locations outside that namespace.
+
+Successful `suplex init` always installs the same full control layer. After initialization, `.suplex/handoffs/active/current_handoff.md` starts as a no-active-handoff placeholder, so the first active layer is supervision. The first supervision pass should read that file first, inspect the repo if it has repo access, ask what you want to do next, and define exactly one bounded task.
 
 If the repo was empty (SUPLEX as a greenfield), that first supervision pass will often need an architecture-planning or structure-confirmation step before implementation begins. If the repo was already populated with code, data, or source files (SUPLEX as an overlay), that first supervision pass should reconstruct enough of the current repo state to define the next bounded task safely. Architecting is an expected supervision escalation mode when structure decisions need to be made, not a permanent parallel role.
 
-`standard` and `sans-sucre` differ in infrastructure weight, not in supervisory discipline. Both modes keep the supervisor / executor split, bounded-task logic, checkpointing, validation, and discrepancy handling. `sans-sucre` mainly removes dated handoff and report history so the repo carries less pass-by-pass archival overhead.
+`standard` and `sans-sucre` differ in infrastructure weight. Both modes keep the supervisor / executor split, bounded-task logic, checkpointing, validation, and discrepancy handling. `sans-sucre` mainly removes dated handoff and report history so the repo carries less pass-by-pass archival overhead.
 
 ## Skills And Agents
 
@@ -73,7 +82,7 @@ SUPLEX is intended to sit above project-specific skills and agents as a control 
 
 If a target repository already contains skills, agents, or similar execution helpers, SUPLEX should usually preserve them as project-domain assets. Successful initialization adds only the SUPLEX control layer and does not restructure existing `src/`, `data/`, `notebooks/`, `site/`, `public/`, or similar project directories.
 
-However, compatibility is not automatically seamless when the target repo already has its own governance layer. Initialization copies `AGENTS.md` and `CLAUDE.md`, merges `docs/` and `handoffs/`, and rewrites the target-state control docs that SUPLEX treats as canonical. In practice, this means there are likely collisions if the repo already uses root-level `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/` for a different control system.
+However, compatibility is not automatically seamless when the target repo already has its own governance layer. SUPLEX now installs its canonical files under `./.suplex/` and uses root `SUPLEX.md` as the entrypoint, which avoids direct file collisions with existing root `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/`. This is a coexistence improvement, not a claim that all governance ambiguity disappears. In overlay repos that already have root governance files, the first supervision pass should inspect those files early, explain any coexistence risk, and determine with the user whether a bounded governance-alignment pass is needed.
 
 The integration model is:
 
@@ -83,9 +92,9 @@ The integration model is:
 
 So:
 
-- adding SUPLEX to a repo that already has skills or agents is usually structurally compatible if those assets do not depend on conflicting root governance files
+- adding SUPLEX to a repo that already has skills or agents is usually structurally compatible if those assets do not depend on conflicting governance rules
 - adding skills or agents to a SUPLEX-managed repo is usually compatible if they are treated as project-domain components governed by the active handoff and stable SUPLEX rules
-- layering SUPLEX on top of another repo-wide governance system with competing ownership of `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/` should be treated as an explicit integration task as it will create collisions - SUPLEX overwriting the existing governance documents.
+- layering SUPLEX on top of another repo-wide governance system with competing ownership expectations should still be treated as an explicit integration task, even though SUPLEX now keeps its canonical files under `./.suplex/`
 
 ## Before You Run It
 
@@ -139,13 +148,16 @@ The bootstrap looks for Python 3 automatically:
 
 After installation, the target repository should contain the SUPLEX control layer alongside the project's existing files.
 
+In an overlay repo, existing root governance files such as `AGENTS.md` or `CLAUDE.md` may still be present exactly as before. The intended result is coexistence: root `SUPLEX.md` points into the canonical SUPLEX layer under `./.suplex/`, while host-governance files remain host-owned unless the repo explicitly delegates otherwise.
+
 At minimum, you should see:
 
-- `AGENTS.md`
-- `CLAUDE.md`
+- `SUPLEX.md`
 - `.suplex/`
-- `docs/`
-- `handoffs/`
+- `.suplex/AGENTS.md`
+- `.suplex/CLAUDE.md`
+- `.suplex/docs/`
+- `.suplex/handoffs/`
 
 The bootstrap then prints the ready message and the next supervision prompt.
 
@@ -167,14 +179,14 @@ The repo is managed under a strict bounded task family discipline throughout con
 
 - Interact with the supervision layer before each handoff so the next bounded pass is scoped correctly.
 - Interact with the supervision layer again after each execution report so the result can be reviewed, validated, and either closed or turned into the next bounded pass.
-- Each task enters through a handoff document in `handoffs/` with a defined scope, blocker list, acceptance criteria, and validation plan.
+- Each task enters through a handoff document in `.suplex/handoffs/` with a defined scope, blocker list, acceptance criteria, and validation plan.
 - Each bounded task returns an execution report describing what was read, what was done, what was not done, validation result, blockers, and the likely next bounded task.
 - In `standard` mode, the workflow maintains dated handoff and execution-report history.
 - In `sans-sucre` mode, the workflow keeps only the live active handoff and live active execution report.
 - The workflow maintains canonical control-memory docs including the checkpoint, validation ledger, and discrepancy log.
 - Where provenance matters, project docs may tag claims with evidence level: `[E]` directly evidenced, `[I]` strong inference, `[U]` unresolved.
 - No implementation proceeds without an active handoff document and evidence that the prior stage was validated.
-- If canonical docs and code artifacts disagreed, the discrepancy is logged before proceeding. `docs/` is the canonical project memory; `handoffs/` define the execution boundary.
+- If canonical docs and code artifacts disagreed, the discrepancy is logged before proceeding. `.suplex/docs/` is the canonical SUPLEX project memory; `.suplex/handoffs/` define the execution boundary.
 
 In practice, SUPLEX works best when the user treats supervision as the decision layer:
 
@@ -192,9 +204,9 @@ A screenshot-based walkthrough of the standard operating loop is available in [d
 This repository is the distribution source for the installer.
 
 - `bootstrap/`: install wrappers plus the Python initializer
-- `template/`: the control-layer files copied into the target repository
+- `template/`: the install payload source, with `template/SUPLEX.md` plus the canonical control layer under `template/.suplex/`
 
-The repository root is for packaging and distribution. The files that get installed into target repositories live under `template/`.
+The repository root is for packaging and distribution. The files that get installed into target repositories are sourced from `template/`.
 
 ## Local Development Only
 
