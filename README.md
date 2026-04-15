@@ -55,7 +55,7 @@ The write contract is intentionally narrow:
 
 - SUPLEX writes root `SUPLEX.md`
 - SUPLEX writes and updates files under `./.suplex/`
-- SUPLEX lefts untouched canonical governance (typically at root: `AGENTS.md`, `CLAUDE.md`, `docs/`)
+- SUPLEX leaves untouched canonical governance (typically at root: `AGENTS.md`, `CLAUDE.md`, `docs/`)
 
 The installed runtime includes:
 

@@ -45,6 +45,12 @@ List incomplete work, deferred work, or blocked work explicitly.
 
 List any mismatch between docs, implementation, schema, or task expectations.
 
+## Best-Judgment Assumptions Used
+
+List any material assumption used under user-authorized best judgment.
+
+If none were used, write `none`.
+
 ## Recommended Next Task Family
 
 State the likely next bounded task family without claiming authority to choose it.

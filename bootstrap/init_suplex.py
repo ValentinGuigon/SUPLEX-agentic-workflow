@@ -28,8 +28,6 @@ METADATA_NAMES = {
     "README.md",
     "LICENSE",
     "LICENSE.md",
-    "docs",
-    "handoffs",
 }
 CODE_DIR_MARKERS = {"src", "app", "lib", "tests", "test", "scripts", "services", "packages"}
 DATA_DIR_MARKERS = {"data", "datasets", "models", "notebooks"}
@@ -181,7 +179,9 @@ def copy_kernel(template_root: Path, target_dir: Path) -> None:
     target_suplex_root = target_dir / ".suplex"
 
     shutil.copy2(template_root / "SUPLEX.md", target_dir / "SUPLEX.md")
-    shutil.copytree(suplex_root, target_suplex_root, dirs_exist_ok=True)
+    if target_suplex_root.exists():
+        shutil.rmtree(target_suplex_root)
+    shutil.copytree(suplex_root, target_suplex_root)
 
 
 def standard_current_handoff_placeholder() -> str:
