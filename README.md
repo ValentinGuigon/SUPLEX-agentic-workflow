@@ -1,6 +1,6 @@
 # SUPLEX-agentic-workflow
 
-![Introducing SUPLEX](demo/img/introducing_suplex.png)
+![Introducing SUPLEX](demo/img/suplex_logo_cropped.png)
 
 `SUPLEX-agentic-workflow` installs the SUPLEX control layer into an existing repository.
 
