@@ -39,6 +39,7 @@ Do not rewrite this file during routine work.
 - In `sans-sucre` mode, treat `./.suplex/handoffs/active/current_handoff.md` and `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass record.
 - Treat `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
 - No new implementation phase should begin without a handoff document.
+- If the user invokes the execution layer or says that a new task awaits, read the active handoff and treat it as the task source rather than asking the user to restate the task.
 - If canonical docs and repo artifacts disagree, flag the discrepancy before proceeding.
 
 ## Durable architecture rules

@@ -34,6 +34,10 @@ If `./.suplex/handoffs/active/current_handoff.md` points to a dated handoff, tha
 
 If chat instructions conflict with the active handoff, stop and surface the mismatch rather than choosing implicitly.
 
+If the user says things like "you are the execution layer" or "a new task awaits," treat that as a startup cue, not as missing task information. In that case, read the active handoff and begin from the contract already in the repo.
+
+Do not answer with a generic request such as "provide the task" or "send the task" unless the active handoff is missing, unreadable, stale, or materially ambiguous.
+
 The execution layer should not read the entire repo by default.
 
 ## Mandatory Startup Restatement

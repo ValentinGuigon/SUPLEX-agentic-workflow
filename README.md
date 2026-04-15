@@ -1,5 +1,7 @@
 # SUPLEX-agentic-workflow
 
+![Introducing SUPLEX](demo/img/introducing_suplex.png)
+
 `SUPLEX-agentic-workflow` installs the SUPLEX control layer into an existing repository.
 
 Use it when you want to add a standard supervision and handoff structure for agentic work. SUPLEX doesn't change the underlying architecture of the target project and doesn't collide with common host-governance paths such as root `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/`.

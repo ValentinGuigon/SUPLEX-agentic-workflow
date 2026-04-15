@@ -182,7 +182,10 @@ When an active handoff is open, supervision should make the current pass state e
 - if execution has not yet run, say that the bounded task family remains open and is awaiting execution-layer work
 - if execution has run but review is incomplete, say that the bounded task family remains open and is awaiting supervisory review or checkpointing
 - do not ask a generic "what do you want to do next?" in a way that blurs the still-open pass with a fresh task-selection step
-- instead, frame the user choice against the open pass, for example by asking whether to launch execution, review the returned report, checkpoint, close the family if acceptance is met, or deliberately revise the handoff
+- instead, frame the user choice against the open pass as an action on that pass
+- if execution has not yet run, tell the user explicitly that they can revise the handoff or prompt the execution layer to perform the new bounded task
+- do not phrase that choice as "launch execution-layer work on this handoff as written" when the intended action is simply to continue the normal supervisor / executor flow
+- if execution has run, ask whether to review the returned report, checkpoint, close the family if acceptance is met, or deliberately revise the handoff
 - state explicitly whether context can be cleared; for any still-open pass, say that context cannot yet be cleared
 
 After a bounded pass is reviewed and accepted as complete, supervision should:

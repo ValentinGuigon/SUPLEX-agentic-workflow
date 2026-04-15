@@ -30,7 +30,7 @@ Interact with the supervisor to define the first pass. In a greenfield repositor
 
 ## Step 5: Review The Handoff And Launch Execution
 
-Once the supervisor has enough context, it writes a fairly comprehensive handoff for execution. You can edit that handoff if needed or pass it through directly. Then open a new agent session and tells it something along the lines of: `You are the execution layer. A new task awaits.`
+Once the supervisor has enough context, it writes a fairly comprehensive handoff for execution. You can edit that handoff if needed or pass it through directly. Then open a new agent session and tell it something along the lines of: `You are the execution layer. A new task awaits. Read ./.suplex/handoffs/active/current_handoff.md and execute that bounded pass.`
 
 ![Step 5: supervisor handoff ready for execution](img/step_5.png)
 
