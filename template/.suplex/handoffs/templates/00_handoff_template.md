@@ -7,6 +7,14 @@
 - task_family:
 - current_handoff_sync: yes/no
 
+## Phase Link
+- phase_id: none / id
+- phase_document_path:
+- relationship_to_phase_goal:
+- inherited_phase_constraints:
+- relevant_gate_ids:
+- does_this_pass_close_the_phase: yes/no
+
 ## This Is The Only Task In This Pass
 
 State the single bounded task in one sentence.
@@ -32,6 +40,8 @@ Do not touch:
 ## Source Of Truth
 
 List the canonical docs and artifacts the execution layer must follow.
+
+If a phase exists, include the active phase document here.
 
 ## Files To Read
 
@@ -130,3 +140,5 @@ State the exact sections or reminders the execution report should include if thi
 ## Completion Rule
 
 State explicitly that reading the handoff and restating scope are startup steps, not completion, unless that is the bounded deliverable.
+
+If a phase exists, state explicitly that the handoff may narrow phase scope but may not broaden it.

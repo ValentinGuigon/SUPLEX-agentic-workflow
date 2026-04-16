@@ -235,12 +235,16 @@ def configure_workflow_layout(target_dir: Path, workflow_mode: str) -> None:
     history_dir = target_dir / ".suplex" / "handoffs" / "history"
     report_template = target_dir / ".suplex" / "handoffs" / "templates" / "01_execution_report_template.md"
     active_report = active_dir / "current_execution_report.md"
+    phases_dir = target_dir / ".suplex" / "phases"
+    active_phase = phases_dir / "active" / "current_phase.md"
 
     if workflow_mode == "sans-sucre":
         if history_dir.exists():
             shutil.rmtree(history_dir)
         if report_template.exists():
             report_template.unlink()
+        if phases_dir.exists():
+            shutil.rmtree(phases_dir)
         write_text(active_dir / "current_handoff.md", sans_sucre_current_handoff_placeholder())
         write_text(active_report, sans_sucre_current_execution_report_placeholder())
         return
@@ -248,6 +252,19 @@ def configure_workflow_layout(target_dir: Path, workflow_mode: str) -> None:
     if active_report.exists():
         active_report.unlink()
     write_text(active_dir / "current_handoff.md", standard_current_handoff_placeholder())
+    write_text(
+        active_phase,
+        dedent(
+            """
+            # No Active Phase
+
+            There is currently no active phase.
+
+            In `standard` mode, supervision may open a phase only when a multi-pass objective needs a durable continuity charter across several bounded handoffs.
+            If no such need exists, work should proceed through bounded handoffs alone.
+            """
+        ),
+    )
 
 
 def quote_yaml(value: str) -> str:
@@ -427,7 +444,7 @@ def build_checkpoint_doc(project_name: str, today: str, analysis: dict[str, obje
 def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str, object], workflow_mode: str) -> str:
     mode = analysis["project_mode"]
     workflow_summary_line = (
-        "- Workflow infrastructure: `standard` mode with dated handoff / execution-report history. [E]"
+        "- Workflow infrastructure: `standard` mode with dated handoff / execution-report history and optional phase artifacts for multi-pass objectives. [E]"
         if workflow_mode == "standard"
         else "- Workflow infrastructure: `sans-sucre` mode with active handoff and active execution-report artifacts only; no dated history directory. [E]"
     )
@@ -435,6 +452,11 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
         "- Dated handoffs and execution reports should be read from `./.suplex/handoffs/history/` when present. [E]"
         if workflow_mode == "standard"
         else "- The live execution report should be read from `./.suplex/handoffs/active/current_execution_report.md`; no `./.suplex/handoffs/history/` record is required in this mode. [E]"
+    )
+    phase_rule = (
+        "- In `standard` mode, `./.suplex/phases/active/current_phase.md` may carry the active phase when supervision opens one for a multi-pass objective. [E]"
+        if workflow_mode == "standard"
+        else "- In `sans-sucre` mode, do not expect or use phase artifacts. [E]"
     )
     if mode == "greenfield":
         latest_state_line = "- The repo was initialized in `greenfield` mode from its own `README.md`. [E]"
@@ -501,6 +523,7 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
         - `./.suplex/docs/` is canonical SUPLEX control memory.
         - `./.suplex/handoffs/` defines bounded task packets.
         {active_report_rule}
+        {phase_rule}
         - Stable SUPLEX governance remains in `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md`.
 
         ## 7. Active handoff summary
@@ -665,9 +688,9 @@ def first_supervision_prompt_ide(project_name: str, analysis: dict[str, object],
     mode = analysis["project_mode"]
     mode_guidance = mode_specific_first_step(analysis)
     workflow_guidance = (
-        "Use `./.suplex/handoffs/active/current_handoff.md` as the active pass pointer and use dated handoffs and dated execution reports in `./.suplex/handoffs/history/` as the bounded-pass record."
+        "Use `./.suplex/handoffs/active/current_handoff.md` as the active pass pointer, use dated handoffs and dated execution reports in `./.suplex/handoffs/history/` as the bounded-pass record, and use `./.suplex/phases/active/current_phase.md` only when supervision opens a real multi-pass phase."
         if workflow_mode == "standard"
-        else "Use `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md` as the live pass artifacts; do not expect a dated history directory."
+        else "Use `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md` as the live pass artifacts; do not expect a dated history directory or any phase artifact."
     )
     governance_guidance = ""
     if analysis["existing_agent_governance_detected"]:
@@ -724,14 +747,14 @@ def first_supervision_prompt_browser(project_name: str, analysis: dict[str, obje
     mode = analysis["project_mode"]
     mode_guidance = mode_specific_first_step(analysis)
     packet_description = (
-        "Use only the provided supervision packet as working state: `SUPLEX.md`, `./.suplex/AGENTS.md`, `./.suplex/docs/09_supervision_brief.md`, `./.suplex/handoffs/active/current_handoff.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/10_supervision_layer_spec.md`."
+        "Use only the provided supervision packet as working state: `SUPLEX.md`, `./.suplex/AGENTS.md`, `./.suplex/docs/09_supervision_brief.md`, `./.suplex/handoffs/active/current_handoff.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/10_supervision_layer_spec.md`. If the repo has an active phase, the packet should also include `./.suplex/phases/active/current_phase.md`."
         if workflow_mode == "standard"
         else "Use only the provided supervision packet as working state: `SUPLEX.md`, `./.suplex/AGENTS.md`, `./.suplex/docs/09_supervision_brief.md`, `./.suplex/handoffs/active/current_handoff.md`, `./.suplex/handoffs/active/current_execution_report.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/10_supervision_layer_spec.md`."
     )
     workflow_guidance = (
-        "Use `./.suplex/handoffs/active/current_handoff.md` as the active pass pointer and use dated handoffs and dated execution reports in `./.suplex/handoffs/history/` if they are present in the packet."
+        "Use `./.suplex/handoffs/active/current_handoff.md` as the active pass pointer, use dated handoffs and dated execution reports in `./.suplex/handoffs/history/` if they are present in the packet, and use `./.suplex/phases/active/current_phase.md` only if the packet includes a real active phase."
         if workflow_mode == "standard"
-        else "Use `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass packet; do not expect a dated history directory."
+        else "Use `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass packet; do not expect a dated history directory or any phase artifact."
     )
     governance_guidance = ""
     if analysis["existing_agent_governance_detected"]:

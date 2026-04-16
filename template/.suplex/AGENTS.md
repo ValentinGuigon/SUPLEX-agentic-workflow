@@ -18,6 +18,8 @@ Do not rewrite this file during routine work.
 - Default to read-only / planning mode first.
 - Work through bounded task families only.
 - Do not broaden the current stage beyond the active handoff.
+- In `standard` mode, supervision may open an optional `phase` artifact for a multi-pass objective when continuity, inherited constraints, or gates are needed across several bounded handoffs.
+- In `sans-sucre` mode, do not use phase artifacts; continuity lives in the active handoff, active execution report, checkpoint, and backlog.
 - SUPLEX runtime does not require a full audit at every pass; reconstruct only the minimum context needed for the current decision.
 - Do not rename, move, or delete files unless explicitly instructed.
 - Do not infer canonicality from filenames alone.
@@ -35,6 +37,7 @@ Do not rewrite this file during routine work.
 - Treat `./.suplex/docs/` as canonical SUPLEX control memory after initialization.
 - Treat `./.suplex/docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
 - Treat `./.suplex/handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.
+- In `standard` mode, if `./.suplex/phases/active/current_phase.md` exists, treat it as the optional phase-level continuity artifact for a multi-pass objective after the active handoff is resolved.
 - In `standard` mode, treat dated handoffs and execution reports in `./.suplex/handoffs/history/` as the canonical bounded-pass record.
 - In `sans-sucre` mode, treat `./.suplex/handoffs/active/current_handoff.md` and `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass record.
 - Treat `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
@@ -70,6 +73,8 @@ When drafting or updating project docs, mark claims as:
 - No hidden extra work outside the active stage.
 - No claim of readiness from one draft, one table, or one bounded pass alone.
 - Supervision should not offer to execute an active bounded pass unless the user explicitly collapses the supervisor / execution split for that pass.
+- A phase is a supervisory continuity charter, not an execution contract.
+- Bounded handoffs remain the only artifacts that authorize execution work.
 
 ## Documentation-on-change rule
 

@@ -8,7 +8,7 @@ Use it when you want to add a standard supervision and handoff structure for age
 
 SUPLEX can be initialized in two infrastructure modes:
 
-- `standard`: full bounded-pass history with dated handoffs and dated execution reports in `./.suplex/handoffs/history/`
+- `standard`: full bounded-pass history with dated handoffs and dated execution reports in `./.suplex/handoffs/history/`, plus optional phase artifacts for multi-pass objectives
 - `sans-sucre`: lighter live-pass infrastructure with `./.suplex/handoffs/active/current_handoff.md` plus `./.suplex/handoffs/active/current_execution_report.md`, and no dated history directory
 
 ## What is SUPLEX
@@ -20,6 +20,8 @@ SUPLEX separates the roles of goal-setting and decision-making (yours) from supe
 ## Demo
 
 See [demo/README.md](demo/README.md) for a screenshot-based walkthrough of the standard SUPLEX workflow.
+
+Human-readable example artifacts are also available in [demo/examples/example_handoff.md](demo/examples/example_handoff.md) and [demo/examples/example_execution_report.md](demo/examples/example_execution_report.md).
 
 ## Who It Is For
 
@@ -63,6 +65,7 @@ The installed runtime includes:
 - a canonical backlog in `.suplex/docs/13_bounded_task_backlog.md`
 - an active handoff pointer in `.suplex/handoffs/active/current_handoff.md`
 - in `standard` mode, handoff and execution-report history in `.suplex/handoffs/history/`
+- in `standard` mode, optional phase records under `.suplex/phases/` for multi-pass supervisory continuity
 - in `sans-sucre` mode, a live execution report in `.suplex/handoffs/active/current_execution_report.md`
 - reusable handoff templates in `.suplex/handoffs/templates/`, plus the execution-report template in `standard` mode
 
@@ -76,7 +79,7 @@ Successful `suplex init` always installs the same full control layer. After init
 
 If the repo was empty (SUPLEX as a greenfield), that first supervision pass will often need an architecture-planning or structure-confirmation step before implementation begins. If the repo was already populated with code, data, or source files (SUPLEX as an overlay), that first supervision pass should reconstruct enough of the current repo state to define the next bounded task safely. Architecting is an expected supervision escalation mode when structure decisions need to be made, not a permanent parallel role.
 
-`standard` and `sans-sucre` differ in infrastructure weight. Both modes keep the supervisor / executor split, bounded-task logic, checkpointing, validation, and discrepancy handling. `sans-sucre` mainly removes dated handoff and report history so the repo carries less pass-by-pass archival overhead.
+`standard` and `sans-sucre` differ in infrastructure weight. Both modes keep the supervisor / executor split, bounded-task logic, checkpointing, validation, and discrepancy handling. `standard` may also use optional phases for multi-pass objectives. `sans-sucre` mainly removes dated handoff and report history and does not use phase artifacts, so the repo carries less pass-by-pass archival overhead.
 
 ## Skills And Agents
 
@@ -184,6 +187,7 @@ The repo is managed under a strict bounded task family discipline throughout con
 - Each task enters through a handoff document in `.suplex/handoffs/` with a defined scope, blocker list, acceptance criteria, and validation plan.
 - Each bounded task returns an execution report describing what was read, what was done, what was not done, validation result, blockers, and the likely next bounded task.
 - In `standard` mode, the workflow maintains dated handoff and execution-report history.
+- In `standard` mode, supervision may also open an optional phase for multi-pass objectives that need continuity, inherited constraints, or gates across several handoffs.
 - In `sans-sucre` mode, the workflow keeps only the live active handoff and live active execution report.
 - The workflow maintains canonical control-memory docs including the checkpoint, validation ledger, and discrepancy log.
 - Where provenance matters, project docs may tag claims with evidence level: `[E]` directly evidenced, `[I]` strong inference, `[U]` unresolved.
@@ -206,6 +210,7 @@ A screenshot-based walkthrough of the standard operating loop is available in [d
 This repository is the distribution source for the installer.
 
 - `bootstrap/`: install wrappers plus the Python initializer
+- `tests/`: repo-owned testing area, including minimal seed repos and a small number of full snapshots
 - `template/`: the install payload source, with `template/SUPLEX.md` plus the canonical control layer under `template/.suplex/`
 
 The repository root is for packaging and distribution. The files that get installed into target repositories are sourced from `template/`.

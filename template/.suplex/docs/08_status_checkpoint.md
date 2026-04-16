@@ -109,7 +109,7 @@
 - [E] Removed `workflow_profile` from generated `.suplex/init_state.yaml` and preserved repo-shape observations only as descriptive metadata such as `project_mode`, `public_surface`, and structure-detection flags.
 - [E] Rewrote the emitted first supervision prompt so it now instructs supervision to read `README.md`, reconstruct current repo state when repo access exists, fall back to the portable supervision packet when it does not, check with the user what should happen next, decide whether architecture planning is needed, determine whether architecture already exists, and propose exactly one next bounded task.
 - [E] Updated `README.md`, `template/.suplex/init_state.yaml`, `template/.suplex/docs/02_suplex_operating_workflow.md`, `template/.suplex/docs/09_supervision_brief.md`, and `template/.suplex/handoffs/initialization.md` so they truthfully describe the new always-full-init semantics.
-- [E] Revalidated fresh-repo, overlay-repo, missing-README, and init-state scenarios using controlled targets under `dev_validation/tmp_validation/always_full_init/`.
+- [E] Revalidated fresh-repo, overlay-repo, missing-README, and init-state scenarios using controlled test assets now represented by `tests/seeds/` plus the tracked mode snapshots under `tests/snapshots/`.
 
 ### What Was NOT Done
 
@@ -204,7 +204,7 @@
 - [E] Moved the target-repo payload from repo root into `template/`, and later aligned the canonical source payload under `template/.suplex/` with `template/SUPLEX.md` at the template root.
 - [E] Updated `bootstrap/init_suplex.py` so it resolves and copies kernel assets from `template/`.
 - [E] Rewrote the root `README.md` so it describes the `SUPLEX-agentic-workflow` packaging repo and distinguishes that packaging README from a target repo seed `README.md`.
-- [E] Relocated `tmp_validation/` to `dev_validation/tmp_validation/` so those local artifacts no longer sit in the published root payload shape.
+- [E] Promoted durable controlled validation targets into `tests/` so they can be tracked as repo-owned test assets rather than remain only in ignored local scratch space.
 - [E] Revalidated greenfield, overlay, and missing-README target behavior against the refactored layout.
 
 ### What Was NOT Done
@@ -345,7 +345,7 @@
 ### Phase State
 
 - [E] This bounded `implement narrowly` / `validate` / `checkpoint` pass repaired the target-repo init behavior by making the repo-state rewrite step explicit and ordered before supervision bootstrap.
-- [E] Fresh controlled targets were recreated under `tmp_validation/` to revalidate the repaired behavior.
+- [E] Fresh controlled targets were recreated from tracked test assets under `tests/` to revalidate the repaired behavior.
 - [E] The pass remained limited to the documented stale-state defect and its revalidation.
 
 ### What Was Done
@@ -353,7 +353,7 @@
 - [E] Updated `./.suplex/handoffs/initialization.md` to require an explicit repo-state rewrite step before supervision bootstrap or portable-packet use.
 - [E] Updated `./.suplex/docs/02_suplex_operating_workflow.md` to name `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` as the minimum target-state rewrite set during init.
 - [E] Updated `./.suplex/docs/09_supervision_brief.md` to align its usage rule with that ordered rewrite requirement.
-- [E] Recreated controlled greenfield, overlay, and missing-README targets under `tmp_validation/reval_*`.
+- [E] Recreated controlled greenfield, overlay, and missing-README targets from the canonical seed fixtures under `tests/seeds/`.
 - [E] Reapplied the control layer to the greenfield and overlay targets and rewrote `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` into target-specific state before supervision bootstrap.
 - [E] Rechecked the missing-README halt scenario without applying the control layer.
 
@@ -394,13 +394,13 @@
 ### Phase State
 
 - [E] This bounded `validate` / `implement narrowly` / `checkpoint` pass tested the standalone template against controlled greenfield, overlay, supervision, and missing-README scenarios.
-- [E] Temporary validation targets were created under `tmp_validation/` only.
+- [E] Temporary validation targets were created from tracked seed fixtures now kept under `tests/seeds/`.
 - [E] No computation or publication scaffolding was introduced by the validation pass itself.
 - [E] Validation exposed a target-repo initialization defect: copied repo-state docs can remain template-specific unless initialization explicitly rewrites them.
 
 ### What Was Done
 
-- [E] Created controlled temporary targets for greenfield, overlay, and missing-README scenarios under `tmp_validation/`.
+- [E] Created controlled temporary targets for greenfield, overlay, and missing-README scenarios from tracked seed fixtures under `tests/seeds/`.
 - [E] Applied the documented control-layer copy/init behavior to the greenfield and overlay targets without restructuring their project files.
 - [E] Checked that the first active layer after init remains supervision according to the workflow and initialization docs.
 - [E] Simulated supervision with repo access and without repo access against the produced target-repo control packets.

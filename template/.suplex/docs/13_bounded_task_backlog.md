@@ -18,9 +18,11 @@ The active execution contract still belongs in `./.suplex/handoffs/active/curren
 
 - Supervision should consult this backlog only after resolving whether an active handoff already exists.
 - A backlog item is not active until it is turned into a dated handoff and mirrored in `./.suplex/handoffs/active/current_handoff.md`.
+- In `standard` mode, a backlog item may optionally point to a phase when the objective needs multi-pass continuity.
 - Reorder this backlog only when repo state, validation results, or blocking dependencies materially change.
 - Keep items bounded enough that one item can become one handoff without broad reinterpretation.
 - When an item is completed, update this file and `./.suplex/docs/08_status_checkpoint.md`.
+- If a phase is active in `standard` mode, prefer sequencing remaining in-phase dependencies before unrelated new work unless supervision explicitly reorders priorities.
 
 ## Current Priority Queue
 

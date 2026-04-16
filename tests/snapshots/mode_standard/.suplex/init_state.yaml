@@ -1,0 +1,26 @@
+schema_version: "1.0"
+readme_path: "./README.md"
+readme_present: true
+project_mode: "greenfield"
+workflow_mode: "standard"
+public_surface: "absent"
+compiled_validation: false
+governance_files:
+  - "AGENTS.md"
+  - "CLAUDE.md"
+inference_basis:
+  repo_scan: true
+  readme_present: true
+  existing_code_structure_detected: false
+  existing_publication_structure_detected: false
+  existing_agent_governance_detected: false
+  notes:
+    - "SUPLEX was initialized into the current working directory without cloning the template repo."
+    - "Target-state docs were rewritten before supervision bootstrap."
+    - "The first active layer after init is supervision, not execution."
+    - "Because only metadata-like repo content was present at init, the first supervisory decision should normally ask for more project detail and then decide whether architecture planning is needed."
+source_template:
+  repo_url: "https://github.com/ValentinGuigon/SUPLEX-agentic-workflow"
+  ref: "main"
+initialized_at: "2026-04-13T00:00:00Z"
+last_updated: "2026-04-13T00:00:00Z"

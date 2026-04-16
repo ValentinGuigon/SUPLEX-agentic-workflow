@@ -48,6 +48,7 @@ Required outputs:
 - updated `./.suplex/docs/validation_ledger.md`
 - updated `./.suplex/docs/discrepancy_log.md` if any mismatch or blocker is found
 - initialized `./.suplex/handoffs/active/current_handoff.md` in an explicit no-active-handoff state unless initialization is handing off directly into a dated bounded pass
+- in `standard` mode, initialized `./.suplex/phases/active/current_phase.md` in an explicit no-active-phase state unless initialization is intentionally carrying forward a real phase
 
 Required repo-state rewrite before supervision bootstrap:
 - `./.suplex/docs/00_project_scope.md` must be rewritten from the target repo's `README.md` and init findings so project identity, scope, and current task family are target-specific.

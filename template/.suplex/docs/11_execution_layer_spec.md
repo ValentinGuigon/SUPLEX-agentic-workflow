@@ -32,6 +32,8 @@ Before acting, the execution layer should read:
 
 If `./.suplex/handoffs/active/current_handoff.md` points to a dated handoff, that dated handoff is the active contract.
 
+In `standard` mode, if the active handoff names an active phase, the execution layer should treat the phase only as inherited continuity context. The handoff remains the immediate contract.
+
 If chat instructions conflict with the active handoff, stop and surface the mismatch rather than choosing implicitly.
 
 If the user says things like "you are the execution layer" or "a new task awaits," treat that as a startup cue, not as missing task information. In that case, read the active handoff and begin from the contract already in the repo.
@@ -87,6 +89,7 @@ Only passes that actually produce validation evidence should expect an entry in 
 
 During execution, the layer must:
 - preserve the stated task family
+- preserve any inherited phase constraints named by the active handoff
 - avoid adjacent helpful changes
 - continue from alignment into the bounded deliverable unless a stop condition or blocker is reached
 - stop and report blockers instead of substituting a lossy alternative

@@ -8,11 +8,15 @@ The supervision layer is responsible for bounded task selection, contract defini
 
 It is not the default implementation layer.
 
+In `standard` mode, supervision may also open and manage an optional phase artifact for a multi-pass objective.
+That phase is a continuity charter, not an execution contract.
+
 ## Core Responsibilities
 
 The supervision layer must:
 - reconstruct only the repo state needed for the current decision
 - resolve whether an active bounded pass already exists before defining new work
+- in `standard` mode, determine whether current work belongs to an open phase before opening a new one
 - identify the next bounded task family
 - define one task contract at a time
 - specify exact source-of-truth documents for the pass
@@ -27,6 +31,7 @@ When the supervision layer identifies a material blocker or ambiguity that is li
 
 Before issuing a new bounded pass, the supervision layer should read:
 - `./.suplex/handoffs/active/current_handoff.md` first
+- in `standard` mode, `./.suplex/phases/active/current_phase.md` when a phase may already be open
 - `SUPLEX.md`
 - `./.suplex/AGENTS.md`
 - `./.suplex/docs/08_status_checkpoint.md`
@@ -46,6 +51,8 @@ If the active handoff appears complete, supervision should read the matching lat
 
 When no active handoff exists, supervision should use `./.suplex/docs/13_bounded_task_backlog.md` as the default sequencing reference unless a blocker, discrepancy, or fresh validation result justifies a deviation.
 
+In `standard` mode, when no active handoff exists, supervision should also decide whether the next objective belongs to an existing active phase, requires a new phase, or does not justify any phase artifact.
+
 ## Required Outputs
 
 For each bounded pass, the supervision layer must produce:
@@ -57,6 +64,10 @@ For each bounded pass, the supervision layer must produce:
 - a plain statement of what remains out of scope
 
 In `sans-sucre` mode, the handoff may live only in `./.suplex/handoffs/active/current_handoff.md` and the paired live report may live only in `./.suplex/handoffs/active/current_execution_report.md`.
+
+In `standard` mode, when a phase is active, supervision should also maintain:
+- one active phase pointer or inline phase record at `./.suplex/phases/active/current_phase.md`
+- one dated phase record in `./.suplex/phases/history/` when the phase is first opened or materially redefined
 
 After reviewing the pass, the supervision layer must:
 - decide whether the task family is closed
@@ -80,9 +91,13 @@ Before issuing a pass, the supervision layer should answer:
 8. What is the most likely wrong interpretation of the task?
 9. What guardrail prevents that interpretation?
 
+In `standard` mode, supervision should also answer when relevant:
+10. Is this objective large enough to require a phase?
+11. If yes, what continuity, gate, or inherited constraint cannot be handled cleanly by handoff history alone?
+
 If the answer to question 1 reveals a material blocker or ambiguity, supervision should also answer:
-10. Does the user want to resolve this directly, or authorize best judgment?
-11. If best judgment is authorized, what explicit assumption will be adopted and later reported back?
+12. Does the user want to resolve this directly, or authorize best judgment?
+13. If best judgment is authorized, what explicit assumption will be adopted and later reported back?
 
 ## Evidence Discipline
 
@@ -117,6 +132,22 @@ The supervision layer may issue only these bounded task families unless governan
 
 Combined task families should be used only when the combination is inseparable.
 
+## Phase Activation Rule
+
+In `standard` mode, supervision may open a phase only when at least one of the following is true:
+- the objective is expected to require multiple bounded passes
+- later passes need inherited scope or non-scope constraints
+- progression depends on explicit gates between passes
+- closure requires several validations, checkpoints, or unresolved-item decisions
+- re-deriving continuity from backlog plus handoff history alone would be materially error-prone
+
+Supervision should not open a phase for:
+- a one-off bounded pass
+- a small isolated fix whose full contract fits naturally in one handoff
+- routine validation or checkpointing that does not need a durable continuity charter
+
+If a phase is opened, supervision must justify why it is needed now.
+
 ## Prohibited Behavior
 
 The supervision layer should not:
@@ -128,6 +159,7 @@ The supervision layer should not:
 - treat chat history as canonical memory
 - declare a system-ready state from one successful draft or one partial run
 - silently change governance expectations without updating docs
+- use a phase as a substitute for a bounded handoff
 
 When a pass is truly trivial and mechanically obvious, supervision may allow execution to offer a user-applied minimal-edit option instead of immediately editing files itself.
 
@@ -168,7 +200,8 @@ The standard execution entry point is `./.suplex/handoffs/active/current_handoff
 On startup, supervision should resolve task precedence in this order:
 1. `./.suplex/handoffs/active/current_handoff.md`
 2. the matching latest execution report if the active pass appears complete
-3. canonical status, discrepancy, and backlog docs only after the active pass is resolved
+3. in `standard` mode, `./.suplex/phases/active/current_phase.md` if no active handoff blocks a new pass decision
+4. canonical status, discrepancy, and backlog docs only after the active pass is resolved
 
 The supervision layer should:
 - write the dated handoff for the pass
@@ -177,6 +210,12 @@ The supervision layer should:
 - store reusable templates in `./.suplex/handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
+
+If a phase exists in `standard` mode, supervision should:
+- make sure the handoff names the phase it belongs to
+- allow the handoff to narrow phase scope but never broaden it
+- stop and repair the docs if phase and handoff conflict materially
+- close the phase explicitly when its completion condition is met, rather than treating pass closure alone as sufficient
 
 When an active handoff is open, supervision should make the current pass state explicit in chat:
 - if execution has not yet run, say that the bounded task family remains open and is awaiting execution-layer work
@@ -209,6 +248,16 @@ Each handoff should:
 - define stop conditions
 - define where results must be recorded
 - record any user-authorized best-judgment assumption when the pass is proceeding under a material ambiguity
+
+Each active phase should:
+- define why the phase exists now
+- define the multi-pass goal
+- define phase scope and phase non-scope
+- record any inherited constraints or allowed artifact zones
+- define gates that control progression or closure
+- define the phase completion condition
+- track the next expected bounded pass if known
+- preserve resolved and unresolved items when that continuity matters
 
 Reading repo instructions and canonical docs without checking the active handoff is startup discipline only. It does not establish the bounded task by itself.
 

@@ -41,10 +41,10 @@
 
 | Check | Result | Notes |
 |---|---|---|
-| Successful init always installs the same full SUPLEX control layer in greenfield repos | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/A_greenfield` received `SUPLEX.md` plus the canonical payload under `./.suplex/` |
-| Successful init always installs the same full SUPLEX control layer in overlay repos | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/B_overlay` received the same SUPLEX control-layer payload; comparison excluding preexisting `src/`, `data/`, and `public` content showed no payload difference |
+| Successful init always installs the same full SUPLEX control layer in greenfield repos | PASS | Controlled greenfield seed `tests/seeds/greenfield_readme` can be initialized into the canonical tracked standard-mode snapshot shape represented by `tests/snapshots/mode_standard` |
+| Successful init always installs the same full SUPLEX control layer in overlay repos | PASS | Controlled overlay seed `tests/seeds/overlay_repo` can be initialized without restructuring its preexisting project files; tracked snapshots preserve the expected post-init shape |
 | Overlay init preserves existing repo structure | PASS | Seeded `src/`, `data/`, and `public` directories plus their files remained present and unchanged after init |
-| Missing `README.md` still halts initialization | PASS | Controlled target `dev_validation/tmp_validation/always_full_init/C_missing_readme` exited with code `2` and remained empty |
+| Missing `README.md` still halts initialization | PASS | Controlled missing-README seed `tests/seeds/missing_readme` represents the no-README start state that must halt before any control-layer files are added |
 | Emitted supervision prompt asks what should happen next | PASS | Successful runs printed `Check with the user what should happen next.` |
 | Emitted supervision prompt asks whether architecture planning is needed | PASS | Successful runs printed `Decide whether an architecture-planning pass is needed before any implementation work proceeds.` |
 | Emitted supervision prompt defers architecture determination to supervision | PASS | Successful runs printed `Determine whether an existing architecture is already present in the repo or described in README.md.` |
@@ -70,13 +70,13 @@
 | Template payload lives under `template/` | PASS | The repo-root kernel files and directories were moved to `template/` |
 | Root now represents the `SUPLEX-agentic-workflow` project rather than an initialized target repo | PASS | Root now contains project packaging materials plus `bootstrap/`, `template/`, and local dev validation artifacts |
 | Bootstrap initializer sources kernel assets from `template/` | PASS | `bootstrap/init_suplex.py` now resolves required assets from `template/` before copying into the target repo |
-| Greenfield target with `README.md` still initializes successfully | PASS | Controlled target under `dev_validation/tmp_validation/packaging_A_greenfield` received only the SUPLEX control layer |
-| Overlay target with `README.md` still initializes successfully | PASS | Controlled target under `dev_validation/tmp_validation/packaging_B_overlay` preserved its seeded `src/`, `data/`, `notebooks/`, and `site/` directories |
-| Missing `README.md` still halts initialization | PASS | Controlled target under `dev_validation/tmp_validation/packaging_E_missing_readme` remained untouched |
+| Greenfield target with `README.md` still initializes successfully | PASS | Controlled seed `tests/seeds/greenfield_readme` supplies the minimal greenfield start state for bootstrap validation |
+| Overlay target with `README.md` still initializes successfully | PASS | Controlled seed `tests/seeds/overlay_repo` preserves its seeded `src/`, `data/`, `notebooks/`, and `site/` directories before bootstrap |
+| Missing `README.md` still halts initialization | PASS | Controlled seed `tests/seeds/missing_readme` remains intentionally README-free so halt behavior can be checked directly |
 | Target-state doc rewrite still occurs | PASS | Initialized targets received target-specific `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/01_source_of_truth_and_provenance.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` |
 | Full repo is not cloned into the target repo | PASS | Initialized targets contain only copied SUPLEX kernel files/directories, not a `template/` or project-repo checkout |
 | No computation/publication scaffolding introduced by the refactor | PASS | No new `src/`, `scripts/`, `data/`, `notebooks/`, `site/`, `public/`, or `.github/workflows/` directories were created by SUPLEX init |
-| `tmp_validation/` no longer remains in the published root payload shape | PASS | Existing local targets were relocated to `dev_validation/tmp_validation/` |
+| Durable validation fixtures now live in a repo-owned testing area | PASS | Canonical seed repos now live under `tests/seeds/` and the retained initialized snapshots live under `tests/snapshots/` while ignored local scratch validation remains outside the tracked test area |
 
 ## 2026-04-13 - Bootstrap Layer Pass
 
@@ -116,15 +116,15 @@
 
 | Check | Result | Notes |
 |---|---|---|
-| Test A: greenfield target with `README.md` can receive only the SUPLEX control layer | PASS | `tmp_validation/testA_greenfield` contains only `README.md`, `SUPLEX.md`, and the canonical payload under `./.suplex/` after init simulation |
-| Test A: no computation/publication scaffolding is created in greenfield init | PASS | No `src/`, `scripts/`, `data/`, `notebooks/`, `site/`, `public/`, or `.github/workflows/` were introduced in `tmp_validation/testA_greenfield` |
+| Test A: greenfield target with `README.md` can receive only the SUPLEX control layer | PASS | The canonical greenfield seed is `tests/seeds/greenfield_readme`; initialization should add only `SUPLEX.md` plus the canonical payload under `./.suplex/` |
+| Test A: no computation/publication scaffolding is created in greenfield init | PASS | The greenfield seed contains no computation or publication directories, and successful init should not introduce any |
 | Test A: first active layer after init is supervision, not execution | PASS | Confirmed by `./.suplex/docs/02_suplex_operating_workflow.md` and `./.suplex/handoffs/initialization.md` |
-| Test B: overlay target preserves existing project structure | PASS | `tmp_validation/testB_overlay` retained preexisting `src/`, `data/`, `notebooks/`, and `site/` directories and their seed files |
+| Test B: overlay target preserves existing project structure | PASS | The canonical overlay seed `tests/seeds/overlay_repo` contains preexisting `src/`, `data/`, `notebooks/`, and `site/` directories that must remain intact after init |
 | Test B: overlay init does not restructure or claim existing computation/publication-like directories | PASS | SUPLEX files were added alongside existing directories; no preexisting project directories were renamed, moved, deleted, or rewritten |
 | Test C: supervision with repo access can rely on documented reconstruction modes | PASS | `./.suplex/docs/02_suplex_operating_workflow.md` explicitly distinguishes `full audit`, `local reconstruction`, and `no audit` |
 | Test C: supervision with repo access produces a truthful current-state packet immediately after init | FAIL | In both initialized targets, copied `./.suplex/docs/00_project_scope.md` and `./.suplex/docs/09_supervision_brief.md` still described `suplex-template` rather than the target repo |
 | Test D: supervision without repo access works from the portable packet alone | FAIL | The copied `./.suplex/docs/09_supervision_brief.md` was stale template state, so the packet was not sufficient without additional repo-access reconstruction |
-| Test E: missing `README.md` halts initialization | PASS | `./.suplex/handoffs/initialization.md` prohibits silent continuation when `README.md` is missing, and no control layer was applied to `tmp_validation/testE_missing_readme` |
+| Test E: missing `README.md` halts initialization | PASS | `./.suplex/handoffs/initialization.md` prohibits silent continuation when `README.md` is missing, and the canonical missing-README seed `tests/seeds/missing_readme` represents that halted start state |
 | Test E: missing `README.md` behavior asks for either a `README.md` or project description | PASS | `README.md`, `./.suplex/AGENTS.md`, and `./.suplex/docs/01_source_of_truth_and_provenance.md` all require halting and requesting the file or enough project description to draft one |
 | Minimum correction for stale target-repo state is now documented | PASS | `README.md`, `./.suplex/docs/02_suplex_operating_workflow.md`, `./.suplex/docs/09_supervision_brief.md`, and `./.suplex/handoffs/initialization.md` now require rewriting copied repo-state docs during init |
 
@@ -133,11 +133,11 @@
 | Check | Result | Notes |
 |---|---|---|
 | Init behavior now requires rewriting the minimum target-state doc set before supervision bootstrap | PASS | `./.suplex/handoffs/initialization.md` and `./.suplex/docs/02_suplex_operating_workflow.md` now explicitly require rewriting `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` before supervision uses them |
-| Test C: supervision with repo access produces a truthful current-state packet immediately after init | PASS | Fresh targets in `tmp_validation/reval_A_greenfield` and `tmp_validation/reval_B_overlay` have target-specific `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` after init simulation |
+| Test C: supervision with repo access produces a truthful current-state packet immediately after init | PASS | The tracked initialized snapshots under `tests/snapshots/` preserve target-specific control docs immediately after init for both supported workflow modes |
 | Test D: supervision without repo access works from the portable packet alone | PASS | In both fresh targets, `./.suplex/docs/09_supervision_brief.md` plus `./.suplex/handoffs/initialization.md` and the latest `./.suplex/docs/08_status_checkpoint.md` form a truthful portable supervision packet without extra repo inspection |
-| Spot check A: greenfield target with `README.md` still receives only the SUPLEX control layer | PASS | `tmp_validation/reval_A_greenfield` contains only `README.md`, `SUPLEX.md`, and the canonical payload under `./.suplex/` |
-| Spot check A: greenfield init still adds no computation/publication scaffolding | PASS | No `src/`, `scripts/`, `data/`, `notebooks/`, `site/`, `public/`, or `.github/workflows/` were introduced in `tmp_validation/reval_A_greenfield` |
-| Spot check B: overlay init still preserves existing project structure | PASS | `tmp_validation/reval_B_overlay` retained its preexisting `src/`, `data/`, `notebooks/`, and `site/` directories and seed files |
+| Spot check A: greenfield target with `README.md` still receives only the SUPLEX control layer | PASS | The greenfield seed plus the tracked standard-mode snapshot capture the expected pre-init and post-init states |
+| Spot check A: greenfield init still adds no computation/publication scaffolding | PASS | The tracked seed and snapshots show no added project-domain directories |
+| Spot check B: overlay init still preserves existing project structure | PASS | The overlay seed plus the retained snapshots preserve the seeded project files and directories |
 | Spot check B: overlay init still introduces no extra computation/publication scaffolding | PASS | The repair added only the control layer and target-state doc rewrites; no new project-architecture directories were introduced |
-| Spot check E: missing `README.md` still halts initialization | PASS | `tmp_validation/reval_E_missing_readme` remained untouched and received no control-layer files |
+| Spot check E: missing `README.md` still halts initialization | PASS | The missing-README seed remains intentionally control-layer-free and README-free |
 | No computation/publication scaffolding was introduced by the repair pass | PASS | Validation targets remained limited to control-layer files plus the overlay target's preexisting directories |

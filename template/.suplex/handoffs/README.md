@@ -11,6 +11,7 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 - `./.suplex/handoffs/history/`: dated handoffs and dated execution reports in `standard` mode
 - `./.suplex/handoffs/active/current_execution_report.md`: live execution report artifact in `sans-sucre` mode
 - `./.suplex/handoffs/templates/`: reusable handoff templates, plus the execution-report template in `standard` mode
+- `./.suplex/phases/`: optional phase artifacts in `standard` mode only, for multi-pass supervisory continuity rather than direct execution
 
 ## When a handoff is required
 
@@ -28,6 +29,7 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 
 - `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md` are stable SUPLEX governance files
 - handoffs are bounded execution packets
+- phases, when used in `standard` mode, are supervisory continuity charters for multi-pass objectives
 - handoffs may change frequently; stable governance should not
 - `./.suplex/docs/09_supervision_brief.md` is the portable state packet that lets supervision operate from the active handoff plus latest validated/report state when repo access is absent
 - `./.suplex/docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved
@@ -43,6 +45,7 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 - keep completed handoffs as historical records unless a user explicitly asks for cleanup
 - treat a closed handoff as evidence of what a bounded pass was authorized to do
 - in `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `./.suplex/handoffs/history/`
+- in `standard` mode, if a phase is opened, keep its records under `./.suplex/phases/` as continuity artifacts rather than mixing them into handoff history
 - when a pass proceeds under user-authorized best judgment on a material ambiguity, record that decision path and the adopted assumption in the handoff itself
 
 ## Active-handoff closure rule

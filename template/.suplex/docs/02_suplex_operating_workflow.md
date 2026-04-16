@@ -61,6 +61,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor reads `./.suplex/handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
 - The installed workflow infrastructure mode is recorded in `.suplex/init_state.yaml` as `workflow_mode`.
 - Immediately after initialization, `./.suplex/handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
+- In `standard` mode, `./.suplex/phases/active/current_phase.md` should also start as a no-active-phase placeholder unless initialization is explicitly carrying forward a real phase.
 - In `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` should also exist as the live report placeholder for the next bounded pass.
 - If root `AGENTS.md` or `CLAUDE.md` already exist, the supervisor should inspect them early in the first pass, explain any coexistence risk relative to SUPLEX governance, and decide with the user whether a governance-alignment pass is needed before other work proceeds.
 - If the supervisor can read repository files in the current session, it inspects the repo before deciding the next bounded task.
@@ -70,11 +71,13 @@ The workflow is for control-layer operation only. It does not authorize computat
 - If the supervisor identifies a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, it should restate that issue concretely, explain why it matters, and ask whether the user wants to resolve it directly in conversation or authorize best judgment.
 - If the user authorizes best judgment, the supervisor should state the assumption or decision it adopts and report that assumption again when closing or checkpointing the pass.
 - If no active handoff exists, the supervisor uses `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
+- In `standard` mode, the supervisor may open an optional phase only when the objective is expected to require multiple bounded passes and continuity, inherited constraints, or gates would materially improve control.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
 
 - The supervisor issues a bounded execution prompt tied to an active handoff.
+- In `standard` mode, that handoff may optionally belong to an active phase, but the handoff remains the immediate execution contract.
 - The executor performs only that bounded task.
 - While that handoff is still open, the bounded task family remains in execution or awaiting review; it is not a fresh planning state.
 
@@ -102,6 +105,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 ### Next bounded task or context-clear
 
 - If more bounded work is needed, the supervisor defines the next handoff or activates the next bounded pass.
+- In `standard` mode, if a multi-pass objective remains open, the supervisor may keep the phase open across those bounded passes and close it separately from pass closure.
 - If closure conditions are met, the supervisor explicitly states that the task family is closed and whether context can be cleared.
 - If closure conditions are not yet met, the supervisor explicitly states that the task family remains open and that context cannot yet be cleared.
 
@@ -190,8 +194,10 @@ Every execution-layer pass must return a written report containing at least:
 ### Active-handoff lifecycle
 
 - `./.suplex/handoffs/active/current_handoff.md` is the standard execution entry point.
+- In `standard` mode, `./.suplex/phases/active/current_phase.md` is an optional supervisory continuity artifact, not an execution entry point.
 - In `standard` mode, the active handoff may mirror a dated handoff in `./.suplex/handoffs/history/` rather than containing the full contract inline.
 - In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `./.suplex/handoffs/history/`.
+- In `standard` mode, phases may have their own active and historical records under `./.suplex/phases/` when supervision decides a multi-pass objective needs them.
 - In `sans-sucre` mode, the active handoff and active execution report are the primary live pass artifacts and no dated history record is required.
 - After a bounded pass is reviewed and accepted, `./.suplex/handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
 - In `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.
