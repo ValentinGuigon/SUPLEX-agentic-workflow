@@ -1,5 +1,9 @@
 # Handoff Template
 
+Use terse field values where explanation is not needed.
+Prefer exact nouns over explanation, lists over paragraphs, and only the information that changes execution decisions.
+Keep explanatory prose for fields that benefit humans, such as `Why Now`, `Objective`, ambiguity rationale, and guardrails.
+
 ## Handoff Metadata
 - task_id:
 - issued_by:
@@ -39,7 +43,7 @@ List the exact files the execution layer should read before acting.
 
 ## Files Expected To Be Modified
 
-List the files that should normally change if the pass is completed cleanly.
+List only the files that should normally change if the pass is completed cleanly.
 
 ## Blockers Or Ambiguities
 
@@ -71,6 +75,7 @@ State whether this pass requires:
 - no audit
 
 Explain why that level is sufficient.
+Keep this brief unless the choice is non-obvious.
 
 ## Execution Requirements
 
@@ -79,6 +84,8 @@ List the specific actions the execution layer must perform.
 ## Required Deliverables
 
 List the outputs that must exist by the end of the pass.
+
+Include the required execution report artifact explicitly.
 
 ## Validation Required
 
@@ -118,10 +125,12 @@ List the docs that must be updated if the pass changes workflow behavior, status
 ## Execution Report Path
 
 State where the execution layer should write its report for this pass.
+State that the pass is not complete until that file exists.
 
 ## Current Handoff Update
 
-State how `handoffs/active/current_handoff.md` should reference this handoff.
+State how `handoffs/active/current_handoff.md` should point to this handoff with a compact summary rather than a full contract duplicate.
+If the pass may clear or replace the active handoff, state that this happens only after the required execution report has been written.
 
 ## End-Of-Pass Report
 
@@ -130,3 +139,4 @@ State the exact sections or reminders the execution report should include if thi
 ## Completion Rule
 
 State explicitly that reading the handoff and restating scope are startup steps, not completion, unless that is the bounded deliverable.
+State explicitly that the pass is not complete until required validation is performed and the execution report is written to the required path.

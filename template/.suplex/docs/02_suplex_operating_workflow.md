@@ -96,6 +96,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
 - If the active handoff is still open, the supervisor should say so explicitly and frame the next user choice against that open pass rather than offering to perform the execution-layer work by default.
 - If the task family is still open, the supervisor should also say explicitly that context cannot yet be cleared.
+- In chat, the supervisor should confirm the artifact path that was updated and give a one-sentence operational summary rather than restating the full handoff or phase contract.
 
 ### Validation / checkpoint
 
@@ -195,9 +196,10 @@ Every execution-layer pass must return a written report containing at least:
 
 - `./.suplex/handoffs/active/current_handoff.md` is the standard execution entry point.
 - In `standard` mode, `./.suplex/phases/active/current_phase.md` is an optional supervisory continuity artifact, not an execution entry point.
-- In `standard` mode, the active handoff may mirror a dated handoff in `./.suplex/handoffs/history/` rather than containing the full contract inline.
+- In `standard` mode, the active handoff should normally be a compact pointer or summary that names the dated handoff in `./.suplex/handoffs/history/` rather than duplicating the full contract inline.
 - In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `./.suplex/handoffs/history/`.
 - In `standard` mode, phases may have their own active and historical records under `./.suplex/phases/` when supervision decides a multi-pass objective needs them.
+- In `standard` mode, `./.suplex/phases/active/current_phase.md` should normally be a compact live summary that points to the canonical dated phase record rather than duplicating the full phase plan.
 - In `sans-sucre` mode, the active handoff and active execution report are the primary live pass artifacts and no dated history record is required.
 - After a bounded pass is reviewed and accepted, `./.suplex/handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
 - In `sans-sucre` mode, `./.suplex/handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.

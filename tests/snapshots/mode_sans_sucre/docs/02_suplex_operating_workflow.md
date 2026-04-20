@@ -89,6 +89,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor interprets validation state, discrepancies, unresolved items, and scope impact.
 - If the pass was executed under user-authorized best judgment on a material ambiguity, the supervisor restates the adopted assumption before deciding the next step.
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
+- In chat, the supervisor should confirm the artifact path that was updated and give a one-sentence operational summary rather than restating the full handoff or phase contract.
 
 ### Validation / checkpoint
 
@@ -183,8 +184,9 @@ Every execution-layer pass must return a written report containing at least:
 ### Active-handoff lifecycle
 
 - `handoffs/active/current_handoff.md` is the standard execution entry point.
-- In `standard` mode, the active handoff may mirror a dated handoff in `handoffs/history/` rather than containing the full contract inline.
+- In `standard` mode, the active handoff should normally be a compact pointer or summary that names the dated handoff in `handoffs/history/` rather than duplicating the full contract inline.
 - In `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`.
+- In `standard` mode, `phases/active/current_phase.md` should normally be a compact live summary that points to the canonical dated phase record rather than duplicating the full phase plan.
 - In `sans-sucre` mode, the active handoff and active execution report are the primary live pass artifacts and no dated history record is required.
 - After a bounded pass is reviewed and accepted, `handoffs/active/current_handoff.md` should be replaced with an explicit no-active-handoff placeholder rather than leaving a completed contract in place.
 - In `sans-sucre` mode, `handoffs/active/current_execution_report.md` should also be cleared or replaced after pass close.

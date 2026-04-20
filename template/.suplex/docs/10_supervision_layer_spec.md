@@ -66,7 +66,7 @@ For each bounded pass, the supervision layer must produce:
 In `sans-sucre` mode, the handoff may live only in `./.suplex/handoffs/active/current_handoff.md` and the paired live report may live only in `./.suplex/handoffs/active/current_execution_report.md`.
 
 In `standard` mode, when a phase is active, supervision should also maintain:
-- one active phase pointer or inline phase record at `./.suplex/phases/active/current_phase.md`
+- one active phase pointer or compact phase summary at `./.suplex/phases/active/current_phase.md`
 - one dated phase record in `./.suplex/phases/history/` when the phase is first opened or materially redefined
 
 After reviewing the pass, the supervision layer must:
@@ -166,12 +166,15 @@ When a pass is truly trivial and mechanically obvious, supervision may allow exe
 ## Review Standard
 
 The supervision layer should review the execution report by checking:
+- whether the required execution-report artifact exists at the exact path named by the handoff
 - whether the declared files read match the contract
 - whether out-of-scope files stayed untouched
 - whether every acceptance criterion is clearly pass or fail
 - whether validation was actually performed rather than assumed
 - whether "what was not done and why" is complete
 - whether new discrepancies were recorded when needed
+
+If the required execution-report artifact is missing, the pass should not be treated as complete even if repo-state edits appear coherent.
 
 If any acceptance item fails, the pass should not be treated as complete.
 
@@ -205,16 +208,18 @@ On startup, supervision should resolve task precedence in this order:
 
 The supervision layer should:
 - write the dated handoff for the pass
-- update `./.suplex/handoffs/active/current_handoff.md` so it mirrors or points to the active pass
+- update `./.suplex/handoffs/active/current_handoff.md` as a compact pointer or summary to the active pass rather than a full duplicate of the dated handoff
 - preserve prior dated handoffs and reports as history rather than overwriting them
 - store reusable templates in `./.suplex/handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
+- in normal cases, confirm the updated artifact path and give a one-sentence operational summary rather than restating the full contract in chat
 
 If a phase exists in `standard` mode, supervision should:
 - make sure the handoff names the phase it belongs to
 - allow the handoff to narrow phase scope but never broaden it
 - stop and repair the docs if phase and handoff conflict materially
+- keep `./.suplex/phases/active/current_phase.md` as a compact live summary and use the dated phase record as the canonical detailed phase plan
 - close the phase explicitly when its completion condition is met, rather than treating pass closure alone as sufficient
 
 When an active handoff is open, supervision should make the current pass state explicit in chat:
@@ -233,6 +238,8 @@ After a bounded pass is reviewed and accepted as complete, supervision should:
 - replace `./.suplex/handoffs/active/current_handoff.md` with an explicit no-active-handoff placeholder
 - in `sans-sucre` mode, also clear or replace `./.suplex/handoffs/active/current_execution_report.md` so stale report content does not carry forward
 
+Supervision should not formally accept, checkpoint-close, or phase-close a pass whose required execution report is missing, even if other closeout documents were updated.
+
 Each handoff should:
 - make clear that it is one bounded task only
 - define why the pass exists now
@@ -248,6 +255,8 @@ Each handoff should:
 - define stop conditions
 - define where results must be recorded
 - record any user-authorized best-judgment assumption when the pass is proceeding under a material ambiguity
+- use terse field values where explanation is not needed
+- keep explanatory prose for fields such as objective, purpose, ambiguity rationale, or other human-judgment context
 
 Each active phase should:
 - define why the phase exists now
@@ -258,6 +267,7 @@ Each active phase should:
 - define the phase completion condition
 - track the next expected bounded pass if known
 - preserve resolved and unresolved items when that continuity matters
+- keep the active phase artifact as a compact live summary and rely on the dated phase record for the canonical detailed phase plan
 
 Reading repo instructions and canonical docs without checking the active handoff is startup discipline only. It does not establish the bounded task by itself.
 

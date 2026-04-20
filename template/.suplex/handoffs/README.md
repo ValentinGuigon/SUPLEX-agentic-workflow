@@ -45,7 +45,9 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 - keep completed handoffs as historical records unless a user explicitly asks for cleanup
 - treat a closed handoff as evidence of what a bounded pass was authorized to do
 - in `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `./.suplex/handoffs/history/`
+- in `standard` mode, `./.suplex/handoffs/active/current_handoff.md` should usually be a compact pointer or summary to the dated handoff rather than a duplicate of it
 - in `standard` mode, if a phase is opened, keep its records under `./.suplex/phases/` as continuity artifacts rather than mixing them into handoff history
+- in `standard` mode, `./.suplex/phases/active/current_phase.md` should usually be a compact live summary pointing to the canonical dated phase record rather than a duplicate of the full phase plan
 - when a pass proceeds under user-authorized best judgment on a material ambiguity, record that decision path and the adopted assumption in the handoff itself
 
 ## Active-handoff closure rule

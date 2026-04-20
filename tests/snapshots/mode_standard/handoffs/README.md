@@ -43,6 +43,7 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 - keep completed handoffs as historical records unless a user explicitly asks for cleanup
 - treat a closed handoff as evidence of what a bounded pass was authorized to do
 - in `standard` mode, every bounded pass should have one dated handoff and one dated execution report in `handoffs/history/`
+- in `standard` mode, `handoffs/active/current_handoff.md` should usually be a compact pointer or summary to the dated handoff rather than a duplicate of it
 - when a pass proceeds under user-authorized best judgment on a material ambiguity, record that decision path and the adopted assumption in the handoff itself
 
 ## Active-handoff closure rule

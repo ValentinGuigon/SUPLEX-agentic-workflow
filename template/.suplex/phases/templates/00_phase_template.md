@@ -1,5 +1,9 @@
 # Phase Document
 
+Use terse field values where explanation is not needed.
+Prefer exact nouns over explanation, lists over paragraphs, and only the information that changes supervisory decisions.
+Keep explanatory prose for fields that benefit humans, such as `Purpose`, `Goal`, `Why A Phase Is Needed`, and ambiguity or gating rationale.
+
 ## Phase Metadata
 - phase_id:
 - title:
@@ -50,6 +54,8 @@ State what must be true for the phase itself to be closed.
 
 ## Current Status Summary
 State the current state of the phase in a few lines.
+
+For `./.suplex/phases/active/current_phase.md`, keep this as a compact live summary and use the dated phase record as the canonical detailed phase plan.
 
 ## Next Expected Bounded Pass
 State the next likely bounded handoff this phase should produce, if known.

@@ -78,6 +78,11 @@ Each bounded pass should leave behind:
 
 Only passes that actually produce validation evidence should expect an entry in `docs/validation_ledger.md`.
 
+The required execution report is a mandatory output artifact, not an optional chat summary.
+A pass is not complete until the report exists at the exact path required by the active handoff.
+
+If the pass updates closeout state such as `handoffs/active/current_handoff.md`, `phases/active/current_phase.md`, or checkpoint docs that imply completion, the execution layer must still ensure the required report artifact is written before claiming success.
+
 ## Mandatory Operating Rules
 
 During execution, the layer must:
@@ -86,6 +91,8 @@ During execution, the layer must:
 - continue from alignment into the bounded deliverable unless a stop condition or blocker is reached
 - stop and report blockers instead of substituting a lossy alternative
 - treat validation as part of completion, not optional follow-up
+- treat report writing as part of completion, not optional follow-up
+- write the required execution report before ending the pass in chat
 - avoid redefining the task into an easier nearby task
 
 Examples:
@@ -137,6 +144,8 @@ The execution layer should not:
 - leave silent scope shrinkage
 - declare system-level readiness from one bounded pass
 - use chat as a substitute for the required execution report
+- leave the required execution-report artifact unwritten while presenting the pass as complete
+- clear or replace active-pass artifacts in a way that implies closure while the required execution report is still missing
 - silently resolve source-of-truth conflicts by choosing one side
 
 ## Default Stop Conditions
