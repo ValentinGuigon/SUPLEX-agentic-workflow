@@ -17,6 +17,7 @@ The supervision layer must:
 - reconstruct only the repo state needed for the current decision
 - resolve whether an active bounded pass already exists before defining new work
 - in `standard` mode, determine whether current work belongs to an open phase before opening a new one
+- route direct user instructions to write, open, create, draft, or update SUPLEX phases or handoffs as supervision artifact work
 - identify the next bounded task family
 - define one task contract at a time
 - specify exact source-of-truth documents for the pass
@@ -24,8 +25,21 @@ The supervision layer must:
 - define validation requirements and acceptance criteria
 - review the execution report against the active contract
 - update project-status, backlog, or discrepancy docs when workflow assumptions materially change
+- make the current workflow state, unresolved work, and next action explicit enough that the user does not have to infer them from artifacts or prior chat
 
 When the supervision layer identifies a material blocker or ambiguity that is likely to affect scope, architecture, correctness, cost, or irreversible change, it must restate that issue to the user before issuing the pass. It must then ask whether the user wants to resolve it directly or authorize the supervisor / execution layer to proceed with best judgment. If best judgment is authorized, supervision must record the adopted assumption in the handoff, report, checkpoint, or discrepancy trail that closes the pass.
+
+## Role And Intent Routing
+
+If the current agent has not been explicitly designated as supervision or execution, it must not inspect files, edit files, run commands, or perform repo work. It must ask whether the user wants supervision or execution.
+
+Supervision owns SUPLEX governance artifacts. A direct user instruction such as "write the phase", "open a phase", "create a handoff", "write the handoff", or "update the handoff" authorizes supervision to modify the corresponding `.suplex` phase or handoff artifact when the target artifact and scope are clear.
+
+If the requested governance artifact, target phase or handoff, write path, objective, or mode is unclear, supervision must ask a focused clarification before writing.
+
+Writing phases and handoffs is supervision-layer work. It is not execution-layer implementation and does not require an execution handoff. The resulting handoff may later authorize execution, but the act of writing the handoff does not execute it.
+
+Supervision must not execute an active handoff, run the project-domain task, invoke the selected skill or pipeline, or collapse into execution unless the user explicitly authorizes that role collapse for the current pass.
 
 ## Required Inputs
 
@@ -155,6 +169,8 @@ The supervision layer should not:
 - issue multiple unrelated deliverables in one pass
 - delegate strategy to the execution layer
 - offer to perform the active execution pass itself unless the user explicitly authorizes collapsing the normal supervisor / execution split for that pass
+- refuse direct governance artifact instructions merely because no execution handoff exists
+- treat writing a phase or handoff as execution-layer implementation
 - silently make a user-owned material judgment call without first surfacing it and asking for a decision path
 - treat chat history as canonical memory
 - declare a system-ready state from one successful draft or one partial run
@@ -213,7 +229,8 @@ The supervision layer should:
 - store reusable templates in `./.suplex/handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
-- in normal cases, confirm the updated artifact path and give a one-sentence operational summary rather than restating the full contract in chat
+- in normal cases, confirm the updated artifact path and provide a concise chat summary that may include the review outcome, key reasoning, and next bounded step without restating the full contract in chat
+- structure routine supervisory chat so it makes explicit: what was done, what was not done, what remains open, the current workflow state, and the exact next user-relevant action or decision
 
 If a phase exists in `standard` mode, supervision should:
 - make sure the handoff names the phase it belongs to
@@ -239,6 +256,14 @@ After a bounded pass is reviewed and accepted as complete, supervision should:
 - in `sans-sucre` mode, also clear or replace `./.suplex/handoffs/active/current_execution_report.md` so stale report content does not carry forward
 
 Supervision should not formally accept, checkpoint-close, or phase-close a pass whose required execution report is missing, even if other closeout documents were updated.
+
+When supervision returns to the user after execution or review, it should make the following explicit in chat unless a category is truly empty:
+- what was completed in the bounded pass
+- what was not completed and why
+- what remains to be done before the current task family or phase can be closed
+- whether the repo is currently awaiting execution, supervisory review, checkpointing, a new handoff, a phase decision, or no further work in the family
+- the exact next action available to the user or supervisor, such as issue a new handoff, revise the current handoff, send the task to execution, open a phase, keep the current phase, change phase, close the family, or declare that all bounded work is done
+- when all work in the current task family or phase is complete, say that explicitly rather than leaving closure to implication
 
 Each handoff should:
 - make clear that it is one bounded task only

@@ -89,7 +89,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor interprets validation state, discrepancies, unresolved items, and scope impact.
 - If the pass was executed under user-authorized best judgment on a material ambiguity, the supervisor restates the adopted assumption before deciding the next step.
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
-- In chat, the supervisor should confirm the artifact path that was updated and give a one-sentence operational summary rather than restating the full handoff or phase contract.
+- In chat, the supervisor should confirm the artifact path that was updated and give a concise status summary that tells the user what was done, what was not done, what remains open, the current workflow state, and the exact next action or decision.
+- The user should not have to infer whether the system is awaiting execution, review, checkpointing, a new handoff, or closure.
 
 ### Validation / checkpoint
 

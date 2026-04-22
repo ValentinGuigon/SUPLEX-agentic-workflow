@@ -1,2 +1,3 @@
-dev_validation/
+dev_validation/*
+!dev_validation/phase_instruction_interpretation_gate.md
 substack/

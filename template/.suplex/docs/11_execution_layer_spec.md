@@ -8,13 +8,15 @@ The execution layer performs one bounded pass at a time inside the repo.
 It executes the active contract, validates its work, records evidence, and stops at the task boundary.
 
 It is not the default planning or governance layer.
+It must not create phases, create handoffs, update governance strategy, choose the next bounded task, or redefine the active pass.
 
 ## Core Responsibilities
 
 The execution layer must:
 - read the minimum files required by the active handoff
-- restate the task family, exact deliverable, scope, and validation plan before substantial work
+- restate the task family, exact deliverable, scope, action surface, forbidden actions, validation plan, and any skill or pipeline constraints before substantial work
 - treat that restatement as startup discipline rather than task completion
+- wait for explicit user confirmation after the startup restatement before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation
 - change only the files explicitly in scope
 - perform the bounded task without broadening scope
 - validate its result before claiming completion
@@ -38,13 +40,15 @@ If chat instructions conflict with the active handoff, stop and surface the mism
 
 If the user says things like "you are the execution layer" or "a new task awaits," treat that as a startup cue, not as missing task information. In that case, read the active handoff and begin from the contract already in the repo.
 
+If the user asks execution to write, open, create, draft, or update a phase or handoff, stop and say that the request belongs to supervision. Execution must not perform governance artifact authoring.
+
 Do not answer with a generic request such as "provide the task" or "send the task" unless the active handoff is missing, unreadable, stale, or materially ambiguous.
 
 The execution layer should not read the entire repo by default.
 
 ## Mandatory Startup Restatement
 
-Before substantial work, the execution layer must make explicit:
+Before substantial work, the execution layer must make explicit and wait for explicit user confirmation:
 1. task family
 2. exact deliverable in one sentence
 3. files in scope
@@ -52,8 +56,12 @@ Before substantial work, the execution layer must make explicit:
 5. validation that will be performed
 6. any blocker or ambiguity already visible from the contract
 7. any user-authorized best-judgment assumption recorded in the handoff
+8. intended action surface
+9. forbidden actions, especially source mutation or writes outside the handoff
+10. relevant skill, plugin, or pipeline constraints
 
 Reading the handoff, listing scope, and stating alignment do not complete the pass by themselves.
+Confirmation must be explicit, such as "confirmed", "yes, proceed", "run it", or "execute the handoff as stated." Clarification questions, corrections, complaints, or acknowledgments are not confirmation.
 
 ## Evidence Discipline
 
@@ -97,6 +105,7 @@ During execution, the layer must:
 - preserve any inherited phase constraints named by the active handoff
 - avoid adjacent helpful changes
 - continue from alignment into the bounded deliverable unless a stop condition or blocker is reached
+- stop after startup alignment until explicit user confirmation is received
 - stop and report blockers instead of substituting a lossy alternative
 - treat validation as part of completion, not optional follow-up
 - treat report writing as part of completion, not optional follow-up
@@ -148,6 +157,9 @@ The execution layer should not:
 - redefine the task
 - broaden scope without authorization
 - modify governance docs unless explicitly instructed
+- create, open, draft, or update phases or handoffs
+- treat a request to write a phase or handoff as an execution task
+- begin project-domain implementation before the mandatory startup restatement is explicitly confirmed
 - claim success without validation
 - leave silent scope shrinkage
 - declare system-level readiness from one bounded pass

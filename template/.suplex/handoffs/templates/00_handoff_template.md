@@ -11,6 +11,12 @@ Keep explanatory prose for fields that benefit humans, such as `Why Now`, `Objec
 - task_family:
 - current_handoff_sync: yes/no
 
+## Role Routing
+- authoring_role: supervision
+- execution_role: execution
+- supervision_may_update_this_handoff_before_execution: yes/no
+- execution_may_modify_phase_or_handoff_artifacts: no
+
 ## Phase Link
 - phase_id: none / id
 - phase_document_path:
@@ -91,6 +97,19 @@ Keep this brief unless the choice is non-obvious.
 
 List the specific actions the execution layer must perform.
 
+Execution must not write phases, create handoffs, redefine the task, or choose the next bounded task.
+
+Before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation, execution must restate:
+- active handoff instructions
+- intended action surface
+- files to read
+- files or artifacts it may write
+- files or artifacts it must not modify
+- relevant skill, plugin, or pipeline constraints
+- validation plan
+
+Execution must wait for explicit user confirmation after that restatement unless this handoff records a prior explicit confirmation that covers the exact same operation.
+
 ## Required Deliverables
 
 List the outputs that must exist by the end of the pass.
@@ -105,6 +124,7 @@ List the checks, dry runs, or evidence the execution layer must produce.
 
 State what the execution layer should do immediately after reading and restating the handoff.
 This should remove ambiguity between startup alignment and actual execution.
+If confirmation is required before execution, say so here.
 
 ## Most Likely Misread
 
@@ -113,6 +133,8 @@ State the most likely wrong interpretation of the task.
 ## Guardrail Against Misread
 
 State the sentence or rule that prevents that interpretation.
+
+If the likely misread is governance drift, include: `Execution executes this handoff only; supervision writes or revises phases and handoffs.`
 
 ## Acceptance Criteria
 

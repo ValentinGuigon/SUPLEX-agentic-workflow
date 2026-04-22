@@ -15,9 +15,14 @@ Do not rewrite this file during routine work.
 
 ## Core operating rules
 
+- An agent that has not been designated as either `supervision` or `execution` must not inspect files, edit files, run commands, or otherwise operate on the repo. It must ask whether the user wants supervision or execution.
 - Default to read-only / planning mode first.
 - Work through bounded task families only.
 - Do not broaden the current stage beyond the active handoff.
+- Role authority is strict:
+  - Supervision writes and updates phases, handoffs, reviews, checkpoints, and governance records.
+  - Execution executes the active handoff and writes the required execution report.
+  - Execution must not create phases, create handoffs, redefine scope, choose the next task, or perform governance planning.
 - In `standard` mode, supervision may open an optional `phase` artifact for a multi-pass objective when continuity, inherited constraints, or gates are needed across several bounded handoffs.
 - In `sans-sucre` mode, do not use phase artifacts; continuity lives in the active handoff, active execution report, checkpoint, and backlog.
 - SUPLEX runtime does not require a full audit at every pass; reconstruct only the minimum context needed for the current decision.
@@ -42,6 +47,7 @@ Do not rewrite this file during routine work.
 - In `sans-sucre` mode, treat `./.suplex/handoffs/active/current_handoff.md` and `./.suplex/handoffs/active/current_execution_report.md` as the live bounded-pass record.
 - Treat `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference only after any active handoff is resolved.
 - No new implementation phase should begin without a handoff document.
+- A direct user instruction to "write", "open", "create", "draft", or "update" a SUPLEX phase or handoff authorizes the supervision layer to modify the corresponding SUPLEX governance artifact, subject to normal ambiguity and scope checks. This is supervision work, not execution-layer implementation.
 - If the user invokes the execution layer or says that a new task awaits, read the active handoff and treat it as the task source rather than asking the user to restate the task.
 - If canonical docs and repo artifacts disagree, flag the discrepancy before proceeding.
 
@@ -73,6 +79,7 @@ When drafting or updating project docs, mark claims as:
 - No hidden extra work outside the active stage.
 - No claim of readiness from one draft, one table, or one bounded pass alone.
 - Supervision should not offer to execute an active bounded pass unless the user explicitly collapses the supervisor / execution split for that pass.
+- Execution should not proceed past startup alignment until it has restated the active handoff's instructions, action surface, read/write scope, forbidden actions, validation plan, and any skill or pipeline constraints, then received explicit user confirmation to execute.
 - A phase is a supervisory continuity charter, not an execution contract.
 - Bounded handoffs remain the only artifacts that authorize execution work.
 

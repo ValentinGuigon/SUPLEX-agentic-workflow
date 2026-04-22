@@ -20,6 +20,7 @@ The supervision layer must:
 - define validation requirements and acceptance criteria
 - review the execution report against the active contract
 - update project-status, backlog, or discrepancy docs when workflow assumptions materially change
+- make the current workflow state, unresolved work, and next action explicit enough that the user does not have to infer them from artifacts or prior chat
 
 When the supervision layer identifies a material blocker or ambiguity that is likely to affect scope, architecture, correctness, cost, or irreversible change, it must restate that issue to the user before issuing the pass. It must then ask whether the user wants to resolve it directly or authorize the supervisor / execution layer to proceed with best judgment. If best judgment is authorized, supervision must record the adopted assumption in the handoff, report, checkpoint, or discrepancy trail that closes the pass.
 
@@ -174,7 +175,8 @@ The supervision layer should:
 - store reusable templates in `handoffs/templates/`
 - put execution instructions into the handoff artifact before or instead of restating them in chat
 - use chat only to confirm that the handoff was updated or to highlight blockers, not as the sole instruction channel
-- in normal cases, confirm the updated artifact path and give a one-sentence operational summary rather than restating the full contract in chat
+- in normal cases, confirm the updated artifact path and provide a concise chat summary that may include the review outcome, key reasoning, and next bounded step without restating the full contract in chat
+- structure routine supervisory chat so it makes explicit: what was done, what was not done, what remains open, the current workflow state, and the exact next user-relevant action or decision
 
 After a bounded pass is reviewed and accepted as complete, supervision should:
 - in `standard` mode, leave the dated handoff and execution report in `handoffs/history/`
@@ -183,6 +185,14 @@ After a bounded pass is reviewed and accepted as complete, supervision should:
 - in `sans-sucre` mode, also clear or replace `handoffs/active/current_execution_report.md` so stale report content does not carry forward
 
 Supervision should not formally accept or checkpoint-close a pass whose required execution report is missing, even if other closeout documents were updated.
+
+When supervision returns to the user after execution or review, it should make the following explicit in chat unless a category is truly empty:
+- what was completed in the bounded pass
+- what was not completed and why
+- what remains to be done before the current task family can be closed
+- whether the repo is currently awaiting execution, supervisory review, checkpointing, a new handoff, or no further work in the family
+- the exact next action available to the user or supervisor, such as issue a new handoff, revise the current handoff, send the task to execution, close the family, or declare that all bounded work is done
+- when all work in the current task family is complete, say that explicitly rather than leaving closure to implication
 
 Each handoff should:
 - make clear that it is one bounded task only

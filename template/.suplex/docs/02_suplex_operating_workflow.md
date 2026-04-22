@@ -58,6 +58,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 ### Supervision bootstrap
 
 - The first active layer after `suplex init` is supervision, not execution.
+- If the current agent has not been explicitly designated as supervision or execution, it must not perform repo work. It must ask the user to choose the role.
 - The supervisor reads `./.suplex/handoffs/active/current_handoff.md` first, then reviews the seed state needed to decide the first bounded task, and asks the user what they want to do next.
 - The installed workflow infrastructure mode is recorded in `.suplex/init_state.yaml` as `workflow_mode`.
 - Immediately after initialization, `./.suplex/handoffs/active/current_handoff.md` should be a no-active-handoff placeholder rather than a prewritten execution contract.
@@ -72,6 +73,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - If the user authorizes best judgment, the supervisor should state the assumption or decision it adopts and report that assumption again when closing or checkpointing the pass.
 - If no active handoff exists, the supervisor uses `./.suplex/docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
 - In `standard` mode, the supervisor may open an optional phase only when the objective is expected to require multiple bounded passes and continuity, inherited constraints, or gates would materially improve control.
+- A direct user instruction to write, open, create, draft, or update a SUPLEX phase or handoff is routed to supervision artifact work. The supervisor may update the corresponding `.suplex` artifact directly when the target artifact and scope are clear; if unclear, the supervisor asks what artifact the user intends.
+- Supervision artifact work is not execution-layer implementation and does not require a prior execution handoff.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
@@ -79,6 +82,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor issues a bounded execution prompt tied to an active handoff.
 - In `standard` mode, that handoff may optionally belong to an active phase, but the handoff remains the immediate execution contract.
 - The executor performs only that bounded task.
+- Before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation, the executor restates the active handoff's instructions, read/write scope, forbidden actions, validation plan, and relevant skill or pipeline constraints, then waits for explicit user confirmation to proceed.
 - While that handoff is still open, the bounded task family remains in execution or awaiting review; it is not a fresh planning state.
 
 ### Execution report
@@ -96,7 +100,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor decides whether to close the task family, request validation, request checkpointing, issue a follow-on bounded task, or escalate into architecture mode.
 - If the active handoff is still open, the supervisor should say so explicitly and frame the next user choice against that open pass rather than offering to perform the execution-layer work by default.
 - If the task family is still open, the supervisor should also say explicitly that context cannot yet be cleared.
-- In chat, the supervisor should confirm the artifact path that was updated and give a one-sentence operational summary rather than restating the full handoff or phase contract.
+- In chat, the supervisor should confirm the artifact path that was updated and give a concise status summary that tells the user what was done, what was not done, what remains open, the current workflow state, and the exact next action or decision.
+- The user should not have to infer whether the system is awaiting execution, review, checkpointing, a new handoff, a phase decision, or closure.
 
 ### Validation / checkpoint
 
@@ -177,6 +182,7 @@ Use no audit when:
 - The executor returns a written report.
 - The supervisor restates the important points from that report, interprets their meaning, and defines the next bounded step.
 - The executor should not silently promote itself into supervision.
+- The executor must not create, update, or reinterpret phases or handoffs except to read the active handoff as its execution contract.
 - The active handoff artifact, not chat alone, is the authoritative execution contract.
 
 ### Execution report contract

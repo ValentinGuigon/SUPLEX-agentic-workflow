@@ -14,6 +14,12 @@ Keep explanatory prose for fields that benefit humans, such as `Purpose`, `Goal`
 - mode: standard
 - current_phase_sync: yes/no
 
+## Role Routing
+- phase_authoring_role: supervision
+- execution_role: none for this artifact
+- handoff_required_for_project_execution: yes
+- execution_may_modify_this_phase: no
+
 ## Purpose
 State why this phase exists now.
 
@@ -59,6 +65,7 @@ For `./.suplex/phases/active/current_phase.md`, keep this as a compact live summ
 
 ## Next Expected Bounded Pass
 State the next likely bounded handoff this phase should produce, if known.
+If a direct user instruction asks supervision to write or update this phase, supervision may perform that governance artifact work directly when scope is clear. Execution still requires a separate active handoff.
 
 ## Phase Closeout Requirements
 List the docs, records, and validations that must be updated before the phase is closed.

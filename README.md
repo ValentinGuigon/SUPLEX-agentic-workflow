@@ -15,6 +15,8 @@ SUPLEX can be initialized in two infrastructure modes:
 
 SUPLEX is a supervised pipeline with layered execution. It consists of a lightweight agentic control layer and is meant for AI-assisted bounded repository work. It provides governance files, canonical control-memory docs, and handoff structure so an agent can operate inside a repo with explicit scope, provenance, and closure rules.
 
+SUPLEX requires explicit role routing. An undesignated agent should not operate on the repo. The supervision role writes phases, handoffs, reviews, checkpoints, and governance records. The execution role only executes the active handoff and writes the required execution report.
+
 SUPLEX separates the roles of goal-setting and decision-making (yours) from supervising and implementation (the models).
 
 ## Demo
@@ -197,6 +199,7 @@ The repo is managed under a strict bounded task family discipline throughout con
 In practice, SUPLEX works best when the user treats supervision as the decision layer:
 
 - tell supervision what you want next - interact with it like you would normally to query the repo, define objectives, ask questions, make suggestions
+- direct instructions such as "write the phase", "open a phase", "write the handoff", or "update the handoff" are supervision-layer artifact work
 - let supervision restate blockers, ambiguities, and the bounded task
 - let execution do only that bounded pass
 - return to supervision to interpret the result before starting the next pass
