@@ -39,6 +39,7 @@ Do not rewrite this file during routine work.
 
 - Treat the target repo's `README.md` as the first required seed input for initialization.
 - Treat `SUPLEX.md` as the root entrypoint into the installed SUPLEX workflow.
+- Treat install-managed root `AGENTS.md` and `CLAUDE.md` as agent-autoload routing shims into SUPLEX unless host governance explicitly adds stricter compatible requirements.
 - Treat `./.suplex/docs/` as canonical SUPLEX control memory after initialization.
 - Treat `./.suplex/docs/09_supervision_brief.md` as the portable supervision-state artifact when repo access is absent.
 - Treat `./.suplex/handoffs/active/current_handoff.md` as the first execution-boundary artifact to resolve at startup.

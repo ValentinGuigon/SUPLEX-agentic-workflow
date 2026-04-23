@@ -16,6 +16,8 @@ import zipfile
 TEMPLATE_SUBDIR = "template"
 TEMPLATE_REQUIRED_FILES = ["SUPLEX.md"]
 TEMPLATE_REQUIRED_DIRS = [".suplex"]
+ROOT_GOVERNANCE_START = "<!-- SUPLEX ROOT GOVERNANCE START -->"
+ROOT_GOVERNANCE_END = "<!-- SUPLEX ROOT GOVERNANCE END -->"
 METADATA_NAMES = {
     ".git",
     ".gitignore",
@@ -182,6 +184,93 @@ def copy_kernel(template_root: Path, target_dir: Path) -> None:
     if target_suplex_root.exists():
         shutil.rmtree(target_suplex_root)
     shutil.copytree(suplex_root, target_suplex_root)
+
+
+def root_governance_block(target: str) -> str:
+    claude_line = (
+        "- `.suplex/CLAUDE.md`"
+        if target == "CLAUDE.md"
+        else "- `.suplex/CLAUDE.md` when applicable"
+    )
+    return dedent(
+        f"""
+        {ROOT_GOVERNANCE_START}
+        ## SUPLEX Governance
+
+        This repository has a SUPLEX control layer installed.
+
+        Before inspecting, editing, running commands, or otherwise operating on the repo, an agent must resolve whether it is acting as `supervision` or `execution`.
+
+        Read:
+        - `SUPLEX.md`
+        - `.suplex/AGENTS.md`
+        {claude_line}
+        - `.suplex/handoffs/active/current_handoff.md`
+
+        SUPLEX governs bounded supervision/execution workflow. Existing project instructions in this file still apply unless they conflict with SUPLEX role routing, handoff scope, or execution boundaries.
+        {ROOT_GOVERNANCE_END}
+        """
+    ).strip()
+
+
+def insert_or_replace_marked_block(existing: str, block: str) -> tuple[str, str]:
+    start = existing.find(ROOT_GOVERNANCE_START)
+    end = existing.find(ROOT_GOVERNANCE_END)
+    if start != -1 and end != -1 and start < end:
+        end += len(ROOT_GOVERNANCE_END)
+        updated = existing[:start].rstrip() + "\n\n" + block + "\n\n" + existing[end:].lstrip()
+        return updated.rstrip() + "\n", "updated"
+
+    stripped = existing.rstrip()
+    if not stripped:
+        return block + "\n", "created"
+
+    lines = stripped.splitlines()
+    insertion_index = 0
+    if lines and lines[0].lstrip().startswith("#"):
+        insertion_index = 1
+        while insertion_index < len(lines) and not lines[insertion_index].strip():
+            insertion_index += 1
+    updated_lines = lines[:insertion_index] + ["", block, ""] + lines[insertion_index:]
+    return "\n".join(updated_lines).rstrip() + "\n", "inserted"
+
+
+def claude_delegates_to_agents(text: str) -> bool:
+    return any(line.strip() == "@AGENTS.md" for line in text.splitlines())
+
+
+def integrate_root_governance(target_dir: Path) -> dict[str, str]:
+    results: dict[str, str] = {}
+    agents_path = target_dir / "AGENTS.md"
+    claude_path = target_dir / "CLAUDE.md"
+
+    agents_existed = agents_path.exists()
+    agents_existing = agents_path.read_text(encoding="utf-8") if agents_existed else "# AGENTS.md\n"
+    agents_updated, agents_status = insert_or_replace_marked_block(
+        agents_existing,
+        root_governance_block("AGENTS.md"),
+    )
+    write_text(agents_path, agents_updated)
+    if not agents_existed:
+        agents_status = "created"
+    results["AGENTS.md"] = agents_status
+
+    if claude_path.exists():
+        claude_existing = claude_path.read_text(encoding="utf-8")
+        if claude_delegates_to_agents(claude_existing):
+            results["CLAUDE.md"] = "unchanged_delegates_to_agents"
+        else:
+            claude_updated, claude_status = insert_or_replace_marked_block(
+                claude_existing,
+                root_governance_block("CLAUDE.md"),
+            )
+            write_text(claude_path, claude_updated)
+            results["CLAUDE.md"] = claude_status
+    else:
+        write_text(claude_path, "@AGENTS.md")
+        results["CLAUDE.md"] = "created_delegates_to_agents"
+
+    return results
 
 
 def standard_current_handoff_placeholder() -> str:
@@ -354,7 +443,8 @@ def build_provenance_doc(project_name: str) -> str:
 
         ## Tier 2 derived control artifacts
 
-        - `SUPLEX.md` is the root entrypoint that points agents to the canonical SUPLEX control layer under `./.suplex/`. [E]
+        - `SUPLEX.md` is the root SUPLEX entrypoint that points agents to the canonical SUPLEX control layer under `./.suplex/`. [E]
+        - Root `AGENTS.md` and `CLAUDE.md` are agent-autoload entrypoints that route compatible agents toward SUPLEX role resolution and the canonical `.suplex` governance layer. [E]
         - `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md` define stable SUPLEX governance for bounded agentic execution. [E]
         - `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/08_status_checkpoint.md`, `./.suplex/docs/09_supervision_brief.md`, `./.suplex/docs/validation_ledger.md`, and `./.suplex/docs/discrepancy_log.md` are control-memory artifacts derived during initialization. [E]
         - `./.suplex/handoffs/` artifacts define bounded execution packets and remain subordinate to stable governance. [E]
@@ -560,7 +650,19 @@ def build_supervision_brief(project_name: str, purpose: str, analysis: dict[str,
     )
 
 
-def build_validation_ledger(today: str, analysis: dict[str, object], workflow_mode: str) -> str:
+def format_root_governance_results(root_governance_results: dict[str, str]) -> str:
+    return ", ".join(
+        f"`{path}` {status.replace('_', ' ')}"
+        for path, status in root_governance_results.items()
+    )
+
+
+def build_validation_ledger(
+    today: str,
+    analysis: dict[str, object],
+    workflow_mode: str,
+    root_governance_results: dict[str, str],
+) -> str:
     mode = analysis["project_mode"]
     overlay_note = (
         "Existing project structure remained in place while the control layer was added."
@@ -576,7 +678,8 @@ def build_validation_ledger(today: str, analysis: dict[str, object], workflow_mo
         | Check | Result | Notes |
         |---|---|---|
         | `README.md` precondition satisfied before initialization | PASS | Initialization ran only after confirming the target repo had its own `README.md` |
-        | SUPLEX kernel copied without cloning the template repo into the target repo | PASS | Only `SUPLEX.md` and the canonical control layer under `./.suplex/` were added |
+        | SUPLEX kernel copied without cloning the template repo into the target repo | PASS | `SUPLEX.md`, root governance entrypoints, and the canonical control layer under `./.suplex/` were added or updated |
+        | Root agent governance entrypoints integrated | PASS | {format_root_governance_results(root_governance_results)} |
         | Requested workflow mode installed | PASS | Initialization configured `{workflow_mode}` workflow infrastructure in the target repo |
         | Repo-state docs rewritten before supervision bootstrap | PASS | `./.suplex/docs/00_project_scope.md`, `./.suplex/docs/01_source_of_truth_and_provenance.md`, `./.suplex/docs/08_status_checkpoint.md`, and `./.suplex/docs/09_supervision_brief.md` were rewritten for the target repo |
         | `.suplex/init_state.yaml` written for the current working directory | PASS | Init state now records the target repo mode and initialization metadata |
@@ -617,6 +720,7 @@ def build_init_state(
     repo_url: str,
     ref: str,
     workflow_mode: str,
+    root_governance_results: dict[str, str],
 ) -> str:
     notes = [
         "SUPLEX was initialized into the current working directory without cloning the template repo.",
@@ -641,8 +745,13 @@ def build_init_state(
         f'compiled_validation: {"true" if analysis["compiled_validation"] else "false"}',
         "governance_files:",
         '  - "SUPLEX.md"',
+        '  - "AGENTS.md"',
+        '  - "CLAUDE.md"',
         '  - "./.suplex/AGENTS.md"',
         '  - "./.suplex/CLAUDE.md"',
+        "root_governance_integration:",
+        f'  AGENTS.md: "{root_governance_results.get("AGENTS.md", "unknown")}"',
+        f'  CLAUDE.md: "{root_governance_results.get("CLAUDE.md", "unknown")}"',
         "inference_basis:",
         "  repo_scan: true",
         "  readme_present: true",
@@ -858,6 +967,7 @@ def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str, wor
 
     template_root = resolve_template_root(source_root)
     copy_kernel(template_root, target_dir)
+    root_governance_results = integrate_root_governance(target_dir)
     configure_workflow_layout(target_dir, workflow_mode)
 
     today = os.environ.get("SUPLEX_INIT_DATE", "2026-04-13")
@@ -867,9 +977,9 @@ def initialize(target_dir: Path, source_root: Path, repo_url: str, ref: str, wor
     write_text(target_dir / ".suplex" / "docs" / "01_source_of_truth_and_provenance.md", build_provenance_doc(project_name))
     write_text(target_dir / ".suplex" / "docs" / "08_status_checkpoint.md", build_checkpoint_doc(project_name, today, analysis, workflow_mode))
     write_text(target_dir / ".suplex" / "docs" / "09_supervision_brief.md", build_supervision_brief(project_name, purpose, analysis, workflow_mode))
-    write_text(target_dir / ".suplex" / "docs" / "validation_ledger.md", build_validation_ledger(today, analysis, workflow_mode))
+    write_text(target_dir / ".suplex" / "docs" / "validation_ledger.md", build_validation_ledger(today, analysis, workflow_mode, root_governance_results))
     write_text(target_dir / ".suplex" / "docs" / "discrepancy_log.md", build_discrepancy_log())
-    write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref, workflow_mode))
+    write_text(target_dir / ".suplex" / "init_state.yaml", build_init_state(today_iso, analysis, repo_url, ref, workflow_mode, root_governance_results))
 
     print(build_ready_message(target_dir, project_name, analysis, workflow_mode))
     return 0

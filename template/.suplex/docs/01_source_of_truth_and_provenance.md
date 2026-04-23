@@ -18,6 +18,7 @@ Use this file to track what currently counts as source material, what is inferre
 ## Tier 2 derived control artifacts
 
 - `SUPLEX.md` is the root entrypoint to the installed SUPLEX control layer. [E]
+- Root `AGENTS.md` and `CLAUDE.md` are install-managed agent entrypoints that should route compatible agents into the canonical SUPLEX governance under `./.suplex/`. [E]
 - `./.suplex/AGENTS.md` and `./.suplex/CLAUDE.md` define stable governance for bounded agentic execution. [E]
 - `./.suplex/docs/00_project_scope.md` records the scoped purpose of the SUPLEX layer. [E]
 - `./.suplex/docs/10_supervision_layer_spec.md`, `./.suplex/docs/11_execution_layer_spec.md`, and `./.suplex/docs/13_bounded_task_backlog.md` are canonical derived control artifacts for supervision rules, execution rules, and default next-task sequencing. [E]

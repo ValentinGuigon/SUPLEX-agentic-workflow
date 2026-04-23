@@ -4,7 +4,7 @@
 
 `SUPLEX-agentic-workflow` installs the SUPLEX control layer into an existing repository.
 
-Use it when you want to add a standard supervision and handoff structure for agentic work. SUPLEX doesn't change the underlying architecture of the target project and doesn't collide with common host-governance paths such as root `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/`.
+Use it when you want to add a standard supervision and handoff structure for agentic work. SUPLEX doesn't change the underlying architecture of the target project. It installs its canonical governance under `./.suplex/` and adds or patches root `AGENTS.md` / `CLAUDE.md` entrypoints so agents that auto-load root governance are routed into SUPLEX before operating.
 
 SUPLEX can be initialized in two infrastructure modes:
 
@@ -47,6 +47,8 @@ It is a worse fit for:
 Running the bootstrap from inside a target repository adds the SUPLEX control layer:
 
 - `SUPLEX.md`
+- `AGENTS.md`
+- `CLAUDE.md`
 - `.suplex/init_state.yaml`
 - `.suplex/AGENTS.md`
 - `.suplex/CLAUDE.md`
@@ -58,8 +60,9 @@ Running the bootstrap from inside a target repository adds the SUPLEX control la
 The write contract is intentionally narrow:
 
 - SUPLEX writes root `SUPLEX.md`
+- SUPLEX creates or updates root `AGENTS.md` and `CLAUDE.md` with a marked SUPLEX routing block
 - SUPLEX writes and updates files under `./.suplex/`
-- SUPLEX leaves untouched canonical governance (typically at root: `AGENTS.md`, `CLAUDE.md`, `docs/`)
+- SUPLEX leaves unrelated host-governance content intact outside its marked block
 
 The installed runtime includes:
 
@@ -75,7 +78,7 @@ The installed runtime includes:
 
 SUPLEX init creates the supervision-execution layers, but it does not create or infer your project architecture. It does not add code, data, or source files.
 
-For overlay installs, this means SUPLEX is designed to preserve the host repository's existing project structure while adding its own control layer. The installer treats root `SUPLEX.md` and `./.suplex/` as SUPLEX-owned paths, so those paths may be created or refreshed during installation; the non-collision guarantee applies to common host-governance locations outside that namespace.
+For overlay installs, this means SUPLEX is designed to preserve the host repository's existing project structure while adding its own control layer. The installer treats root `SUPLEX.md` and `./.suplex/` as SUPLEX-owned paths, and treats marked SUPLEX blocks in root `AGENTS.md` / `CLAUDE.md` as SUPLEX-owned routing shims. Existing instructions in those root files are preserved outside the marked block.
 
 Successful `suplex init` always installs the same full control layer. After initialization, `.suplex/handoffs/active/current_handoff.md` starts as a no-active-handoff placeholder, so the first active layer is supervision. The first supervision pass should read that file first, inspect the repo if it has repo access, ask what you want to do next, and define exactly one bounded task.
 
@@ -89,7 +92,7 @@ SUPLEX is intended to sit above project-specific skills and agents as a control 
 
 If a target repository already contains skills, agents, or similar execution helpers, SUPLEX should usually preserve them as project-domain assets. Successful initialization adds only the SUPLEX control layer and does not restructure existing `src/`, `data/`, `notebooks/`, `site/`, `public/`, or similar project directories.
 
-However, compatibility is not automatically seamless when the target repo already has its own governance layer. SUPLEX now installs its canonical files under `./.suplex/` and uses root `SUPLEX.md` as the entrypoint, which avoids direct file collisions with existing root `AGENTS.md`, `CLAUDE.md`, `docs/`, or `handoffs/`. This is a coexistence improvement, not a claim that all governance ambiguity disappears. In overlay repos that already have root governance files, the first supervision pass should inspect those files early, explain any coexistence risk, and determine with the user whether a bounded governance-alignment pass is needed.
+However, compatibility is not automatically seamless when the target repo already has its own governance layer. SUPLEX installs canonical files under `./.suplex/`, uses root `SUPLEX.md` as the human-readable entrypoint, and integrates a short marked routing block into root `AGENTS.md` / `CLAUDE.md` so common agent entrypoints see SUPLEX. If `CLAUDE.md` already delegates to `@AGENTS.md`, it is left unchanged. If root governance already contains substantial project instructions, SUPLEX preserves them and inserts only the marked block. This is a coexistence improvement, not a claim that all governance ambiguity disappears. In overlay repos that already have root governance files, the first supervision pass should inspect those files early, explain any coexistence risk, and determine with the user whether a bounded governance-alignment pass is needed.
 
 The integration model is:
 
@@ -155,11 +158,13 @@ The bootstrap looks for Python 3 automatically:
 
 After installation, the target repository should contain the SUPLEX control layer alongside the project's existing files.
 
-In an overlay repo, existing root governance files such as `AGENTS.md` or `CLAUDE.md` may still be present exactly as before. The intended result is coexistence: root `SUPLEX.md` points into the canonical SUPLEX layer under `./.suplex/`, while host-governance files remain host-owned unless the repo explicitly delegates otherwise.
+In an overlay repo, existing root governance files such as `AGENTS.md` or `CLAUDE.md` remain host-owned outside the marked SUPLEX block. The intended result is coexistence: root `SUPLEX.md` points into the canonical SUPLEX layer under `./.suplex/`, and root agent-governance files route compatible agents toward SUPLEX role resolution before they operate.
 
 At minimum, you should see:
 
 - `SUPLEX.md`
+- `AGENTS.md`
+- `CLAUDE.md`
 - `.suplex/`
 - `.suplex/AGENTS.md`
 - `.suplex/CLAUDE.md`
