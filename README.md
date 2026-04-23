@@ -153,6 +153,7 @@ The bootstrap looks for Python 3 automatically:
 - PowerShell bootstrap tries `py -3` first, then `python`
 - POSIX bootstrap tries `python3` first, then `python`
 - if neither candidate can execute Python 3, the bootstrap stops with an explicit remediation message
+- remote bootstrap now stages `bootstrap/init_suplex.py` plus the manifest-defined `template/` payload directly from raw files when possible, and only falls back to a full repo archive if lightweight staging fails
 
 ## What Success Looks Like
 
