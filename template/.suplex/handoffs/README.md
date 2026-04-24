@@ -4,6 +4,7 @@
 
 Use `./.suplex/handoffs/` for bounded task packets that define execution scope, required outputs, non-scope, and closure conditions.
 Handoffs support supervised runtime operation; they do not imply that every pass starts with a full repo audit.
+When the host repo has its own skills, agents, or governance mechanisms, the handoff should preserve that local operating structure explicitly rather than leaving it implicit.
 
 ## Layout
 
@@ -33,6 +34,20 @@ Handoffs support supervised runtime operation; they do not imply that every pass
 - handoffs may change frequently; stable governance should not
 - `./.suplex/docs/09_supervision_brief.md` is the portable state packet that lets supervision operate from the active handoff plus latest validated/report state when repo access is absent
 - `./.suplex/docs/13_bounded_task_backlog.md` is the default next-task sequencing artifact only after any active handoff is resolved
+
+## Local operating structure rule
+
+- if the repo contains local skills, agents, plugins, role-routing, or other execution helpers that are relevant to the pass, supervision should name them explicitly in the handoff
+- if those local mechanisms form a pipeline, supervision should name the ordering explicitly in the handoff
+- if nearby local alternatives were considered but intentionally excluded, the handoff should say so when omission would make the handoff ambiguous
+- execution should treat those named local mechanisms as part of the active contract, not as optional background context
+
+## Execution startup rule
+
+- execution should acknowledge the active handoff before substantial work
+- that acknowledgement should make explicit the deliverable, scope, validation plan, and any local skill, agent, governance, or pipeline constraints
+- execution should then proceed by default
+- execution should ask for renewed confirmation only when the handoff is missing or ambiguous, required inputs are missing, a destructive or irreversible action is newly implicated, a material cost or policy risk newly appears, or repo governance conflicts with the handoff
 
 ## Reconstruction rule
 

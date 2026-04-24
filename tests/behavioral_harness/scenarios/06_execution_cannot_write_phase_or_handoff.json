@@ -1,0 +1,18 @@
+{
+  "id": "execution_routes_phase_or_handoff_authoring_back_to_supervision",
+  "title": "Execution refuses governance authoring and routes phase or handoff requests back to supervision",
+  "kind": "execution_startup",
+  "input": {
+    "request_type": "write_handoff",
+    "startup_acknowledgement_produced": false,
+    "exception_trigger": "none",
+    "active_handoff": {
+      "exists": true,
+      "ambiguous": false
+    }
+  },
+  "expected": {
+    "requires_reconfirmation": false,
+    "response_type": "route_to_supervision"
+  }
+}

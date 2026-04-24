@@ -14,9 +14,9 @@ It must not create phases, create handoffs, update governance strategy, choose t
 
 The execution layer must:
 - read the minimum files required by the active handoff
-- restate the task family, exact deliverable, scope, action surface, forbidden actions, validation plan, and any skill or pipeline constraints before substantial work
+- acknowledge the task family, exact deliverable, scope, action surface, forbidden actions, validation plan, and any local skill, local agent, governance, or pipeline constraints before substantial work
 - treat that restatement as startup discipline rather than task completion
-- wait for explicit user confirmation after the startup restatement before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation
+- execute a valid handoff after startup acknowledgement unless a defined exception requires re-confirmation
 - change only the files explicitly in scope
 - perform the bounded task without broadening scope
 - validate its result before claiming completion
@@ -46,9 +46,9 @@ Do not answer with a generic request such as "provide the task" or "send the tas
 
 The execution layer should not read the entire repo by default.
 
-## Mandatory Startup Restatement
+## Mandatory Startup Acknowledgement
 
-Before substantial work, the execution layer must make explicit and wait for explicit user confirmation:
+Before substantial work, the execution layer must make explicit:
 1. task family
 2. exact deliverable in one sentence
 3. files in scope
@@ -58,10 +58,19 @@ Before substantial work, the execution layer must make explicit and wait for exp
 7. any user-authorized best-judgment assumption recorded in the handoff
 8. intended action surface
 9. forbidden actions, especially source mutation or writes outside the handoff
-10. relevant skill, plugin, or pipeline constraints
+10. relevant local skill, plugin, agent, governance, or pipeline constraints
 
 Reading the handoff, listing scope, and stating alignment do not complete the pass by themselves.
-Confirmation must be explicit, such as "confirmed", "yes, proceed", "run it", or "execute the handoff as stated." Clarification questions, corrections, complaints, or acknowledgments are not confirmation.
+
+After that acknowledgement, execution should proceed without asking for renewed confirmation unless one of the following exception triggers applies:
+- the active handoff is missing, stale, or materially ambiguous
+- required inputs, permissions, or dependencies are missing
+- the pass would take a destructive or irreversible action the user has not already authorized
+- the pass raises a new material cost, policy, or external-action risk not already captured in the handoff
+- the active handoff conflicts with repo governance, repo-local skill constraints, or repo-local agent-routing requirements
+- new information discovered during startup changes scope or invalidates the handoff's stated assumptions
+
+If an exception trigger applies, execution should state the trigger concretely and ask only for the specific clarification or confirmation needed to proceed safely.
 
 ## Evidence Discipline
 
@@ -103,9 +112,9 @@ If the pass updates closeout state such as `./.suplex/handoffs/active/current_ha
 During execution, the layer must:
 - preserve the stated task family
 - preserve any inherited phase constraints named by the active handoff
+- preserve any repo-local skill pipeline, repo-local agent delegation pattern, or governance constraint named by the active handoff
 - avoid adjacent helpful changes
 - continue from alignment into the bounded deliverable unless a stop condition or blocker is reached
-- stop after startup alignment until explicit user confirmation is received
 - stop and report blockers instead of substituting a lossy alternative
 - treat validation as part of completion, not optional follow-up
 - treat report writing as part of completion, not optional follow-up
@@ -159,7 +168,7 @@ The execution layer should not:
 - modify governance docs unless explicitly instructed
 - create, open, draft, or update phases or handoffs
 - treat a request to write a phase or handoff as an execution task
-- begin project-domain implementation before the mandatory startup restatement is explicitly confirmed
+- discard or silently simplify repo-local skill, agent, governance, or pipeline constraints named by the active handoff
 - claim success without validation
 - leave silent scope shrinkage
 - declare system-level readiness from one bounded pass

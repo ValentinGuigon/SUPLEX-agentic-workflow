@@ -1,0 +1,13 @@
+{
+  "id": "supervision_write_handoff_routes_to_artifact_work",
+  "title": "Supervision treats 'write the handoff' as artifact work when scope is clear",
+  "kind": "supervision_route",
+  "input": {
+    "user_message": "Write the handoff for the next bounded pass.",
+    "target_clear": true
+  },
+  "expected": {
+    "artifact_type": "handoff",
+    "response_type": "supervision_artifact_work"
+  }
+}

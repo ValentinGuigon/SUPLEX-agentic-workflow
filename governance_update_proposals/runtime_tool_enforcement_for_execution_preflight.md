@@ -6,7 +6,7 @@ Proposed.
 
 ## Context
 
-SUPLEX governance now states that execution must restate the active handoff's instructions, action surface, read/write scope, forbidden actions, validation plan, and relevant skill or pipeline constraints before substantial work. Execution must then wait for explicit user confirmation before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation.
+SUPLEX governance now states that execution must acknowledge the active handoff's instructions, action surface, read/write scope, forbidden actions, validation plan, and relevant local skill, agent, governance, or pipeline constraints before substantial work. Execution should then proceed by default unless a defined exception trigger requires renewed confirmation before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation.
 
 This is currently a governance and prompt-level rule. A compliant agent should follow it, but there is not yet a technical enforcement layer that blocks an agent, skill, or runner from proceeding without confirmation.
 
@@ -14,11 +14,11 @@ This is currently a governance and prompt-level rule. A compliant agent should f
 
 Add runtime or harness-level enforcement when SUPLEX has an execution runner, command wrapper, skill launcher, or comparable control point.
 
-The enforcement layer should fail closed unless the execution preflight has been recorded and explicitly confirmed.
+The enforcement layer should fail closed unless the execution preflight has been recorded and any required confirmation state for an exception-triggered pass is present.
 
 ## Desired Enforcement Behavior
 
-- Refuse to invoke a skill or pipeline unless the active handoff has a confirmed execution preflight.
+- Refuse to invoke a skill or pipeline unless the active handoff has a recorded execution preflight and any exception-triggered confirmation required by that handoff.
 - Refuse command execution or file writes outside the handoff's declared action surface.
 - Require machine-readable fields for:
   - active handoff path
@@ -48,14 +48,15 @@ execution_preflight:
     - "manuscripts/source.docx"
   source_mutation_allowed: false
   skill_or_pipeline: "run-editing"
-  user_confirmed: true
-  confirmed_scope: "Generate staged editing recommendations only; do not modify source DOCX."
+  user_confirmed: false
+  reconfirmation_trigger: null
+  confirmed_scope: null
 ```
 
 ## Acceptance Criteria
 
-- Execution cannot start project-domain implementation without confirmed preflight state.
-- Skill or pipeline launch fails if confirmation is missing.
+- Execution cannot start project-domain implementation without recorded preflight state.
+- Skill or pipeline launch fails if required exception-triggered confirmation is missing.
 - Writes outside declared paths are blocked or reported as violations.
 - Source mutation is impossible unless both the user and the workflow explicitly authorize it.
 - Tests cover missing confirmation, stale confirmation, ambiguous confirmation, and forbidden write attempts.

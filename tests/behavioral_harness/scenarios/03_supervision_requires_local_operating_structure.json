@@ -1,0 +1,21 @@
+{
+  "id": "supervision_rejects_handoff_missing_local_operating_structure",
+  "title": "Supervision flags a handoff that omits required local skills, roles, governance, and pipeline order",
+  "kind": "supervision_handoff_fields",
+  "input": {
+    "draft_handoff": {
+      "relevant_local_skills": [],
+      "relevant_local_agents_or_roles": [],
+      "applicable_repo_governance_or_constraints": [],
+      "required_pipeline_or_handoff_order": [],
+      "excluded_but_considered_local_alternatives": []
+    }
+  },
+  "expected": {
+    "selected_local_mechanisms_named": false,
+    "pipeline_order_named": false,
+    "governance_constraints_named": false,
+    "excluded_alternatives_named": false,
+    "response_type": "handoff_contract_incomplete"
+  }
+}

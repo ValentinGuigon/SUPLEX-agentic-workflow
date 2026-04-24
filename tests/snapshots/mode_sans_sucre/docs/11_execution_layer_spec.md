@@ -13,8 +13,8 @@ It is not the default planning or governance layer.
 
 The execution layer must:
 - read the minimum files required by the active handoff
-- restate the task family, exact deliverable, scope, and validation plan before substantial work
-- treat that restatement as startup discipline rather than task completion
+- acknowledge the task family, exact deliverable, scope, action surface, validation plan, and any local skill, local agent, governance, or pipeline constraints before substantial work
+- treat that acknowledgement as startup discipline rather than task completion
 - change only the files explicitly in scope
 - perform the bounded task without broadening scope
 - validate its result before claiming completion
@@ -35,7 +35,7 @@ If chat instructions conflict with the active handoff, stop and surface the mism
 
 The execution layer should not read the entire repo by default.
 
-## Mandatory Startup Restatement
+## Mandatory Startup Acknowledgement
 
 Before substantial work, the execution layer must make explicit:
 1. task family
@@ -45,8 +45,19 @@ Before substantial work, the execution layer must make explicit:
 5. validation that will be performed
 6. any blocker or ambiguity already visible from the contract
 7. any user-authorized best-judgment assumption recorded in the handoff
+8. intended action surface
+9. forbidden actions, especially source mutation or writes outside the handoff
+10. relevant local skill, plugin, agent, governance, or pipeline constraints
 
 Reading the handoff, listing scope, and stating alignment do not complete the pass by themselves.
+
+After that acknowledgement, execution should proceed without asking for renewed confirmation unless one of the following exception triggers applies:
+- the active handoff is missing, stale, or materially ambiguous
+- required inputs, permissions, or dependencies are missing
+- the pass would take a destructive or irreversible action the user has not already authorized
+- the pass raises a new material cost, policy, or external-action risk not already captured in the handoff
+- the active handoff conflicts with repo governance, repo-local skill constraints, or repo-local agent-routing requirements
+- new information discovered during startup changes scope or invalidates the handoff's stated assumptions
 
 ## Evidence Discipline
 
@@ -87,6 +98,7 @@ If the pass updates closeout state such as `handoffs/active/current_handoff.md`,
 
 During execution, the layer must:
 - preserve the stated task family
+- preserve any repo-local skill pipeline, repo-local agent delegation pattern, or governance constraint named by the active handoff
 - avoid adjacent helpful changes
 - continue from alignment into the bounded deliverable unless a stop condition or blocker is reached
 - stop and report blockers instead of substituting a lossy alternative

@@ -69,12 +69,15 @@ The workflow is for control-layer operation only. It does not authorize computat
 - If the supervisor identifies a material blocker or ambiguity that could affect scope, architecture, correctness, cost, or irreversible change, it should restate that issue concretely, explain why it matters, and ask whether the user wants to resolve it directly in conversation or authorize best judgment.
 - If the user authorizes best judgment, the supervisor should state the assumption or decision it adopts and report that assumption again when closing or checkpointing the pass.
 - If no active handoff exists, the supervisor uses `docs/13_bounded_task_backlog.md` as the default next-task sequencing reference unless a blocker or discrepancy justifies a deviation.
+- When the host repo contains local skills, agents, plugins, or governance mechanisms relevant to the task, the supervisor should compare the user request against that local operating structure and encode the selected mechanisms, required ordering, and any important exclusions directly in the handoff.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
 
 - The supervisor issues a bounded execution prompt tied to an active handoff.
 - The executor performs only that bounded task.
+- Before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation, the executor acknowledges the active handoff's instructions, read/write scope, forbidden actions, validation plan, and relevant local skill, agent, governance, or pipeline constraints.
+- After that acknowledgement, the executor proceeds by default unless the handoff is missing or ambiguous, required inputs are missing, a destructive or irreversible action is newly implicated, a material cost or policy risk newly appears, or repo governance conflicts with the handoff.
 
 ### Execution report
 

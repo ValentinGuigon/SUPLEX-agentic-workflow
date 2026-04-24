@@ -100,6 +100,8 @@ The integration model is:
 - project-specific skills provide reusable execution capabilities
 - project-specific agents perform bounded execution work under SUPLEX supervision
 
+When those project-specific skills or agents are relevant to a bounded pass, supervision should name them explicitly in the handoff, along with any required ordering or routing constraints. The handoff should preserve the host repo's local operating structure instead of assuming execution will infer it correctly from general context alone.
+
 So:
 
 - adding SUPLEX to a repo that already has skills or agents is usually structurally compatible if those assets do not depend on conflicting governance rules
@@ -201,6 +203,7 @@ The repo is managed under a strict bounded task family discipline throughout con
 - Where provenance matters, project docs may tag claims with evidence level: `[E]` directly evidenced, `[I]` strong inference, `[U]` unresolved.
 - No implementation proceeds without an active handoff document and evidence that the prior stage was validated.
 - If canonical docs and code artifacts disagreed, the discrepancy is logged before proceeding. `.suplex/docs/` is the canonical SUPLEX project memory; `.suplex/handoffs/` define the execution boundary.
+- Execution should acknowledge a valid handoff and proceed by default. Renewed confirmation should be requested only when the handoff is ambiguous, required inputs are missing, a destructive or irreversible action is newly implicated, a material cost or policy risk newly appears, or repo governance conflicts with the active contract.
 
 In practice, SUPLEX works best when the user treats supervision as the decision layer:
 

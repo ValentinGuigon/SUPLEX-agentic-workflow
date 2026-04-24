@@ -57,6 +57,17 @@ If a phase exists, include the active phase document here.
 
 List the exact files the execution layer should read before acting.
 
+## Repo-Local Skills, Agents, And Governance
+
+- relevant_local_skills:
+- relevant_local_agents_or_roles:
+- applicable_repo_governance_or_constraints:
+- required_pipeline_or_handoff_order:
+- excluded_but_considered_local_alternatives:
+
+If none apply, write `none at handoff issuance time`.
+If local mechanisms are execution-critical, name them explicitly rather than implying them.
+
 ## Files Expected To Be Modified
 
 List only the files that should normally change if the pass is completed cleanly.
@@ -105,10 +116,10 @@ Before project-domain implementation, skill invocation, pipeline execution, comm
 - files to read
 - files or artifacts it may write
 - files or artifacts it must not modify
-- relevant skill, plugin, or pipeline constraints
+- relevant local skill, plugin, agent, governance, or pipeline constraints
 - validation plan
 
-Execution must wait for explicit user confirmation after that restatement unless this handoff records a prior explicit confirmation that covers the exact same operation.
+Execution should proceed after that acknowledgement unless one of the handoff's documented re-confirmation triggers applies.
 
 ## Required Deliverables
 
@@ -124,7 +135,14 @@ List the checks, dry runs, or evidence the execution layer must produce.
 
 State what the execution layer should do immediately after reading and restating the handoff.
 This should remove ambiguity between startup alignment and actual execution.
-If confirmation is required before execution, say so here.
+
+## Re-Confirmation Rule
+
+State whether execution should:
+- proceed after startup acknowledgement by default
+- pause for one or more specific exception triggers only
+
+List the exact triggers if this pass requires re-confirmation before execution can continue.
 
 ## Most Likely Misread
 
@@ -135,6 +153,8 @@ State the most likely wrong interpretation of the task.
 State the sentence or rule that prevents that interpretation.
 
 If the likely misread is governance drift, include: `Execution executes this handoff only; supervision writes or revises phases and handoffs.`
+
+If the likely misread is loss of repo-local operating structure, include: `Execution must preserve the repo-local skills, agents, governance constraints, and pipeline ordering named in this handoff.`
 
 ## Acceptance Criteria
 

@@ -1,0 +1,13 @@
+{
+  "id": "supervision_write_phase_routes_to_artifact_work",
+  "title": "Supervision treats 'write the phase' as artifact work when scope is clear",
+  "kind": "supervision_route",
+  "input": {
+    "user_message": "Write the phase for the instruction-interpretation gate.",
+    "target_clear": true
+  },
+  "expected": {
+    "artifact_type": "phase",
+    "response_type": "supervision_artifact_work"
+  }
+}

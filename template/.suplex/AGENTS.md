@@ -80,7 +80,8 @@ When drafting or updating project docs, mark claims as:
 - No hidden extra work outside the active stage.
 - No claim of readiness from one draft, one table, or one bounded pass alone.
 - Supervision should not offer to execute an active bounded pass unless the user explicitly collapses the supervisor / execution split for that pass.
-- Execution should not proceed past startup alignment until it has restated the active handoff's instructions, action surface, read/write scope, forbidden actions, validation plan, and any skill or pipeline constraints, then received explicit user confirmation to execute.
+- Supervision should encode any execution-critical repo-local skills, agents, governance constraints, and pipeline ordering explicitly in the handoff rather than leaving them implicit.
+- Execution should acknowledge the active handoff's instructions, action surface, read/write scope, forbidden actions, validation plan, and any local skill, agent, governance, or pipeline constraints before substantial work, then proceed unless a documented exception requires re-confirmation.
 - A phase is a supervisory continuity charter, not an execution contract.
 - Bounded handoffs remain the only artifacts that authorize execution work.
 

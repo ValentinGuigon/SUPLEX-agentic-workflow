@@ -20,8 +20,10 @@ The supervision layer must:
 - route direct user instructions to write, open, create, draft, or update SUPLEX phases or handoffs as supervision artifact work
 - identify the next bounded task family
 - define one task contract at a time
+- compare the user request against the host repo's local skills, agents, governance files, and delegation structure when those local mechanisms are relevant to successful execution
 - specify exact source-of-truth documents for the pass
 - define read scope, write scope, and out-of-scope boundaries
+- define any required local skill pipeline, local agent handoff pattern, or governance constraint that execution must preserve
 - define validation requirements and acceptance criteria
 - review the execution report against the active contract
 - update project-status, backlog, or discrepancy docs when workflow assumptions materially change
@@ -74,6 +76,7 @@ For each bounded pass, the supervision layer must produce:
 - one active handoff pointer at `./.suplex/handoffs/active/current_handoff.md`
 - one explicit task family
 - one explicit bounded deliverable
+- one explicit statement of which repo-local skills, repo-local agents, governance constraints, and pipeline sequencing are relevant when they materially affect execution
 - acceptance criteria with pass/fail semantics
 - a plain statement of what remains out of scope
 
@@ -101,17 +104,19 @@ Before issuing a pass, the supervision layer should answer:
 4. Which files must be read?
 5. Which files may be modified?
 6. Which files must remain untouched?
-7. What counts as done?
-8. What is the most likely wrong interpretation of the task?
-9. What guardrail prevents that interpretation?
+7. Which repo-local skills, agents, governance rules, or delegation patterns are relevant to success?
+8. If more than one local mechanism is relevant, what exact pipeline or ordering must be preserved?
+9. What counts as done?
+10. What is the most likely wrong interpretation of the task?
+11. What guardrail prevents that interpretation?
 
 In `standard` mode, supervision should also answer when relevant:
-10. Is this objective large enough to require a phase?
-11. If yes, what continuity, gate, or inherited constraint cannot be handled cleanly by handoff history alone?
+12. Is this objective large enough to require a phase?
+13. If yes, what continuity, gate, or inherited constraint cannot be handled cleanly by handoff history alone?
 
 If the answer to question 1 reveals a material blocker or ambiguity, supervision should also answer:
-12. Does the user want to resolve this directly, or authorize best judgment?
-13. If best judgment is authorized, what explicit assumption will be adopted and later reported back?
+14. Does the user want to resolve this directly, or authorize best judgment?
+15. If best judgment is authorized, what explicit assumption will be adopted and later reported back?
 
 ## Evidence Discipline
 
@@ -269,6 +274,8 @@ Each handoff should:
 - make clear that it is one bounded task only
 - define why the pass exists now
 - define the exact objective in operational language
+- identify the relevant repo-local skills, repo-local agents, governance constraints, and execution pipeline when those local mechanisms materially affect the pass
+- name excluded but nearby local alternatives when omission would otherwise make the handoff lossy or ambiguous
 - state hard scope constraints plainly enough that nearby work is clearly unauthorized
 - specify exact files to read
 - state which files are expected to change if the pass is completed cleanly

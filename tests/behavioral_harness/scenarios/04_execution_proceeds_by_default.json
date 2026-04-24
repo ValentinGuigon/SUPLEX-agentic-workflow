@@ -1,0 +1,20 @@
+{
+  "id": "execution_proceeds_after_acknowledgement_without_default_reconfirmation",
+  "title": "Execution proceeds by default once startup acknowledgement is complete and no exception trigger applies",
+  "kind": "execution_startup",
+  "input": {
+    "request_type": "execute_handoff",
+    "startup_acknowledgement_produced": true,
+    "exception_trigger": "none",
+    "active_handoff": {
+      "exists": true,
+      "ambiguous": false
+    }
+  },
+  "expected": {
+    "startup_acknowledgement_required": true,
+    "startup_acknowledgement_produced": true,
+    "requires_reconfirmation": false,
+    "response_type": "proceed_after_acknowledgement"
+  }
+}

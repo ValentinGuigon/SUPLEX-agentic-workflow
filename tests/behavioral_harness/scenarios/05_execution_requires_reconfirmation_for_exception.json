@@ -1,0 +1,20 @@
+{
+  "id": "execution_requests_reconfirmation_for_exception_trigger",
+  "title": "Execution asks for renewed confirmation when a destructive action trigger appears",
+  "kind": "execution_startup",
+  "input": {
+    "request_type": "execute_handoff",
+    "startup_acknowledgement_produced": true,
+    "exception_trigger": "destructive_or_irreversible_action",
+    "active_handoff": {
+      "exists": true,
+      "ambiguous": false
+    }
+  },
+  "expected": {
+    "startup_acknowledgement_required": true,
+    "startup_acknowledgement_produced": true,
+    "requires_reconfirmation": true,
+    "response_type": "request_reconfirmation"
+  }
+}

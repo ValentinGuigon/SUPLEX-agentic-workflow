@@ -6,7 +6,7 @@
 - status: proposed
 - issued_by: user-directed supervision
 - date_opened: 2026-04-22
-- last_updated: 2026-04-22
+- last_updated: 2026-04-23
 - mode: standard
 - current_phase_sync: no
 
@@ -148,11 +148,11 @@ Rules:
 - If the intended artifact, target path, objective, or scope is unclear, supervision asks a focused clarification.
 - Writing a phase or handoff does not execute the handoff.
 
-## Execution Confirmation Rule
+## Execution Startup Rule
 
 Execution may perform startup alignment reads required to understand the active handoff.
 
-Before project-domain implementation, skill invocation, pipeline execution, command execution, source mutation, or writes beyond execution-report startup notes, execution must restate:
+Before project-domain implementation, skill invocation, pipeline execution, command execution, source mutation, or writes beyond execution-report startup notes, execution must acknowledge:
 
 - active handoff instructions
 - interpreted user goal
@@ -160,15 +160,18 @@ Before project-domain implementation, skill invocation, pipeline execution, comm
 - files and artifacts it may read
 - files and artifacts it may write
 - files and artifacts it must not modify
-- relevant skill, plugin, or pipeline constraints
+- relevant local skill, plugin, agent, governance, or pipeline constraints
 - validation plan
 - ambiguities, blockers, assumptions, and stop conditions
 
-Execution must then wait for explicit user confirmation before proceeding.
+Execution should then proceed by default unless one of the following exception triggers applies:
 
-Valid confirmation includes direct language such as "confirmed", "yes, proceed", "run it", or "execute the handoff as stated."
-
-Clarification questions, corrections, complaints, acknowledgments, or silence are not confirmation.
+- the active handoff is missing, stale, or materially ambiguous
+- required inputs, permissions, or dependencies are missing
+- the pass would take a destructive or irreversible action the user has not already authorized
+- the pass raises a new material cost, policy, or external-action risk not already captured in the handoff
+- the active handoff conflicts with repo governance, repo-local skill constraints, or repo-local agent-routing requirements
+- new information discovered during startup changes scope or invalidates the handoff's stated assumptions
 
 ## Intent Classes
 
@@ -359,7 +362,7 @@ The user wording and the active workflow contract point to different action surf
 - Direct instructions to write or update phases and handoffs are routed to supervision artifact work.
 - Supervision can write SUPLEX phases and handoffs directly when the user asks and scope is clear.
 - Execution cannot write phases, write handoffs, redefine scope, or choose the next task.
-- Execution must restate the active handoff constraints and receive explicit confirmation before implementation, skill/pipeline execution, command execution, or source mutation.
+- Execution must acknowledge the active handoff constraints before implementation, skill/pipeline execution, command execution, or source mutation, and should request renewed confirmation only when an explicit exception trigger applies.
 - Reports, complaints, questions, specifications, and status requests are conversation-only by default.
 - Read-only inspection is treated as workspace action requiring authorization.
 - The workflow distinguishes intent class, action surface, target object, authority source, and source-mutation state.
@@ -378,7 +381,7 @@ Required scenarios:
 - User asks an undesignated agent to "handle this" without naming supervision or execution.
 - User asks execution to write a phase or handoff.
 - User asks supervision to execute an active handoff without explicitly collapsing the supervisor / execution split.
-- User asks execution to execute the active handoff, but execution has not yet produced a confirmation preflight.
+- User asks execution to execute the active handoff, but execution has not yet produced a startup acknowledgement.
 - User says "edit the paper" while the active editing skill permits recommendations only.
 - User reports that another agent violated a skill contract and asks "why did this happen?"
 - User angrily describes a failure but does not ask for inspection, restoration, or patching.
@@ -403,20 +406,24 @@ Each scenario should assert:
 
 ## Current Status Summary
 
-The phase is proposed. The problem has been identified from real agent behavior, and the desired control-layer behavior has been drafted here. No SUPLEX template docs, skill contracts, tests, or runtime gates have been changed under this phase yet.
+The phase remains proposed, but the core governance docs now reflect the interpretation gate and execute-by-exception startup behavior in the working tree. A deterministic behavioral harness now exists under `tests/` and covers supervision artifact routing, local operating-structure preservation in handoffs, execute-by-default, confirm-by-exception, and execution refusal to author phases or handoffs. Runtime enforcement beyond prompt- and contract-level behavior is still unresolved.
 
 ## Next Expected Bounded Pass
 
-Create a bounded documentation handoff to update SUPLEX supervision and execution docs with the mandatory interpretation preflight, action-surface taxonomy, authority order, and fail-closed defaults.
+Create a bounded review or validation-closeout pass that:
+- verifies the updated governance docs and behavioral harness together against the phase gates
+- decides whether `G4_adversarial_tests_added` can be marked satisfied now or needs broader scenario coverage
+- determines whether `G5_runtime_gate_evaluated` should be satisfied by explicit rationale or by a later runtime-enforcement pass
 
-Suggested first-pass write set:
+Suggested write set:
 
+- `dev_validation/phase_instruction_interpretation_gate.md`
 - `template/.suplex/docs/10_supervision_layer_spec.md`
 - `template/.suplex/docs/11_execution_layer_spec.md`
-- `template/.suplex/docs/02_suplex_operating_workflow.md`
-- `template/.suplex/docs/13_bounded_task_backlog.md`
+- `tests/behavioral_harness/`
+- `tests/README.md`
 
-The first pass should not modify tests or runtime code unless the handoff explicitly expands scope.
+The next pass should avoid broad runtime design unless it explicitly opens a runtime-enforcement or governance-rationale handoff.
 
 ## Phase Closeout Requirements
 

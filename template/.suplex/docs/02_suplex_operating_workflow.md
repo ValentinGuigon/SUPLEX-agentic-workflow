@@ -75,6 +75,7 @@ The workflow is for control-layer operation only. It does not authorize computat
 - In `standard` mode, the supervisor may open an optional phase only when the objective is expected to require multiple bounded passes and continuity, inherited constraints, or gates would materially improve control.
 - A direct user instruction to write, open, create, draft, or update a SUPLEX phase or handoff is routed to supervision artifact work. The supervisor may update the corresponding `.suplex` artifact directly when the target artifact and scope are clear; if unclear, the supervisor asks what artifact the user intends.
 - Supervision artifact work is not execution-layer implementation and does not require a prior execution handoff.
+- When the host repo contains local skills, agents, plugins, or governance mechanisms relevant to the task, the supervisor should compare the user request against that local operating structure and encode the selected mechanisms, required ordering, and any important exclusions directly in the handoff.
 - That review may use full audit, local reconstruction, or no audit depending on what is required.
 
 ### Bounded execution
@@ -82,7 +83,8 @@ The workflow is for control-layer operation only. It does not authorize computat
 - The supervisor issues a bounded execution prompt tied to an active handoff.
 - In `standard` mode, that handoff may optionally belong to an active phase, but the handoff remains the immediate execution contract.
 - The executor performs only that bounded task.
-- Before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation, the executor restates the active handoff's instructions, read/write scope, forbidden actions, validation plan, and relevant skill or pipeline constraints, then waits for explicit user confirmation to proceed.
+- Before project-domain implementation, skill invocation, pipeline execution, command execution, or source mutation, the executor acknowledges the active handoff's instructions, read/write scope, forbidden actions, validation plan, and relevant local skill, agent, governance, or pipeline constraints.
+- After that acknowledgement, the executor proceeds by default unless the handoff is missing or ambiguous, required inputs are missing, a destructive or irreversible action is newly implicated, a material cost or policy risk newly appears, or repo governance conflicts with the handoff.
 - While that handoff is still open, the bounded task family remains in execution or awaiting review; it is not a fresh planning state.
 
 ### Execution report
